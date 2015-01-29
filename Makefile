@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -g -O2 -lm
+CFLAGS = -Wall -Wextra -pedantic -g -O2 -lm -lreadline
 
 all: scicalc
 	
