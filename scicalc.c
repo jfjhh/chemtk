@@ -64,9 +64,9 @@ int main(int argc, const char **argv)
 	while (!quit)
 		if (calculate(&n))
 			if (format == SCIENTIFIC)
-				printf("%s=> %Le%s\n\n", ANSWER, n, CLEAR);
+				printf("%s%Le%s\n\n", ANSWER, n, CLEAR);
 			else
-				printf("%s=> %Lf%s\n\n", ANSWER, n, CLEAR);
+				printf("%s%Lf%s\n\n", ANSWER, n, CLEAR);
 		else
 			quit = 1;
 
