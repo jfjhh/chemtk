@@ -7,13 +7,28 @@
 #include <math.h>
 #include <ctype.h>
 
+/* Strange floating point values. */
+#define _GNU_SOURCE
+#ifndef INFINITY /* ISO C99 standard. */
+#define INFINITY 1.0 / 0.0
+#endif
+#ifndef NINFINITY /* ISO C99 standard. */
+#define NINFINITY 0 - INFINITY
+#endif
+#ifndef N0 /* IEEE 754 */
+#define N0 1.0 / -INFINITY
+#endif
+#ifndef NAN /* IEEE floating point. */
+#define NAN -INFINITY
+#endif
+
 #define max(A, B) ((A > B) ? A : B)
 
 #define TITLE "\033[0;34m"
 #define BANNER "\033[0;1;34m"
-#define FIRST "\033[0;34m1> "
-#define SECOND "\033[0;1;34m2> "
-#define OPERATOR "\033[0;34mO> "
+#define FIRST "\033[0;1;34m1> "
+#define SECOND "\033[0;1;35m2> "
+#define OPERATOR "\033[0;1;36mO> "
 #define ANSWER "\033[0;31m=> "
 #define EXIT "\033[0;1;31m"
 #define CLEAR "\033[0m"
@@ -27,11 +42,20 @@ const char *constants[NUM_CONSTANTS][2] = {
 	{"h", "6.6262e-34"},
 };
 
+#define NUM_OPERATORS 16
+const char operators[] = {
+	'+', '-', '*', '/',
+	'=', '<', '>', '&',
+	'^', '~', '%', '|',
+	'o', 'l', 'r', 'x',
+};
+
 enum out_format { SCIENTIFIC, EXPANDED };
 
 int get_dec(const char *line);
+int getdouble(const char *prompt, long double *num);
 int calculate(long double *n);
-long operate(long a, long b, char operation);
+long double operate(long double a, long double b, char operation);
 
 int main(int argc, const char **argv)
 {
@@ -87,71 +111,92 @@ int get_dec(const char *line)
 	return j;
 }
 
+int getdouble(const char *prompt, long double *num)
+{
+	char *line = NULL;
+	int i, read_constant, ok;
+	ok = read_constant = 0;
+
+	while (!ok) {
+		if ((line = readline(prompt))) {
+			if (line[0] == 'q') {
+				free(line);
+				return 0;
+			}
+
+			for (i = 0; i < NUM_CONSTANTS; i++)
+				if (!strncmp(constants[i][0], line, strlen(constants[i][0]) + 1))
+					*num = strtod(constants[i][1], NULL);
+
+			if (!read_constant) {
+				if (line[0] == '\0') {
+					ok = 2; /* arbitrary code for 'use previous number' */
+				} else if (!sscanf(line, "%Lg", num)) {
+					fprintf(stderr, "Error! Try again.\n");
+				} else {
+					ok = 1;
+				}
+			}
+
+			free(line);
+		} else {
+			fprintf(stderr, "Could not read a line!\n");
+			return 0;
+		}
+	}
+
+	return ok;
+}
+
 int calculate(long double *n)
 {
-	int digits_x, digits_y;
+	int i, ok;
 	long double x, y;
-	long a, b, c;
 	char op, *line;
-
-	line = NULL;
-	digits_x = digits_y = 0;
-	a = b = c = 0L;
+	ok = i = 0;
+	op = '+'; /* default, should be overrided. */
 	x = y = 0;
 
-	if ((line = readline(FIRST))) {
-		if (line[0] == 'q') {
-			free(line);
-			return 0;
-		} else {
-			sscanf(line, "%Lg", &x);
-			digits_x = get_dec(line);
-			free(line);
-		}
+	if ((ok = getdouble(FIRST, &x))) {
+		if (ok == 2)
+			x = *n;
 	} else {
-		fprintf(stderr, "Could not read a line!\n");
 		return 0;
 	}
 
-	if ((line = readline(SECOND))) {
-		if (line[0] == 'q') {
-			free(line);
-			return 0;
-		} else {
-			sscanf(line, "%Lg", &y);
-			digits_y = get_dec(line);
-			free(line);
-		}
+	if ((ok = getdouble(SECOND, &y))) {
+		if (ok == 2)
+			y = *n;
 	} else {
-		fprintf(stderr, "Could not read a line!\n");
 		return 0;
 	}
 
-	if ((line = readline(OPERATOR))) {
-		if (line[0] == 'q') {
-			free(line);
-			return 0;
-		} else {
-			sscanf(line, "%c", &op);
+	ok = 0;
+	while (!ok) {
+		if ((line = readline(OPERATOR)) && (sscanf(line, "%c", &op))) {
+			if (op == 'q') {
+				free(line);
+				return 0;
+			}
+
+			for (i = 0; i < NUM_OPERATORS; i++)
+				if (operators[i] == op)
+					ok = 1;
+
+			if (!ok)
+				fprintf(stderr, "Error! Please retry.\n");
+
 			free(line);
 		}
-	} else {
-		fprintf(stderr, "Could not read a line!\n");
-		return 0;
 	}
 
-	a = x * max(digits_x, digits_y);
-	b = y * max(digits_x, digits_y);
-
-	c = operate(a, b, op);
-
-	*n = ((long double) c / (long double) max(digits_x, digits_y));
+	*n = operate(x, y, op);
 	return 1;
 }
 
-long operate(long a, long b, char operation)
+long double operate(long double a, long double b, char operation)
 {
-	long c;
+	long double c;
 
 	switch (operation) {
 		case '+':
