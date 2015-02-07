@@ -7,6 +7,7 @@ struct stack *new_stack(void)
 	if ((new = (struct stack *) malloc(sizeof(struct stack)))) {
 		new->data = 0;
 		new->next = NULL;
+		new->end = new;
 	} else {
 		new = NULL;
 	}
@@ -14,62 +15,43 @@ struct stack *new_stack(void)
 	return new;
 }
 
+void push_stack(struct stack *stack, long double data)
+{
+	struct stack *new;
+
+	if ((new = (struct stack *) malloc(sizeof(struct stack)))) {
+		new->data = data;
+		new->next = NULL;
+		new->end = new;
+
+		stack->end->next = new;
+		stack->end = new;
+	} else {
+		new = NULL;
+	}
+}
+
+long double pop_stack(struct stack *stack)
+{
+	struct stack *new_end;
+	long double data = stack->end->data;
+
+	new_end = stack;
+	while (new_end->next != stack->end)
+		new_end = new_end->next;
+
+	free(stack->end);
+	stack->end = new_end;
+	stack->end->next = NULL;
+
+	return data;
+}
+
 void delete_stack(struct stack *stack)
 {
 	if (stack->next)
 		delete_stack(stack->next);
-
-	free(stack);
-}
-
-void begin_stack(struct stack *stack, long double data)
-{
-	long double old_data, cur_data;
-	struct stack *cur, *end;
-
-	end = new_stack();
-
-	cur = stack;
-	old_data = cur->data;
-	cur->data = data;
-
-	while (cur->next) {
-		cur = cur->next;
-		cur_data = cur->data;
-		cur->data = old_data;
-		old_data = cur_data;
-	}
-
-	end->data = old_data;
-}
-
-void end_stack(struct stack *stack, long double data)
-{
-	struct stack *cur, *new;
-
-	new = new_stack();
-	new->data = data;
-
-	cur = stack;
-	while (cur->next)
-		cur = cur->next;
-
-	cur->next = new;
-}
-
-void remove_stack(struct stack *stack, long double data)
-{
-	struct stack *cur, *new;
-
-	cur = stack;
-	while (cur->next && cur->data != data)
-		cur = cur->next;
-
-	if (!cur->next) {
-		end_stack(stack, data);
-	} else {
-		new = new_stack();
-		new->data = data;
-	}
+	else
+		free(stack);
 }
 

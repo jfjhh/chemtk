@@ -6,6 +6,9 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include <assert.h>
+
+#include "stack.h"
 
 /* Strange floating point values. */
 #define _GNU_SOURCE
@@ -52,6 +55,7 @@ const char operators[] = {
 
 enum out_format { SCIENTIFIC, EXPANDED };
 
+int test_stack(void);
 int get_dec(const char *line);
 int getdouble(const char *prompt, long double *num);
 int calculate(long double *n);
@@ -62,6 +66,8 @@ int main(int argc, const char **argv)
 	long double n = 0L;
 	int quit = 0;
 	enum out_format format;
+
+	assert(test_stack());
 
 	if ((argc == 2) && (strncmp(argv[1], "-n", 2)) == 0)
 		format = EXPANDED;
@@ -96,6 +102,36 @@ int main(int argc, const char **argv)
 
 	fprintf(stderr, "\n%sExiting ...%s\n", EXIT, CLEAR);
 	return 0;
+}
+
+int test_stack(void)
+{
+	int test_status, i;
+	struct stack *stack = new_stack();
+	const int test_len = 3;
+	const long double test_doubles[] = {
+		1.23,
+		4.56,
+		7.89,
+	};
+
+	test_status = 1;
+
+	fprintf(stderr, "Testing stack ...\n");
+
+	for (i = 0; i < test_len; i++)
+		push_stack(stack, test_doubles[i]);
+
+	fprintf(stderr, "Done pushing ...\n");
+
+	for (i = test_len - 1; i >= 0; i--)
+		if (pop_stack(stack) != test_doubles[i])
+			test_status = 0;
+
+	fprintf(stderr, "Done popping ... Test passed!\n");
+
+	delete_stack(stack);
+	return test_status;
 }
 
 int get_dec(const char *line)
