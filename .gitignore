@@ -1,3 +1,7 @@
 scicalc
 *.o
 
+chemtk
+bin/
+build/
+

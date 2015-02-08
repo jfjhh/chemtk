@@ -1,0 +1,48 @@
+ Scicalc: A scientific calculator utility
+==========================================
+
+Use like an RPN Calculator:
+
+ *	Enter a number or constant, then press <enter>.
+
+ *	Add other numbers to the stack as above.
+
+ *	Press the <right> arrow key to go into 'op' mode.
+
+ *	Press the key of the operator you want (e.g. '+').
+
+ *	The two latest numbers on the stack will be calculated,
+ 	and both be replaced with the single result of the
+	calculation.
+
+ *	Have fun using the calculator!
+
+ *	Go back into 'op' mode (press <right>) and press 'q' to quit.
+
+ ------------------------------------------------------------------------------
+
+Just pressing <enter> duplicates the latest member of the stack.
+
+Operations:
+ *	+ - * / = < > & ^ ~ %% | o l r x
+
+Significant figures are automatically calculated, given input digits and
+operation.
+
+ ------------------------------------------------------------------------------
+
+Scientific notation is written with an 'e':
+ *	e.g. "1.2e3"
+ *	e.g. "1.2e+3"
+ *	e.g. "1.2e-3"
+
+ ------------------------------------------------------------------------------
+
+Type a contant (unlimited significant figures) by it's name:
+ *	e.g. "mol"
+ *	e.g. "pi"
+
+... Or by appending a '.' to the number:
+ *	e.g. "22.4."
+ *	e.g. "2.99e8."
+
