@@ -26,9 +26,7 @@ $(STACK_LIB): $(STACK_SRC)
 	$(CC) $(CFLAGS) -fPIC -shared $^ -o $@
 
 clean:
-	rm bin/$(NAME)
-	rm $(STACK_LIB)
-	rm $(OBJ)
+	rm bin/$(NAME) $(STACK_LIB) $(OBJ) 2> /dev/null
 
 build:
 	mkdir -p bin
