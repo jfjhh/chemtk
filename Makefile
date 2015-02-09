@@ -1,6 +1,6 @@
 CC = gcc
 LIBS = -lm -lncurses
-CFLAGS = -Wall -Wextra -pedantic -g -O2 $(LIBS)
+CFLAGS = -Wall -Wextra -pedantic -rdynamic -g -O2 $(LIBS)
 
 PREFIX ?= /usr/local
 

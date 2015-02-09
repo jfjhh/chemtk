@@ -33,5 +33,11 @@ void print_stack(WINDOW *outwin, int y, int x, struct stack *stack);
 /* Find out how deep a stack is */
 int stack_depth(struct stack *stack);
 
+#define stack_rotdown(A) (A = stack_rotdown_(A))
+struct stack *stack_rotdown_(struct stack *stack);
+
+#define stack_rotup(A) (A = stack_rotup_(A))
+struct stack *stack_rotup_(struct stack *stack);
+
 #endif
 

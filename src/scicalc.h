@@ -40,13 +40,9 @@ extern const char *constants[NUM_CONSTANTS][2];
 extern const char operators[NUM_OPERATORS];
 
 enum out_format { SCIENTIFIC, EXPANDED };
-
-int scicalc(WINDOW *outwin);
-
-int get_dec(const char *line);
-int getdouble(WINDOW *outwin, const char *prompt, long double *num);
-int calculate(WINDOW *outwin, long double *n);
+int get_sig(const char *line);
 long double operate(long double a, long double b, char operation);
+int test_scicalc(WINDOW *outwin);
 
 #endif /* SCICALC_H */
 

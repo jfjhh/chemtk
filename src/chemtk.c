@@ -1,8 +1,4 @@
-#include <ncurses.h>
-
-#include "stack.h"
-#include "scicalc.h"
-#include "pager.h"
+#include "chemtk.h"
 
 int main(void)
 {
@@ -35,44 +31,33 @@ int main(void)
 	init_pair(STACK_COLOR_NORMAL, COLOR_RED, COLOR_BLACK);
 	wattrset(devwin, A_BOLD | COLOR_PAIR(STACK_COLOR_NORMAL));
 
-	/* Check if at bottom of window, then clear. */
-	/* if (getcury(devwin) >= getmaxy(devwin)-1) */
-	/* 	werase(devwin); */
+	page_prompt(devwin, "run tests");
+	werase(devwin);
+	run_all_tests(devwin);
 
-	wprintw(devwin, "Testing stack ...\n");
-	wprintw(devwin, "\nTest %s : Abstract Data Type : Stack\n",
-			(test_stack(devwin) ? "Succeeded" : "Failed"));
-
-	wprintw(devwin, "\n<Press any key to see docfile>");
-	wgetch(devwin);
+	/* Also display scicalc docfile in devwin. */
+	page_prompt(devwin, "see scicalc doc file");
 	werase(devwin);
 
 	scicalc_doc = fopen(SCICALC_DOCFILE, "r");
+
 	if (scicalc_doc == NULL) {
 		wprintw(devwin, "Oops! Bad fopen()!\n");
 	} else {
-		wattroff(devwin, A_BOLD);
-		while (page_line(devwin, scicalc_doc)) {
-			if (getcury(devwin) >= getmaxy(devwin) - 1) {
-				wattron(devwin, A_BOLD);
-				wprintw(devwin, "<Press any key to see next page>");
-				wattroff(devwin, A_BOLD);
-				wgetch(devwin);
-				werase(devwin);
-				wmove(devwin, 0, 0);
-			}
-		}
+		page_file(devwin, scicalc_doc);
 	}
 
-	wattron(devwin, A_BOLD);
-	wprintw(devwin, "<Press any key to continue>");
-	wgetch(devwin);
-	werase(devwin);
-	wattroff(devwin, A_BOLD);
+	page_prompt(devwin, "continue");
+	wmove(devwin, getcury(devwin)-1, 0);
+	wclrtobot(devwin);
+	wrefresh(devwin);
 
-	/* Scicalc */
+	/* Scicalc window */
 	wmove(sciwin, 3, (getmaxx(sciwin) / 2) - 8);
-	scicalc(sciwin);
+
+	/* DEBUG */
+	/* scicalc(sciwin); */
+	page_prompt(sciwin, "exit");
 
 	/* Exit */
 	if (scicalc_doc)
