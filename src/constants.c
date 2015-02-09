@@ -13,7 +13,6 @@ long double const_search(const char *line)
 				&& !found_constant) {
 
 			if (strncmp(read_const, line, strlen(line)) == 0) {
-				fprintf(stderr, "%s, %s\n", read_const, line);
 				found_constant = 1;
 
 				free(read_const);
@@ -22,7 +21,6 @@ long double const_search(const char *line)
 
 				getline(&read_const, &read_const_len, const_file);
 				constant = strtold(read_const, NULL);
-				fprintf(stderr, "%s, %Le\n", read_const, constant);
 			}
 
 			free(read_const);
