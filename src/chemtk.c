@@ -47,6 +47,9 @@ int main(void)
 		page_file(devwin, scicalc_doc);
 	}
 
+	/* Also print a ptable. */
+	print_ptable(devwin, getcury(devwin) - 1, getcurx(devwin) + 3);
+	wprintw(devwin, "\n");
 	page_prompt(devwin, "continue");
 	wmove(devwin, getcury(devwin)-1, 0);
 	wclrtobot(devwin);

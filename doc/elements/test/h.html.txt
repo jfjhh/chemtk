@@ -1,0 +1,55 @@
+ASCII PERIODIC TABLE OF THE ELEMENTS
+
+  H
+
+Relative atomic mass: 1.00794 +- 0.00007
+
+English: Hydrogen
+French: Hydrogene
+Croatian: Vodik
+German: Wasserstoff
+Italian: Idrogeno
+Spanish: Hidrogeno
+
+Atomic number: 1
+Group numbers: 1
+Period: 1
+Standard state (20 ^oC): gas
+
+Discovery: 1766 Sir Henry Cavendish (GB)
+
+Hydrogen was discovered by Sir Henry Cavendish (GB) in 1766. The origin of the
+name comes from the Greek words 'hydro' and 'genes' meaning 'water' and
+'generate'. It is a colourless, odourless gas which burns and forms explosive
+mixtures in air and reacts violently with oxidants. Hydrogen is the most
+abundant element in the universe. Commercial quantities of hydrogen are
+produced by reacting superheated steam with methane or carbon. A laboratory
+method for producing hydrogen is by the reaction of acids on metals such as
+zinc or by the electrolysis of water. Most hydrogen is used in the production
+of ammonia and in metal refining. It is also used as fuel in rockets. Its two
+heavier isotopes (deuterium and tritium) are used respectively for nuclear
+fusion.
+
+Electronic configuration: 1s^1
+Formal oxidation number: -1 +1
+Atomic radius: 37.3 pm
+
+Electronegativities: 2.2
+Thermal conductivity: 0.183 W/(m K)
+Electrical resistivity (20 ^oC): - microOhm cm
+
+Melting point: -259.34 ^oC
+Boiling point: 252.87 ^oC
+
+Heat of fusion: 0.12 kJ/mol
+Heat of vaporization: 0.46 kJ/mol
+Heat of atomization: 216.003 kJ/mol
+
+
+                              Table <= 1H => 2He
+
+
+                     ASCII Periodic Table of the Elements
+                      __________________________________
+                                 27 July 2014
+                    Copyright © 1998-2014 by Eni Generalic.

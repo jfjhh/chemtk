@@ -29,6 +29,7 @@ long double const_search(const char *line)
 		}
 	}
 
+	free(read_const);
 	fclose(const_file);
 	return constant;
 }
@@ -41,7 +42,7 @@ int test_constants(WINDOW *outwin)
 	int correct;
 
 	found = const_search(mol);
-	if (found != expected)
+	if (found == expected)
 		correct = 1;
 	else
 		correct = 0;

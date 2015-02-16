@@ -9,6 +9,8 @@
 #include "constants.h"
 #include "num_str.h"
 #include "runtests.h"
+#include "directory.h"
+#include "elements.h"
 
 #endif /* CHEMTK_H */
 

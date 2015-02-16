@@ -7,6 +7,8 @@ struct test_array all_tests = {
 		test_pager,
 		test_constants,
 		test_num_str,
+		test_directory,
+		test_elements,
 	},
 	{
 		"stack",
@@ -14,6 +16,8 @@ struct test_array all_tests = {
 		"pager",
 		"constants",
 		"num_str",
+		"directory",
+		"elements",
 	}
 };
 
@@ -24,11 +28,17 @@ static int run_test(WINDOW *outwin, int (*test_function)(WINDOW *outwin),
 
 	wattron(outwin, A_BOLD);
 	wprintw(outwin, "Testing %s ...\n", test_name);
+	wattroff(outwin, A_BOLD);
 	status = (*test_function)(outwin);
 	wattron(outwin, A_BOLD);
-	wprintw(outwin, "\nTest %s %s\n", test_name, ((status) ? "Succeeded" : "Failed"));
+	wprintw(outwin, "\nTest %s %s\n", test_name,
+			((status) ? "Succeeded" : "Failed"));
 	wattroff(outwin, A_BOLD);
 
+	if (status == 0)
+		wgetch(outwin);
+
+	werase(outwin);
 	return status;
 }
 
@@ -42,7 +52,7 @@ int run_tests(WINDOW *outwin, struct test_array tests)
 				tests.test_names[test]);
 
 		/* Check if at bottom of window, then clear. */
-		if (getcury(outwin) >= getmaxy(outwin)-1)
+		if (getcury(outwin) >= getmaxy(outwin) - 1)
 			werase(outwin);
 	}
 

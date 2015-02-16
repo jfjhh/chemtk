@@ -1,0 +1,9 @@
+H
+1p
+2d
+s/Symbol:\s*//
++s/Relative atomic mass: //
++s/Atomic number: //
++,$d
+wq
+

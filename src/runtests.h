@@ -5,7 +5,7 @@
 
 #include "chemtk.h"
 
-#define NUM_TESTS 5
+#define NUM_TESTS 7
 
 struct test_array {
 	int (*test_functions[NUM_TESTS])(WINDOW *outwin);
