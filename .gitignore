@@ -5,4 +5,5 @@ chemtk
 bin/
 build/
 ascii.periodni.com*
+*.log
 
