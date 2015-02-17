@@ -37,12 +37,14 @@ long double const_search(const char *line)
 int test_constants(WINDOW *outwin)
 {
 	char *mol = "mol";
-	long double expected = 6.022141e+23;
+	long double expected = 6.022141e+23L;
 	long double found;
 	int correct;
 
 	found = const_search(mol);
-	if (found == expected)
+
+	/* Check if they are "equal enough" (within LDBL_EPSILON). */
+	if (fabsl(expected - found) < LDBL_EPSILON)
 		correct = 1;
 	else
 		correct = 0;

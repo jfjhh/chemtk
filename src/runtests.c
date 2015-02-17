@@ -27,6 +27,8 @@ static int run_test(WINDOW *outwin, int (*test_function)(WINDOW *outwin),
 	int status;
 
 	wattron(outwin, A_BOLD);
+	wprintw(outwin, "DATA_DIR is %s.", DATA_DIR);
+	wrefresh(outwin);
 	wprintw(outwin, "Testing %s ...\n", test_name);
 	wattroff(outwin, A_BOLD);
 	status = (*test_function)(outwin);

@@ -11,7 +11,7 @@
 #include "directory.h"
 #include "pager.h"
 
-#define ELEMENT_DIR "data/elements"
+#define ELEMENT_DIR DATA_DIR "/elements"
 
 #define ELEMENT_INFO_DIR ELEMENT_DIR "/info"
 #define ELEMENT_PTABLE_DIR ELEMENT_DIR "/ptable"

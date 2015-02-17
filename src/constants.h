@@ -6,11 +6,13 @@
 #endif
 
 #include <ncurses.h>
+#include <math.h>
+#include <float.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#define CONST_FILE "data/constants.txt"
+#define CONST_FILE DATA_DIR "/constants.txt"
 
 long double const_search(const char *line);
 int test_constants(WINDOW *outwin);

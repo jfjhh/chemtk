@@ -10,6 +10,10 @@ AM_INIT_AUTOMAKE
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_ARG_VAR([UNXZ], [Program used to decompress archive of program data.])
+AC_CHECK_PROG([UNXZ], [unxz], [/usr/bin/unxz], [unxz])
+AC_ARG_VAR([TAR], [Program used to unarchive program data.])
+AC_CHECK_PROG([TAR], [tar], [/bin/tar], [tar])
 
 # Checks for libraries.
 AC_CHECK_LIB([m], [cos])

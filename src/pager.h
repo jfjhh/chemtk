@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 #define PAGER_COLOR_NORMAL 3
-#define TEST_PAGER_FILE "data/pager.txt"
+#define TEST_PAGER_FILE DATA_DIR "/pager.txt"
 #define PAGER_STR "see next page"
 
 void page_bottom(WINDOW *outwin);
