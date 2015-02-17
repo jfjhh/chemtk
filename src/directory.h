@@ -1,15 +1,18 @@
 #ifndef DIRECTORY_H
 #define DIRECTORY_H
 
+#define _GNU_SOURCE
+
 #include <ncurses.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
+
 /* FOR DEBUGGING: */
 #include <stdio.h>
 
-#define GETFILES_TESTDIR "doc/get_files"
+#define GETFILES_TESTDIR "data/get_files"
 #define GETFILES_FILE_MAX 256
 #define GETFILES_NAME_MAX (NAME_MAX + 1)
 #define GETFILES_BUFLEN (GETFILES_FILE_MAX * GETFILES_NAME_MAX)

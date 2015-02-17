@@ -10,7 +10,7 @@ static struct element *get_element(const char *element)
 	char *epath;
 
 	if ((epath = (char *) malloc(sizeof(char) * ELEMENT_PATH_LEN)) == NULL) {
-		fprintf(stderr, "Could not allocate memory for path string (epath).\n");
+		/* fprintf(stderr, "Could not allocate memory for path string (epath).\n"); */
 		free(epath);
 		return NULL;
 	}
@@ -19,8 +19,8 @@ static struct element *get_element(const char *element)
 	strncat(epath, element, ELEMENT_PATH_LEN);
 
 	if ((file = fopen(epath, "r")) == NULL) {
-		fprintf(stderr, "Could not open element file `%s' (epath: `%s').\n",
-				element, epath);
+		/* fprintf(stderr, "Could not open element file `%s' (epath: `%s').\n", */
+		/* 		element, epath); */
 		free(epath);
 		return NULL;
 	}
@@ -29,22 +29,25 @@ static struct element *get_element(const char *element)
 				(struct element *) malloc(sizeof(struct element))) != NULL) {
 
 		total += fscanf(file, "%s\n", read_element->name);
-		fprintf(stderr, "Read name: %s\n", read_element->name);
+		/* fprintf(stderr, "Read name: %s\n", read_element->name); */
 
 		total += fscanf(file, "%s\n", read_element->symbol);
-		fprintf(stderr, "Read symbol: %s\n", read_element->symbol);
+		/* fprintf(stderr, "Read symbol: %s\n", read_element->symbol); */
 
 		total += fscanf(file, "%f\n", &(read_element->molar_mass));
-		fprintf(stderr, "Read m. mass: %f\n", read_element->molar_mass);
+		/* fprintf(stderr, "Read m. mass: %f\n", read_element->molar_mass); */
 
 		total += fscanf(file, "%d\n", &(read_element->atomic_number));
-		fprintf(stderr, "Read a. number: %d\n", read_element->atomic_number);
+		/* fprintf(stderr, "Read a. number: %d\n", read_element->atomic_number); */
 
-		fputc('\n', stderr);
+		/* fputc('\n', stderr); */
 
-		if (total != 4)
-			fprintf(stderr,
-					"Did not read the correct number of items from element file");
+		if (total != 4) {
+			/* fprintf(stderr, */
+			/* 		"Did not read the correct number of items from element file"); */
+			free(read_element);
+			read_element = NULL;
+		}
 	}
 
 	free(epath);
@@ -83,8 +86,8 @@ int init_elements(void)
 	if ((elements = get_files(ELEMENT_INFO_DIR)) != NULL) {
 		for (element = 0; (elements[element] != NULL) && ok; element++) {
 			if ((ptable[element] = get_element(elements[element])) == NULL) {
-				fprintf(stderr, "Bad element in init_elements: %p.\n",
-						(void *) ptable[element]);
+				/* fprintf(stderr, "Bad element in init_elements: %p.\n", */
+				/* 		(void *) ptable[element]); */
 				ok = 0;
 			}
 		}
@@ -143,7 +146,7 @@ int test_elements(WINDOW *outwin)
 
 	/* Print all the elements. */
 	if (!init_elements()) {
-		fprintf(stderr, "Error with init_elements!\n");
+		/* fprintf(stderr, "Error with init_elements!\n"); */
 		status = 0;
 	} else {
 		for (element = 0; element < NUM_ELEMENTS; element++) {

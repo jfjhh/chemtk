@@ -7,3 +7,22 @@ build/
 ascii.periodni.com*
 *.log
 
+# autoconf
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+compile
+config.h
+config.h.in
+config.h.in~
+config.status
+configure
+depcomp
+install-sh
+missing
+src/.deps/
+src/Makefile
+src/Makefile.in
+stamp-h1
+

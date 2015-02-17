@@ -1,0 +1,35 @@
+.\" Process this file with
+.\" groff -man -Tascii chemtk.1
+.\"
+.TH ChemTK 1 "JANUARY 2015" Linux "User Manuals"
+.SH NAME
+chemtk \- ncurses chemistry toolkit and scientific calculator
+.SH SYNOPSIS
+.B chemtk [
+.I OPTION
+.B ]
+.SH DESCRIPTION
+A
+.BR ncurses (3)
+chemistry toolkit and scientific calculator. The calculator is
+implemented with a stack-based,
+.I RPN calculator
+.
+A periodic table is also loaded into memory, so that
+lookups of element masses can be used in calculations.
+.SH OPTIONS
+.I -h
+.RS
+Display help (to be implemented).
+.SH FILES
+.I ~/.chemtkrc
+.RS
+Per user configuration file. See
+.BR chemtkrc (5)
+for further details.
+.SH AUTHOR
+Alex Striff
+.I <alex.striff1@gmail.com>
+.SH "SEE ALSO"
+.BR ncurses(3)
+.BR chemtkrc(5)

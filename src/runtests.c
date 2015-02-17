@@ -56,9 +56,14 @@ int run_tests(WINDOW *outwin, struct test_array tests)
 			werase(outwin);
 	}
 
+	/* Print results. */
 	werase(outwin);
 	wattron(outwin, A_BOLD);
-	wprintw(outwin, "Tests Passed: [ %d / %d ].\n", tests_passed, NUM_TESTS);
+
+	for (test = 0; test < NUM_TESTS; test++)
+		wprintw(outwin, "Ran test: test_%s.\n", tests.test_names[test]);
+
+	wprintw(outwin, "\nTests Passed: [ %d / %d ].\n", tests_passed, NUM_TESTS);
 	wattroff(outwin, A_BOLD);
 
 	return tests_passed;

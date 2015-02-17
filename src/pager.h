@@ -1,12 +1,16 @@
 #ifndef PAGER_H
 #define PAGER_H
 
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #define PAGER_COLOR_NORMAL 3
-#define TEST_PAGER_FILE "doc/pager.txt"
+#define TEST_PAGER_FILE "data/pager.txt"
 #define PAGER_STR "see next page"
 
 void page_bottom(WINDOW *outwin);

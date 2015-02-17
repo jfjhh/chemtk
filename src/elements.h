@@ -1,13 +1,17 @@
 #ifndef ELEMENTS_H
 #define ELEMENTS_H
 
+#if ! defined(_XOPEN_SOURCE) || _XOPEN_SOURCE < 500
+#define _XOPEN_SOURCE 500
+#endif
+
 #include <ncurses.h>
 #include <unistd.h>
 
 #include "directory.h"
 #include "pager.h"
 
-#define ELEMENT_DIR "doc/elements"
+#define ELEMENT_DIR "data/elements"
 
 #define ELEMENT_INFO_DIR ELEMENT_DIR "/info"
 #define ELEMENT_PTABLE_DIR ELEMENT_DIR "/ptable"

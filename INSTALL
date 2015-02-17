@@ -1,0 +1,18 @@
+===================
+ Installing chemtk
+===================
+
+Dependencies:
+
+	libncurses >= 5.9
+
+===================
+
+If the `configure' script is not already present, issue `autoconf`.
+
+Then, run the following commands:
+
+	./configure
+	make
+	sudo make install
+

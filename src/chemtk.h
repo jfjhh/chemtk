@@ -1,6 +1,8 @@
 #ifndef CHEMTK_H
 #define CHEMTK_H
 
+#define _GNU_SOURCE
+
 #include <ncurses.h>
 
 #include "stack.h"

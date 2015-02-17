@@ -27,7 +27,7 @@
 #define NAN -INFINITY
 #endif
 
-#define SCICALC_DOCFILE "doc/scicalc.txt"
+#define SCICALC_DOCFILE "data/scicalc.txt"
 #define SCIWIN_COLOR_NORMAL 1
 #define LINE_LEN 32
 

@@ -7,10 +7,10 @@ char **get_files(const char *dir)
 	struct dirent *ent;
 	int file = 0;
 
-	fprintf(stderr, "Inside get_files(). NAME_MAX is %d.\n", NAME_MAX);
+	/* fprintf(stderr, "Inside get_files(). NAME_MAX is %d.\n", NAME_MAX); */
 
 	if ((files = (char **) malloc(sizeof(char *) * GETFILES_FILE_MAX)) == NULL) {
-		fprintf(stderr, "Not enough memory for files buffer.\n");
+		/* fprintf(stderr, "Not enough memory for files buffer.\n"); */
 		free(files);
 		return NULL;
 	}
@@ -19,11 +19,11 @@ char **get_files(const char *dir)
 		files[file] = NULL;
 
 	if ((directory = opendir(dir)) != NULL) {
-		fprintf(stderr, "opendir(dir) succeeded.\n");
+		/* fprintf(stderr, "opendir(dir) succeeded.\n"); */
 		file = 0;
 		while ((ent = readdir(directory)) != NULL) {
-			fprintf(stderr,
-					"readdir(directory) to get struct dirent * succeeded.\n");
+			/* fprintf(stderr, */
+			/* 		"readdir(directory) to get struct dirent * succeeded.\n"); */
 
 			/* Check that ent->d_name is not "." or "..". */
 			/* Check that it is definitely not a directory. */
@@ -34,20 +34,20 @@ char **get_files(const char *dir)
 					&& (ent->d_type != DT_DIR)) {
 
 				files[file] = strndup(ent->d_name, NAME_MAX);
-				fprintf(stderr, "succeeded in doing strndup();\n");
-				fprintf(stderr, "inputted ent->d_name is `%s'.\n", ent->d_name);
+				/* fprintf(stderr, "succeeded in doing strndup();\n"); */
+				/* fprintf(stderr, "inputted ent->d_name is `%s'.\n", ent->d_name); */
 				file++;
 			}
 
-			fprintf(stderr, "=== DONE processing an ent (%d) ===\n", file);
+			/* fprintf(stderr, "=== DONE processing an ent (%d) ===\n", file); */
 		}
 		files[file] = NULL; /* End of file list. */
 		closedir(directory);
-		fprintf(stderr, "closedir(dir) succeeded.\n\n");
+		/* fprintf(stderr, "closedir(dir) succeeded.\n\n"); */
 
 		return files;
 	} else {
-		fprintf(stderr, "opendir(dir) failed.\n");
+		/* fprintf(stderr, "opendir(dir) failed.\n"); */
 		free_filelist(files);
 
 		return NULL;
