@@ -54,27 +54,103 @@ static struct element *get_element(const char *element)
 	return read_element;
 }
 
-void print_element(struct element *e, WINDOW *outwin)
+static int valid_element(struct element *e)
 {
-	wprintw(outwin,
-			"%s (%s)\n"
-			"Mass: %fg.\n"
-			"Atomic Number: %d.\n\n",
-			e->name, e->symbol,
-			e->molar_mass,
-			e->atomic_number);
+	int status;
+
+	if (e && e->name && e->symbol)
+		status = 1;
+	else
+		status = 0;
+
+	return status;
 }
 
-void print_ptable(WINDOW *outwin, int y, int x)
+int print_element(struct element *e, WINDOW *outwin)
+{
+	int status;
+
+	if ((status = valid_element(e)))
+		wprintw(outwin,
+				"%s (%s)\n"
+				"Mass: %fg.\n"
+				"Atomic Number: %d.\n\n",
+				e->name, e->symbol,
+				e->molar_mass,
+				e->atomic_number);
+	else
+		wprintw(outwin,
+				"Did not receive a valid element (print_element()).\n");
+
+	return status;
+}
+
+int print_element_info(struct element *e, WINDOW *outwin)
+{
+	FILE *infofile;
+	char *path, *symbol;
+	int status;
+
+	if (!(status = valid_element(e))) {
+		wprintw(outwin,
+				"Did not receive a valid element (print_element_info()).\n");
+		return status;
+	}
+
+	path = (char *) malloc(sizeof(char) *
+			(ELEMENT_INFO_DIR_LEN + ELEMENT_SYM_LEN) + 1);
+
+	if (!path) {
+		wprintw(outwin,
+				"Not enough memory for path string in print_element_info()!\n");
+		status = 0;
+	}
+
+	if (!(symbol = strndup(e->symbol, ELEMENT_SYM_LEN))) {
+		wprintw(outwin,
+				"Not enough memory for symbol string in print_element_info()!\n");
+		status = 0;
+	}
+
+	if (path && symbol) {
+		symbol[0] = (char) tolower(symbol[0]);
+
+		strncpy(path, ELEMENT_INFO_DIR, ELEMENT_INFO_DIR_LEN);
+		strncat(path, "/", 1);
+		strncat(path, symbol, ELEMENT_SYM_LEN - 1);
+
+		wprintw(outwin, "Element info path is '%s'.\n", path);
+
+		if (!(infofile = fopen(path, "r"))) {
+			wprintw(outwin, "Could not open element infofile at '%s'!\n", path);
+			status = 0;
+		} else {
+			page_file_auto(outwin, infofile);
+			fclose(infofile);
+		}
+	}
+
+	free(symbol);
+	free(path);
+
+	return status;
+}
+
+int print_ptable(WINDOW *outwin, int y, int x)
 {
 	FILE *file = fopen(PTABLE_FILE, "r");
+	int status;
 
-	if (file)
+	if (file) {
 		page_file_coords(outwin, file, y, x);
-	else
+		status = 1;
+	} else {
 		mvwprintw(outwin, y, x, "[Unable to open ptable file!]\n");
+		status = 0;
+	}
 
 	fclose(file);
+	return status;
 }
 
 int init_elements(void)
@@ -142,28 +218,44 @@ struct element *find_element_name(const char *name)
 int test_elements(WINDOW *outwin)
 {
 	int status, element;
-	status = 1;
 
-	/* Print all the elements. */
+	/* Print all the elements and their info files. */
 	if (!init_elements()) {
-		/* fprintf(stderr, "Error with init_elements!\n"); */
+		wprintw(outwin, "Error with init_elements!\n");
+		wgetch(outwin);
 		status = 0;
 	} else {
-		for (element = 0; element < NUM_ELEMENTS; element++) {
-			print_element(ptable[element], outwin);
-			usleep(10000);
-			wrefresh(outwin);
+		status = 2;
+		for (element = 0; element < NUM_ELEMENTS && status == 2; element++) {
+			status = 0;
+
+			status += print_element(ptable[element], outwin);
 			page_bottom(outwin);
+			wrefresh(outwin);
+			usleep(ELEMENT_AUTO_USEC);
+
+			status += print_element_info(ptable[element], outwin);
+			page_bottom(outwin);
+			wrefresh(outwin);
+			usleep(ELEMENT_AUTO_USEC);
 		}
 	}
-
-	/* End elements and print a periodic table. */
 	end_elements();
-	page_prompt(outwin, "see a periodic table");
 	werase(outwin);
 
-	print_ptable(outwin, 4, 4);
-	page_prompt(outwin, "end this test");
+	if (status != 2) {
+		wprintw(outwin, "Did not read all the elements properly!\n");
+		wgetch(outwin);
+		status = 0;
+	} else {
+		/* Print a periodic table. */
+		werase(outwin);
+		print_ptable_centered(outwin, 3);
+		wrefresh(outwin);
+		usleep(ELEMENT_PAUSE_USEC);
+
+		status = 1;
+	}
 
 	return status;
 }

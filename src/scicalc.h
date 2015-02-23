@@ -10,7 +10,9 @@
 #include <assert.h>
 #include <ncurses.h>
 
+#include "dirs.h"
 #include "stack.h"
+#include "directory.h"
 
 /* Strange floating point values. */
 #define _GNU_SOURCE
@@ -27,7 +29,6 @@
 #define NAN -INFINITY
 #endif
 
-#define SCICALC_DOCFILE DATA_DIR "/scicalc.txt"
 #define SCIWIN_COLOR_NORMAL 1
 #define LINE_LEN 32
 

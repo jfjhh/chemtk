@@ -9,13 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* FOR DEBUGGING: */
-#include <stdio.h>
-
-#define GETFILES_TESTDIR DATA_DIR "/get_files"
-#define GETFILES_FILE_MAX 256
-#define GETFILES_NAME_MAX (NAME_MAX + 1)
-#define GETFILES_BUFLEN (GETFILES_FILE_MAX * GETFILES_NAME_MAX)
+#include "dirs.h"
 
 /*
  * Returns an array of pointers to string file names.

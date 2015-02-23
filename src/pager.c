@@ -33,14 +33,13 @@ void page_bottom(WINDOW *outwin)
 }
 
 void page_prompt_bottom(WINDOW *outwin, const char *prompt)
-{
-	if (getcury(outwin) >= getmaxy(outwin) - 1) {
-		wattron(outwin, A_BOLD);
-		wprintw(outwin, "<Press any key to %s>", prompt);
-		wattroff(outwin, A_BOLD);
-		wgetch(outwin);
-		werase(outwin);
-	}
+{ if (getcury(outwin) >= getmaxy(outwin) - 1) {
+	wattron(outwin, A_BOLD);
+	wprintw(outwin, "<Press any key to %s>", prompt);
+	wattroff(outwin, A_BOLD);
+	wgetch(outwin);
+	werase(outwin);
+											  }
 }
 
 void page_file(WINDOW *outwin, FILE *file)
@@ -69,12 +68,29 @@ void page_file_coords(WINDOW *outwin, FILE *file, int y, int x)
 	}
 }
 
+void page_file_delay(WINDOW *outwin, FILE *file, useconds_t time)
+{
+	wattroff(outwin, A_BOLD);
+	while (page_line(outwin, file)) {
+		if (getcury(outwin) >= getmaxy(outwin) - 1) {
+			usleep(time);
+			werase(outwin);
+			wmove(outwin, 0, 0);
+		}
+	}
+}
+
 int test_pager(WINDOW *outwin)
 {
-	FILE *test_file = fopen(TEST_PAGER_FILE, "r");
-	page_file(outwin, test_file);
-	fclose(test_file);
+	FILE *test_file;
 
-	return 1;
+	if ((test_file = fopen(TEST_PAGER_FILE, "r"))) {
+		page_file(outwin, test_file);
+		fclose(test_file);
+		return 1;
+	} else {
+		wprintw(outwin, "Cannot open test file for pager.\n");
+		return 0;
+	}
 }
 

@@ -99,9 +99,7 @@ int test_directory(WINDOW *outwin)
 	wprintw(outwin, "Write test_directory().\n");
 
 	wprintw(outwin, "=== Plain test ===\n");
-	files = get_files(GETFILES_TESTDIR);
-
-	if (files[0] == NULL) {
+	if (!(files = get_files(GETFILES_TESTDIR))) {
 		goto fail;
 	} else {
 		for (file = 0; files[file] != NULL; file++) {
@@ -115,9 +113,7 @@ int test_directory(WINDOW *outwin)
 	free_filelist(files);
 
 	wprintw(outwin, "=== Strip test ===\n");
-	files = get_files_strip(GETFILES_TESTDIR);
-
-	if (files[0] == NULL) {
+	if (!(files = get_files_strip(GETFILES_TESTDIR))) {
 		goto fail;
 	} else {
 		for (file = 0; files[file] != NULL; file++) {

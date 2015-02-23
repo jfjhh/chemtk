@@ -4,12 +4,12 @@ dist_pkgdata_DATA = $(GIANTARCHIVE)
 
 install-data-hook:
 	cd $(DESTDIR)$(pkgdatadir); \
-		cat $(GIANTARCHIVE) | $(UNXZ) | $(TAR) --list > uninstall_manifest.txt; \
-		cat $(GIANTARCHIVE) | $(UNXZ) | $(TAR) --no-same-owner --extract; \
-		rm --force $(GIANTARCHIVE); \
-		cat uninstall_manifest.txt | sed --expression='s/^\|$$/"/g' | xargs chmod a=rX,u+w
+		cat $(GIANTARCHIVE) | $(UNXZ) | $(TAR) -t > uninstall_manifest.txt; \
+		cat $(GIANTARCHIVE) | $(UNXZ) | $(TAR) --no-same-owner -x; \
+		rm -f $(GIANTARCHIVE); \
+		cat uninstall_manifest.txt | sed 's/^\|$$/"/g' | xargs chmod a=rX,u+w
 
 uninstall-local:
 	cd $(DESTDIR)$(pkgdatadir); \
-		cat uninstall_manifest.txt | sed --expression='s/ /\\ /g' | xargs rm --force; \
-		rm --force uninstall_manifest.txt
+		cat uninstall_manifest.txt | sed 's/ /\\ /g' | xargs rm -rf; \
+		rm -f uninstall_manifest.txt

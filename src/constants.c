@@ -27,10 +27,10 @@ long double const_search(const char *line)
 			read_const = NULL;
 			read_const_len = 0;
 		}
+		fclose(const_file);
 	}
 
 	free(read_const);
-	fclose(const_file);
 	return constant;
 }
 

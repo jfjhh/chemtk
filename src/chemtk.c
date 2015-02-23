@@ -2,7 +2,7 @@
 
 int main(void)
 {
-	FILE *scicalc_doc;
+	FILE *scicalc_doc = NULL;
 	WINDOW *devwin, *devwinborder, *sciwin, *sciwinborder;
 	devwin = devwinborder = sciwinborder = sciwin = NULL;
 
@@ -31,12 +31,13 @@ int main(void)
 	init_pair(STACK_COLOR_NORMAL, COLOR_RED, COLOR_BLACK);
 	wattrset(devwin, A_BOLD | COLOR_PAIR(STACK_COLOR_NORMAL));
 
-	page_prompt(devwin, "run tests");
-	werase(devwin);
-	run_all_tests(devwin);
+	if (run_all_tests(devwin) < NUM_TESTS) {
+		page_prompt(devwin, "exit (cannot continue if some tests failed)");
+		goto exit;
+	}
 
 	/* Also display scicalc docfile in devwin. */
-	page_prompt(devwin, "see scicalc doc file");
+	page_prompt(devwin, "see scicalc doc file and continue");
 	werase(devwin);
 
 	scicalc_doc = fopen(SCICALC_DOCFILE, "r");
@@ -48,9 +49,8 @@ int main(void)
 	}
 
 	/* Also print a ptable. */
-	print_ptable(devwin, getcury(devwin) - 1, getcurx(devwin) + 3);
+	print_ptable_centered(devwin, getcury(devwin) - 1);
 	wprintw(devwin, "\n");
-	page_prompt(devwin, "continue");
 	wmove(devwin, getcury(devwin)-1, 0);
 	wclrtobot(devwin);
 	wrefresh(devwin);
@@ -62,7 +62,7 @@ int main(void)
 	/* scicalc(sciwin); */
 	page_prompt(sciwin, "exit");
 
-	/* Exit */
+exit: /* Exit */
 	if (scicalc_doc)
 		fclose(scicalc_doc);
 	delwin(devwin);
