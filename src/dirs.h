@@ -4,27 +4,18 @@
 /* Define DATA_DIR to be either the installation dir (default), or to be the
  * local, source repository location */
 
-/* TODO: make it actually work. */
-
 #ifdef __has_include
-#	if __has_include("../data/data.h")
-#		undef DATA_DIR
-#		define DATA_DIR "../data"
-#	elif __has_include("./data/data.h")
+#	if __has_include("data/data.h")
+#		pragma message("(__has_include) repo-local data dir exists (using it)")
 #		undef DATA_DIR
 #		define DATA_DIR "./data"
 #	endif
 #else /* Just try to include it anyways, even if it may not exist. */
-#	include "../data/data.h"
+#	include "data/data.h"
 #	ifdef DATA_H
+#		pragma message("(no __has_include) repo-local data dir exists (using it)")
 #		undef DATA_DIR
-#		define DATA_DIR "../data"
-#	else
-#		include "../data/data.h"
-#		ifdef DATA_H
-#			undef DATA_DIR
-#			define DATA_DIR "../data"
-#		endif
+#		define DATA_DIR "./data"
 #	endif
 #endif
 
