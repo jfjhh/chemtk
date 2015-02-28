@@ -14,13 +14,6 @@ int sig_figs(const char *line)
 		;
 	start = i;
 
-	/* DEBUG */
-	fprintf(stderr, "%s\n", line);
-	for (figs = 1; figs <= start; figs++)
-		fputc(' ', stderr);
-	fprintf(stderr, "^\n\n");
-	/* END DEBUG */
-
 	/* Go either to end or decimal point. */
 	for (i = start; line[i] != '\0' && line[i] != '.'; i++)
 		;
@@ -69,13 +62,6 @@ int sig_before(const char *line)
 			&& !(line[i] != '0' && isdigit(line[i])); i++)
 		;
 	start = i;
-
-	/* DEBUG */
-	fprintf(stderr, "%s\n", line);
-	for (figs = 1; figs <= start; figs++)
-		fputc(' ', stderr);
-	fprintf(stderr, "^\n\n");
-	/* END DEBUG */
 
 	/* Go either to end or decimal point. */
 	for (i = start; line[i] != '\0' && line[i] != '.'; i++)
@@ -127,13 +113,6 @@ int sig_after(const char *line)
 		start = 0;
 	else /* Decimal. */
 		start = i + 1;
-
-	/* DEBUG */
-	fprintf(stderr, "%s\n", line);
-	for (figs = 1; figs <= start; figs++)
-		fputc(' ', stderr);
-	fprintf(stderr, "^\n\n");
-	/* END DEBUG */
 
 	/* Check for decimal and calculate sig. figs. accordingly. */
 	figs = 0;
