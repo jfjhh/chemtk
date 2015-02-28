@@ -4,6 +4,7 @@
 #define _GNU_SOURCE
 
 #include <ncurses.h>
+#include <form.h>
 
 #include "stack.h"
 #include "scicalc.h"

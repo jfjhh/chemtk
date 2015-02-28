@@ -9,8 +9,11 @@
 #define _BSD_SOURCE
 #endif
 
+#if (TEST_ELEMENTS_VERBOSE != 0)
+#	include <unistd.h>
+#endif /* TEST_ELEMENTS_VERBOSE */
+
 #include <ncurses.h>
-#include <unistd.h>
 #include <string.h>
 #include <ctype.h>
 

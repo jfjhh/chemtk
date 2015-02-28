@@ -18,6 +18,7 @@ AC_CHECK_PROG([TAR], [tar], [/bin/tar], [tar])
 # Checks for libraries.
 AC_CHECK_LIB([m], [cos])
 AC_CHECK_LIB([ncurses], [wprintw])
+AC_CHECK_LIB([form], [new_form])
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h stdio.h string.h unistd.h dirent.h])

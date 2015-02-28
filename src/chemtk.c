@@ -14,16 +14,19 @@ int main(void)
 
 	/* Init sciwin. */
 	sciwinborder = newwin((LINES / 2), (COLS / 2), 0, (COLS / 2));
-	sciwin = newwin((LINES / 2)-2, (COLS / 2)-2, 1, (COLS / 2)+1);
+	sciwin = newwin((LINES / 2) - 2, (COLS / 2) - 2, 1, (COLS / 2) + 1);
+	keypad(sciwin, TRUE);
 	box(sciwinborder, 0, 0);
 	wrefresh(sciwinborder);
 
+	keypad(sciwin, TRUE);
 	init_pair(SCIWIN_COLOR_NORMAL, COLOR_BLUE, COLOR_BLACK);
+	init_pair(SCIWIN_COLOR_PROMPT, COLOR_GREEN, COLOR_BLACK);
 	wattrset(sciwin, A_BOLD | COLOR_PAIR(SCIWIN_COLOR_NORMAL));
 
 	/* Init devwin. */
 	devwinborder = newwin(LINES, (COLS / 2), 0, 0);
-	devwin = newwin(LINES-2, (COLS / 2)-2, 1, 1);
+	devwin = newwin(LINES-2, (COLS / 2) - 2, 1, 1);
 	box(devwinborder, 0, 0);
 	wrefresh(devwinborder);
 
@@ -37,11 +40,9 @@ int main(void)
 	}
 
 	/* Also display scicalc docfile in devwin. */
-	page_prompt(devwin, "see scicalc doc file and continue");
-	werase(devwin);
-
 	scicalc_doc = fopen(SCICALC_DOCFILE, "r");
 
+	werase(devwin);
 	if (scicalc_doc == NULL) {
 		wprintw(devwin, "Oops! Bad fopen()!\n");
 	} else {
@@ -51,16 +52,11 @@ int main(void)
 	/* Also print a ptable. */
 	print_ptable_centered(devwin, getcury(devwin) - 1);
 	wprintw(devwin, "\n");
-	wmove(devwin, getcury(devwin)-1, 0);
-	wclrtobot(devwin);
+	wmove(devwin, getcury(devwin) - 1, 0);
 	wrefresh(devwin);
 
 	/* Scicalc window */
-	wmove(sciwin, 3, (getmaxx(sciwin) / 2) - 8);
-
-	/* DEBUG */
-	/* scicalc(sciwin); */
-	page_prompt(sciwin, "exit");
+	scicalc(sciwin);
 
 exit: /* Exit */
 	if (scicalc_doc)

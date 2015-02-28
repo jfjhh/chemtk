@@ -68,6 +68,9 @@ int run_tests(WINDOW *outwin, struct test_array tests)
 	wprintw(outwin, "\nTests Passed: [ %d / %d ].\n", tests_passed, NUM_TESTS);
 	wattroff(outwin, A_BOLD);
 
+	wrefresh(outwin);
+	usleep(RUNTESTS_DONE_USEC);
+
 	return tests_passed;
 }
 

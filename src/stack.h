@@ -4,10 +4,14 @@
 #include <ncurses.h>
 #include <stdlib.h>
 
+#include "num_str.h"
+
 #define STACK_COLOR_NORMAL 2
+#define STACK_WIDTH NUMSTR_BUFSIZE + 5
+#define STACK_TESTS 3
 
 struct stack {
-	long double data;
+	struct num_str *data;
 	struct stack *next;
 	struct stack *end;
 };
@@ -16,10 +20,10 @@ struct stack {
 struct stack *new_stack(void);
 
 /* Push to the stack */
-void push_stack(struct stack *stack, long double data);
+void push_stack(struct stack *stack, struct num_str *data);
 
 /* Pop from the stack */
-long double pop_stack(struct stack *stack);
+struct num_str *pop_stack(struct stack *stack);
 
 /* Delete everything in a stack */
 void delete_stack(struct stack *stack);
@@ -28,7 +32,7 @@ void delete_stack(struct stack *stack);
 int test_stack(WINDOW *outwin);
 
 /* Print a stack. */
-void print_stack(WINDOW *outwin, int y, int x, struct stack *stack);
+void print_stack(WINDOW *outwin, int y, int x, int width, struct stack *stack);
 
 /* Find out how deep a stack is */
 int stack_depth(struct stack *stack);
