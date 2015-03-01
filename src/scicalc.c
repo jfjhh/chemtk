@@ -95,7 +95,7 @@ static void refresh_stack(WINDOW *outwin, WINDOW *stackwin, struct stack *stack)
 	wrefresh(stackwin);
 }
 
-static void run_cmd(WINDOW *outwin, struct num_str *numstr)
+static int run_cmd(WINDOW *outwin, struct num_str *numstr)
 {
 	struct element *e;
 	int i;
@@ -185,7 +185,7 @@ static void run_cmd(WINDOW *outwin, struct num_str *numstr)
 		if (sym)
 			free(sym);
 
-	} else {
+	} else { /* Not an element cmd */
 		/* Strip trailing whitespace. */
 		for (i = 0; i < NUMSTR_BUFSIZE; i++)
 			if (!isalpha(numstr->str[i]))
@@ -203,54 +203,50 @@ static void run_cmd(WINDOW *outwin, struct num_str *numstr)
 			numstr->str[NUMSTR_BUFSIZE] = '\0';
 			numstr->type = CONSTANT;
 
+			wrefresh(outwin);
 
 		} else {
 			/* TODO: Parse other commands.
 			 * Stack rotations, popping, and actual math. */
-			mvwprintw(outwin, 0, 0, "Invalid cmd: '%s'.", numstr->str);
+			return 0;
 		}
 	}
 
-	wrefresh(outwin);
+	return 1;
 }
 
-static void handle_fields(WINDOW *outwin, struct num_str *numstr,
-		int field, struct stack *stack)
+static int handle_fields(WINDOW *outwin, struct num_str *numstr,
+		struct stack *stack)
 {
-	switch (field) {
-		case 0:
-			push_stack(stack, numstr);
-			break;
+	int status = 1;
 
-		case 1:
-			fprintf(stderr, "Got a cmd: %s.\n", numstr->str); /* DEBUG */
-
-			if (numstr->type == CMD) /* be sure that this is a cmd */
-				run_cmd(outwin, numstr);
-
-			if (numstr->type != CMD) /* cmd resulted in a number */
-				push_stack(stack, numstr);
-			else
-				free(numstr);
-
-			break;
-
-		default:
-			break;
+	if (numstr->type == CMD) { /* be sure that this is a cmd */
+		status = run_cmd(outwin, numstr);
+	} else {
+		/* TODO: Check for a valid number using regexp. */
 	}
+
+	if (status) {
+		if (numstr->type != CMD) /* cmd resulted in a number */
+			push_stack(stack, numstr);
+		else
+			free(numstr);
+	}
+
+	return status;
 }
 
 void scicalc(WINDOW *outwin, WINDOW *infowin)
 {
-	int ok, num, i, frows, fcols, fy, fx, push, field;
+	int ok, num, i, frows, fcols, fy, fx, push, valid;
 	int oldpos[2];
 	struct num_str *numstr;
 	struct stack *stack = NULL;
-	char *fdata, *fcmd;
+	char *fstr;
 	FORM *form = NULL;
-	FIELD *number[3];
+	FIELD *number[2];
 	WINDOW *stackwin = NULL;
-	fdata = fcmd = NULL;
+	fstr = NULL;
 
 	/* Positions for the number prompt. */
 	fy = getmaxy(outwin) - 5;
@@ -260,11 +256,8 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 	if (!(number[0] = new_field(1, SCICALC_NUMLEN, fy + 1, fx + 1, 0, 0))) {
 		wprintw(outwin, "Could not create a new FIELD *! (0)\n");
 		ok = 0;
-	} if (!(number[1] = new_field(1, SCICALC_NUMLEN, fy + 3, fx + 1, 0, 0))) {
-		wprintw(outwin, "Could not create a new FIELD * (1)!\n");
-		ok = 0;
 	}
-	number[2] = NULL; /* NULL-terminate the field array. */
+	number[1] = NULL; /* NULL-terminate the field array. */
 
 	/* Allocate stack. */
 	if (!(stack = new_stack())) {
@@ -273,10 +266,8 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 	}
 
 	/* Configure the input fields. */
-
-	/* 0: num */
+	/* 0: fstr */
 	set_field_just(number[0], JUSTIFY_LEFT);
-	set_field_type(number[0], TYPE_REGEXP, SCICALC_NUM_REGEXP);
 
 	field_opts_off(number[0], O_AUTOSKIP);
 	field_opts_off(number[0], O_NULLOK);
@@ -285,21 +276,7 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 	set_field_fore(number[0], COLOR_PAIR(SCIWIN_COLOR_PROMPT) | A_STANDOUT);
 	set_field_back(number[0], A_UNDERLINE);
 
-	if ((fdata = field_buffer(number[0], 0)) != E_OK) /* Use for cmd data. */
-		wprintw(outwin, "Bad field buffer: 1st field, buf 0.");
-
-	/* 1: cmd */
-	set_field_just(number[1], JUSTIFY_LEFT);
-	/* set_field_type(number[1], TYPE_ALPHA, 0); */
-
-	field_opts_off(number[1], O_AUTOSKIP);
-	field_opts_off(number[1], O_NULLOK);
-	field_opts_on(number[1], O_BLANK);
-
-	set_field_fore(number[1], COLOR_PAIR(SCIWIN_COLOR_PROMPT) | A_STANDOUT);
-	set_field_back(number[1], A_UNDERLINE);
-
-	if ((fcmd = field_buffer(number[1], 0)) != E_OK) /* Use for cmd data. */
+	if ((fstr = field_buffer(number[0], 0)) != E_OK) /* Use for cmd data. */
 		wprintw(outwin, "Bad field buffer: 2nd field, buf 0.");
 
 	/* Configure the input form. */
@@ -314,7 +291,7 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 
 	/* Form */
 	post_form(form);
-	box(derwin(outwin, 5, SCICALC_NUMLEN + 6, fy, fx - 2), 0, 0);
+	box(derwin(outwin, 4, SCICALC_NUMLEN + 6, fy, fx - 2), 0, 0);
 	wmove(outwin, fy + 1, fx + 1);
 
 	/* Stack */
@@ -332,7 +309,7 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 
 	num = ' ';
 	ok = 1;
-	i = push = field = 0;
+	i = push = valid = 0;
 
 	while (ok && (num = wgetch(outwin))) {
 		if (num == 'Q' || num == KEY_F(1))
@@ -347,18 +324,6 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 			case KEY_ENTER: /* Toggle field */
 			case '\n':
 				push = 1;
-				break;
-
-			case KEY_DOWN: /* Down */
-				form_driver(form, REQ_NEXT_FIELD);
-				form_driver(form, REQ_BEG_LINE);
-				field = 1;
-				break;
-
-			case KEY_UP: /* Up */
-				form_driver(form, REQ_PREV_FIELD);
-				form_driver(form, REQ_BEG_LINE);
-				field = 0;
 				break;
 
 			case '/': /* Left */
@@ -384,7 +349,9 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 
 		/* Validate form */
 		if (form_driver(form, REQ_VALIDATION) != E_INVALID_FIELD /* Good number */
-				&& !(field == 1 && fcmd[0] == ' ')) { /* No blank cmds */
+				&& isalnum(fstr[0])) { /* No blank cmds */
+			valid = 1;
+
 			getyx(outwin, oldpos[0], oldpos[1]);
 			mvwprintw(outwin, fy + 2, fx + 5, "        ");
 			wmove(outwin, oldpos[0], oldpos[1]);
@@ -392,7 +359,7 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 			/* Maybe push the form */
 			if (push) {
 				push = 0;
-				if (!(numstr = get_num_str((field == 0) ? fdata : fcmd))) {
+				if (!(numstr = get_num_str(fstr))) {
 					getyx(outwin, oldpos[0], oldpos[1]);
 					mvwprintw(outwin, 0, 0,
 							"Unable to allocate memory for a num_str!\n");
@@ -400,17 +367,21 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 				} else {
 					getyx(outwin, oldpos[0], oldpos[1]);
 					mvwprintw(outwin, 0, 0,
-							"(f:%d) Got num_str: %s (fields are %s // %s).",
-							field, numstr->str, fdata, fcmd);
+							"Got num_str: %s (field is %s).", numstr->str, fstr);
 					wmove(outwin, oldpos[0], oldpos[1]);
-					handle_fields(infowin, numstr, field, stack);
+					valid = handle_fields(infowin, numstr, stack);
 				}
+
+				form_driver(form, REQ_CLR_FIELD);
 			}
 		} else { /* Form is invalid */
-			getyx(outwin, oldpos[0], oldpos[1]);
-			mvwprintw(outwin, fy + 2, fx + 5, "Invalid!");
-			wmove(outwin, oldpos[0], oldpos[1]);
+			valid = 0;
 		}
+
+		getyx(outwin, oldpos[0], oldpos[1]);
+		mvwprintw(outwin, fy + 2, fx + 1,
+				((valid) ? "      OK        " : "                "));
+		wmove(outwin, oldpos[0], oldpos[1]);
 
 		refresh_stack(outwin, stackwin, stack);
 		wrefresh(outwin);
