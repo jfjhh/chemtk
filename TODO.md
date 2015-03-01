@@ -1,11 +1,17 @@
 # TODO
 
-- For element tests, print the info file of each element, too.
-- Line-oriented number entry.
-- Stack display.
-- Calculate with something like this:
-```
-push_stack(stack, calculate(pop_stack(stack), pop_stack(stack), op));
-```
-- Right arrow key to switch between number entry and operating.
+### Do it!
+
+- Test num. validity with a regex.
+- Actual math.
+- Tab mode switching.
+- Fix user-constants (e.g. `23.2.`).
+- Update scicalc doc. file.
+
+### Maybe...
+
+- Menu system for data in infowin.
+- Make the interface clickable (menus and click-number-entry);
+- User-variables or scratch stack (to store values).
+- History with up/down arrows.
 
