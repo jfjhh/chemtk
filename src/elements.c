@@ -6,8 +6,10 @@ static struct element *get_element(const char *element)
 {
 	FILE *file;
 	struct element *read_element;
-	int total = 0;
+	int total;
 	char *epath;
+	size_t i;
+	total = 0;
 
 	if ((epath = (char *) malloc(sizeof(char) * ELEMENT_PATH_LEN)) == NULL) {
 		free(epath);
@@ -16,6 +18,10 @@ static struct element *get_element(const char *element)
 
 	strncpy(epath, ELEMENT_PTABLE_DIR "/", strlen(ELEMENT_PTABLE_DIR "/") + 1);
 	strncat(epath, element, ELEMENT_PATH_LEN);
+
+	/* Convert to lowercase, element may be something like "Be". */
+	for (i = 0; i < strlen(epath); i++)
+		epath[i] = tolower(epath[i]);
 
 	if ((file = fopen(epath, "r")) == NULL) {
 		free(epath);
@@ -111,7 +117,7 @@ int print_element_info(struct element *e, WINDOW *outwin)
 			wprintw(outwin, "Could not open element infofile at '%s'!\n", path);
 			status = 0;
 		} else {
-			/* page_file_auto(outwin, infofile); */
+			page_file(outwin, infofile);
 			fclose(infofile);
 		}
 	}
@@ -174,7 +180,7 @@ struct element *find_element_sym(const char *symbol)
 
 	found = 0;
 	for (i = 0; i < NUM_ELEMENTS && !found; i++) {
-		if (strncmp(symbol, ptable[i]->symbol, ELEMENT_SYM_LEN) == 0) {
+		if (strncmp(ptable[i]->symbol, symbol, ELEMENT_SYM_LEN) == 0) {
 			e = ptable[i];
 			found = 1;
 		}

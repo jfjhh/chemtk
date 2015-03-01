@@ -15,5 +15,7 @@
 #include "directory.h"
 #include "elements.h"
 
+#define INFOWIN_COLOR_NORMAL 5
+
 #endif /* CHEMTK_H */
 

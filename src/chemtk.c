@@ -3,8 +3,10 @@
 int main(void)
 {
 	FILE *scicalc_doc = NULL;
-	WINDOW *devwin, *devwinborder, *sciwin, *sciwinborder;
-	devwin = devwinborder = sciwinborder = sciwin = NULL;
+	WINDOW *devwin, *devwinborder, *sciwin, *sciwinborder,
+		   *infowin, *infowinborder;
+	devwin = devwinborder = sciwinborder = sciwin =
+		infowin = infowinborder = NULL;
 
 	initscr();
 	start_color();
@@ -23,6 +25,19 @@ int main(void)
 	init_pair(SCIWIN_COLOR_NORMAL, COLOR_BLUE, COLOR_BLACK);
 	init_pair(SCIWIN_COLOR_PROMPT, COLOR_GREEN, COLOR_BLACK);
 	wattrset(sciwin, A_BOLD | COLOR_PAIR(SCIWIN_COLOR_NORMAL));
+
+	/* Init infowin. */
+	infowinborder = newwin((LINES / 2), (COLS / 2),
+			(LINES / 2), (COLS / 2));
+	infowin = newwin((LINES / 2) - 2, (COLS / 2) - 2,
+			(LINES / 2) + 1, (COLS / 2) + 1);
+	keypad(infowin, TRUE);
+	box(infowinborder, 0, 0);
+	wrefresh(infowinborder);
+
+	keypad(infowin, TRUE);
+	init_pair(INFOWIN_COLOR_NORMAL, COLOR_MAGENTA, COLOR_BLACK);
+	wattrset(infowin, A_BOLD | COLOR_PAIR(INFOWIN_COLOR_NORMAL));
 
 	/* Init devwin. */
 	devwinborder = newwin(LINES, (COLS / 2), 0, 0);
@@ -56,13 +71,17 @@ int main(void)
 	wrefresh(devwin);
 
 	/* Scicalc window */
-	scicalc(sciwin);
+	scicalc(sciwin, infowin);
 
 exit: /* Exit */
 	if (scicalc_doc)
 		fclose(scicalc_doc);
 	delwin(devwin);
 	delwin(devwinborder);
+	delwin(sciwin);
+	delwin(sciwinborder);
+	delwin(infowin);
+	delwin(infowinborder);
 	endwin();
 	return 0;
 }

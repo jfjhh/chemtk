@@ -119,10 +119,14 @@ void print_stack(WINDOW *outwin, int y, int x, int width, struct stack *stack)
 			mvwvline(outwin, y+(i+1), xoff+width-1, 0, 3);
 
 			wmove(outwin, getcury(outwin) + 1, xoff + 1);
-			wprintw(outwin, "%s%s (%d)",
-					iterator->data->str,
-					((iterator->data->type == CONSTANT) ? " C" : ""),
-					sig_figs(iterator->data->str));
+
+			if (iterator->data->type == CONSTANT)
+				wprintw(outwin, "%s | C",
+						iterator->data->str);
+			else
+				wprintw(outwin, "%s |%2d",
+						iterator->data->str,
+						sig_figs(iterator->data->str));
 
 			if (getcury(outwin) >= getmaxy(outwin) - 3) {
 				xoff += STACK_WIDTH;

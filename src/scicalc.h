@@ -15,6 +15,7 @@
 #include "stack.h"
 #include "directory.h"
 #include "num_str.h"
+#include "elements.h"
 
 /* Strange floating point values. */
 #define _GNU_SOURCE
@@ -32,7 +33,7 @@
 #endif
 
 #define SCICALC_NUMLEN NUMSTR_BUFSIZE
-#define SCICALC_NUM_REGEXP "^ *[-+]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]+)? *$"
+#define SCICALC_NUM_REGEXP "^ *[-+]?[0-9]+\\.?[0-9]*([eE][-+]?[0-9]+)? *$"
 
 #define SCIWIN_COLOR_NORMAL 1
 #define SCIWIN_COLOR_PROMPT 4
@@ -46,7 +47,7 @@ extern const char *constants[NUM_CONSTANTS][2];
 extern const char operators[NUM_OPERATORS];
 
 enum out_format { SCIENTIFIC, EXPANDED };
-void scicalc(WINDOW *outwin);
+void scicalc(WINDOW *outwin, WINDOW *infowin);
 long double operate(long double a, long double b, char operation);
 int test_scicalc(WINDOW *outwin);
 
