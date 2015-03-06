@@ -2,73 +2,132 @@
 
 const char *title = "Scicalc: A scientific calculator utility.";
 
-#define NUM_OPERATORS 16
-const char operators[] = {
-	'+', '-', '*', '/',
-	'=', '<', '>', '&',
-	'^', '~', '%', '|',
-	'o', 'l', 'r', 'x',
-};
-
-long double operate(long double a, long double b, char operation)
+static int least(int a, int b)
 {
-	long double c;
+	if (a < b)
+		return a; /* a is least. */
+	else if (a > b)
+		return b; /* b is least. */
+	else
+		return a; /* Same, so a or b doesn't matter. */
+}
 
+int operate(WINDOW *outwin, struct stack *stack)
+{
+	char operation;
+	struct num_str *a, *b, *c, *op;
+	int strbool;
+	strbool = 0;
+
+	/* Get the op from the stack and free it */
+	if (!(op = pop_stack(stack)))
+		return 0;
+
+	operation = op->str[0];
+	free(op);
+
+	if (!(c = (struct num_str *) malloc(sizeof(struct num_str))))
+		return 0;
+
+	/* Pop from the stack. */
+	if (operation != '~') {
+		/* This is the only unary op, so all the others are binary and need two
+		 * num_strs to be popped. */
+		b = pop_stack(stack);
+		a = pop_stack(stack);
+	} else { /* Operation is unary. */
+		a = pop_stack(stack);
+		b = a;
+	}
+
+	/* Check pop(s) went alright. */
+	if (!(a && b))
+		return 0;
+
+	/* Get sig. figs. for result based on operation. */
 	switch (operation) {
 		case '+':
-			c = a + b;
-			break;
 		case '-':
-			c = a - b;
+			c->sig_figs = least(sig_after(a->str), sig_after(b->str));
 			break;
-		case '*':
-			c = a * b;
-			break;
-		case '/':
-			c = a / b;
-			break;
-		case '%':
-			c = (int) a % (int) b;
-			break;
-		case '&':
-			c = (int) a & (int) b;
-			break;
-		case '|':
-			c = (int) a | (int) b;
-			break;
-		case 'x':
-			c = (int) a ^ (int) b;
-			break;
-		case 'l':
-			c = (int) a << (int) b;
-			break;
-		case 'r':
-			c = (int) a >> (int) b;
-			break;
-		case '~':
-			c = ~ ((int) a);
-			break;
-		case '>':
-			c = (a > b) ? 1L : 0L;
-			break;
-		case '<':
-			c = (a < b) ? 1L : 0L;
-			break;
-		case '=':
-			c = (a == b) ? 1L : 0L;
-			break;
-		case '^':
-			c = pow(a, b);
-			break;
-		case 'o':
-			c = (logl(a) / logl(b));
-			break;
-		default:
-			c = 0L;
+		default: /* Same as for multiply/divide, and other ops. */
+			c->sig_figs = least(a->sig_figs, b->sig_figs);
 			break;
 	}
 
-	return c;
+	switch (operation) {
+		case '+':
+			c->data = a->data + b->data;
+			break;
+		case '-':
+			c->data = a->data - b->data;
+			break;
+		case '*':
+			c->data = a->data * b->data;
+			break;
+		case '/':
+			c->data = a->data / b->data;
+			break;
+		case '%':
+			c->data = LDTOI(a->data) % LDTOI(b->data);
+			break;
+		case '&':
+			c->data = LDTOI(a->data) & LDTOI(b->data);
+			break;
+		case '|':
+			c->data = LDTOI(a->data) | LDTOI(b->data);
+			break;
+		case 'x':
+			c->data = LDTOI(a->data) ^ LDTOI(b->data);
+			break;
+		case 'l':
+			c->data = LDTOI(a->data) << LDTOI(b->data);
+			break;
+		case 'r':
+			c->data = LDTOI(a->data) >> LDTOI(b->data);
+			break;
+		case '>':
+			c->data = (a->data > b->data) ? 1.0L : 0.0L;
+			break;
+		case '<':
+			c->data = (a->data < b->data) ? 1.0L : 0.0L;
+			break;
+		case '=':
+			c->data = (a->data == b->data) ? 1.0L : 0.0L;
+			break;
+		case '^':
+			c->data = powl(a->data, b->data);
+			break;
+		case 'o':
+			c->data = logl(a->data);
+			break;
+		default:
+			c->data = 0.0L;
+			break;
+	}
+
+	/* Free a and b */
+	if (b == a) {
+		free(a);
+	} else {
+		free(a);
+		free(b);
+	}
+
+	/* Fix c->str */
+	if (strbool) {
+		if (c->data == 1.0L)
+			strncpy(c->str, "True", NUMSTR_BUFSIZE);
+		else
+			strncpy(c->str, "False", NUMSTR_BUFSIZE);
+	} else {
+		sscanf(c->str, "%Le", &(c->data));
+	}
+
+	wprintw(outwin, "Got: %s (%Le)", c->str, c->data);
+	push_stack(stack, c);
+
+	return 1;
 }
 
 /* TODO: write test_scicalc(). */
@@ -95,18 +154,21 @@ static void refresh_stack(WINDOW *outwin, WINDOW *stackwin, struct stack *stack)
 	wrefresh(stackwin);
 }
 
-static int run_cmd(WINDOW *outwin, struct num_str *numstr)
+static int run_cmd(WINDOW *outwin, struct num_str *numstr, struct stack *stack)
 {
 	struct element *e;
 	int i;
 	char mod, *sym, line[NUMSTR_BUFSIZE];
 	WINDOW *infowin = NULL;
 
-	fprintf(stderr, "Running a cmd: %s.\n", numstr->str); /* DEBUG */
 	werase(outwin);
 
-	/* Only if this is an element command. */
-	if (numstr->str[0] == 'e') {
+	if (is_operator(numstr->str[0])) {
+		/* The command is to perform a (math) operation on the stack. */
+		wprintw(outwin, "Running an operation.\n");
+		if (!(operate(outwin, stack)))
+			return 0; /* Operation failed. */
+	} else if (numstr->str[0] == 'e') { /* Only if this is an element command. */
 
 		/* No errors if strndup fails,
 		 * because search may work without this part. */
@@ -220,8 +282,10 @@ static int handle_fields(WINDOW *outwin, struct num_str *numstr,
 {
 	int status = 1;
 
-	if (numstr->type == CMD) { /* be sure that this is a cmd */
-		status = run_cmd(outwin, numstr);
+	/* Be sure that this is a cmd or operation. */
+	if (numstr->type == CMD || numstr->type == OPERATOR) {
+		wprintw(outwin, "handle_fields got a CMD or OPERATOR type numstr.\n");
+		status = run_cmd(outwin, numstr, stack);
 	} else {
 		/* TODO: Check for a valid number using regexp. */
 	}
@@ -238,15 +302,16 @@ static int handle_fields(WINDOW *outwin, struct num_str *numstr,
 
 void scicalc(WINDOW *outwin, WINDOW *infowin)
 {
-	int ok, num, i, frows, fcols, fy, fx, push, valid;
+	int ok, num, i, frows, fcols, fy, fx, push, valid, op;
 	int oldpos[2];
 	struct num_str *numstr;
 	struct stack *stack = NULL;
-	char *fstr;
+	char *fstr, opstr[2];
 	FORM *form = NULL;
 	FIELD *number[2];
 	WINDOW *stackwin = NULL;
 	fstr = NULL;
+	opstr[1] = '\0';
 
 	/* Positions for the number prompt. */
 	fy = getmaxy(outwin) - 5;
@@ -309,30 +374,23 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 
 	num = ' ';
 	ok = 1;
-	i = push = valid = 0;
+	i = push = valid = op = 0;
 
 	while (ok && (num = wgetch(outwin))) {
 		if (num == 'Q' || num == KEY_F(1))
 			break;
 
 		switch (num) { /* Field controls */
-			case KEY_BTAB: /* Change mode */
-			case '\t':
-				/* TODO: Mode changing and operations and lookup. */
-				break;
-
 			case KEY_ENTER: /* Toggle field */
 			case '\n':
 				push = 1;
 				break;
 
-			case '/': /* Left */
-			case KEY_LEFT:
+			case KEY_LEFT:/* Left */
 				form_driver(form, REQ_PREV_CHAR);
 				break;
 
-			case '*': /* Right */
-			case KEY_RIGHT:
+			case KEY_RIGHT: /* Right */
 				form_driver(form, REQ_NEXT_CHAR);
 				break;
 
@@ -342,8 +400,15 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 				form_driver(form, REQ_DEL_CHAR);
 				break;
 
-			default: /* Otherwise just print the char */
-				form_driver(form, num);
+			default: /* Otherwise check if it is an op or print the char */
+				if (!(op = is_operator(num))) {
+					form_driver(form, num);
+					op = 0;
+				} else {
+					wprintw(infowin, "Form read an op.\n");
+					op = 1;
+					opstr[0] = num;
+				}
 				break;
 		}
 
@@ -358,8 +423,11 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 
 			/* Maybe push the form */
 			if (push) {
-				push = 0;
-				if (!(numstr = get_num_str(fstr))) {
+				/* Either an op str or the normal field str. This is needed so
+				 * that an operator can be processed without the press of return
+				 * by the user. When this happens, fstr is blank, and causes
+				 * errors by get_num_str() in the future. */
+				if (!(numstr = get_num_str((op) ? opstr : fstr))) {
 					getyx(outwin, oldpos[0], oldpos[1]);
 					mvwprintw(outwin, 0, 0,
 							"Unable to allocate memory for a num_str!\n");
@@ -367,11 +435,13 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 				} else {
 					getyx(outwin, oldpos[0], oldpos[1]);
 					mvwprintw(outwin, 0, 0,
-							"Got num_str: %s (field is %s).", numstr->str, fstr);
+							"Got num_str: %s (field is %s).",
+							numstr->str, (op) ? opstr : fstr);
 					wmove(outwin, oldpos[0], oldpos[1]);
 					valid = handle_fields(infowin, numstr, stack);
 				}
 
+				push = 0;
 				form_driver(form, REQ_CLR_FIELD);
 			}
 		} else { /* Form is invalid */
@@ -385,6 +455,7 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 
 		refresh_stack(outwin, stackwin, stack);
 		wrefresh(outwin);
+		wrefresh(infowin);
 
 		i++;
 	}

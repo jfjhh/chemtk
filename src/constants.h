@@ -14,6 +14,9 @@
 
 #include "dirs.h"
 
+#define NUM_CONSTANTS 5
+extern const char *constants[NUM_CONSTANTS][2];
+
 long double const_search(const char *line);
 int test_constants(WINDOW *outwin);
 

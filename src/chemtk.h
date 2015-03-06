@@ -14,6 +14,7 @@
 #include "runtests.h"
 #include "directory.h"
 #include "elements.h"
+#include "operator.h"
 
 #define INFOWIN_COLOR_NORMAL 5
 

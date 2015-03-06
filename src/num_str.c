@@ -173,6 +173,9 @@ struct num_str *get_num_str(const char *line)
 	if (!is_num) {
 		if ((tmp = const_search(line)) != 0) {
 			read->type = CONSTANT;
+		} else if ((tmp = is_operator(line[0]))) {
+			fprintf(stderr, "get_num_str() got an OPERATOR.\n");
+			read->type = OPERATOR;
 		} else {
 			read->type = CMD;
 		}

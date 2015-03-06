@@ -9,6 +9,7 @@ struct test_array all_tests = {
 		test_num_str,
 		test_directory,
 		test_elements,
+		test_operator,
 	},
 	{
 		"stack",
@@ -18,6 +19,7 @@ struct test_array all_tests = {
 		"num_str",
 		"directory",
 		"elements",
+		"operator",
 	}
 };
 

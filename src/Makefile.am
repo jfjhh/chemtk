@@ -8,5 +8,5 @@ bin_PROGRAMS = chemtk
 chemtk_SOURCES = config.h dirs.h chemtk.c chemtk.h constants.c constants.h \
 		 directory.c directory.h elements.c elements.h num_str.c \
 		 num_str.h pager.c pager.h runtests.c runtests.h scicalc.c \
-		 scicalc.h stack.c stack.h
+		 scicalc.h stack.c stack.h operator.c operator.h
 

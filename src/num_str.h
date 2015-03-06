@@ -2,13 +2,13 @@
 #define NUM_STR_H
 
 #include <stdio.h> /* DEBUGGING */
-
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
 #include "constants.h"
+#include "operator.h"
 
 #define NUMSTR_BUFSIZE 16
 #define NUMSTR_CONST_CHAR '.'
@@ -17,9 +17,10 @@
 
 enum num_str_type {
 	NONE = 0,
-	NUMBER = 1,
-	CMD = 2,
-	CONSTANT = 3
+	NUMBER,
+	CMD,
+	CONSTANT,
+	OPERATOR
 };
 
 struct num_str {

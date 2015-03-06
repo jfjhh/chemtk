@@ -16,6 +16,7 @@
 #include "directory.h"
 #include "num_str.h"
 #include "elements.h"
+#include "operator.h"
 
 /* Strange floating point values. */
 #define _GNU_SOURCE
@@ -38,17 +39,15 @@
 #define SCIWIN_COLOR_NORMAL 1
 #define SCIWIN_COLOR_PROMPT 4
 
+/* Truncate a long double */
+#define LDTOI(A) ((int)(A >= 0.0L ? (A + 0.5L) : (A - 0.5L)))
+
 extern const char *title;
 
-#define NUM_CONSTANTS 5
-extern const char *constants[NUM_CONSTANTS][2];
-
-#define NUM_OPERATORS 16
-extern const char operators[NUM_OPERATORS];
-
 enum out_format { SCIENTIFIC, EXPANDED };
+
 void scicalc(WINDOW *outwin, WINDOW *infowin);
-long double operate(long double a, long double b, char operation);
+int operate(WINDOW *outwin, struct stack *stack);
 int test_scicalc(WINDOW *outwin);
 
 #endif /* SCICALC_H */
