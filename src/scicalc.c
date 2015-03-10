@@ -12,124 +12,6 @@ static int least(int a, int b)
 		return a; /* Same, so a or b doesn't matter. */
 }
 
-int operate(WINDOW *outwin, struct stack *stack)
-{
-	char operation;
-	struct num_str *a, *b, *c, *op;
-	int strbool;
-	strbool = 0;
-
-	/* Get the op from the stack and free it */
-	if (!(op = pop_stack(stack)))
-		return 0;
-
-	operation = op->str[0];
-	free(op);
-
-	if (!(c = (struct num_str *) malloc(sizeof(struct num_str))))
-		return 0;
-
-	/* Pop from the stack. */
-	if (operation != '~') {
-		/* This is the only unary op, so all the others are binary and need two
-		 * num_strs to be popped. */
-		b = pop_stack(stack);
-		a = pop_stack(stack);
-	} else { /* Operation is unary. */
-		a = pop_stack(stack);
-		b = a;
-	}
-
-	/* Check pop(s) went alright. */
-	if (!(a && b))
-		return 0;
-
-	/* Get sig. figs. for result based on operation. */
-	switch (operation) {
-		case '+':
-		case '-':
-			c->sig_figs = least(sig_after(a->str), sig_after(b->str));
-			break;
-		default: /* Same as for multiply/divide, and other ops. */
-			c->sig_figs = least(a->sig_figs, b->sig_figs);
-			break;
-	}
-
-	switch (operation) {
-		case '+':
-			c->data = a->data + b->data;
-			break;
-		case '-':
-			c->data = a->data - b->data;
-			break;
-		case '*':
-			c->data = a->data * b->data;
-			break;
-		case '/':
-			c->data = a->data / b->data;
-			break;
-		case '%':
-			c->data = LDTOI(a->data) % LDTOI(b->data);
-			break;
-		case '&':
-			c->data = LDTOI(a->data) & LDTOI(b->data);
-			break;
-		case '|':
-			c->data = LDTOI(a->data) | LDTOI(b->data);
-			break;
-		case 'x':
-			c->data = LDTOI(a->data) ^ LDTOI(b->data);
-			break;
-		case 'l':
-			c->data = LDTOI(a->data) << LDTOI(b->data);
-			break;
-		case 'r':
-			c->data = LDTOI(a->data) >> LDTOI(b->data);
-			break;
-		case '>':
-			c->data = (a->data > b->data) ? 1.0L : 0.0L;
-			break;
-		case '<':
-			c->data = (a->data < b->data) ? 1.0L : 0.0L;
-			break;
-		case '=':
-			c->data = (a->data == b->data) ? 1.0L : 0.0L;
-			break;
-		case '^':
-			c->data = powl(a->data, b->data);
-			break;
-		case 'o':
-			c->data = logl(a->data);
-			break;
-		default:
-			c->data = 0.0L;
-			break;
-	}
-
-	/* Free a and b */
-	if (b == a) {
-		free(a);
-	} else {
-		free(a);
-		free(b);
-	}
-
-	/* Fix c->str */
-	if (strbool) {
-		if (c->data == 1.0L)
-			strncpy(c->str, "True", NUMSTR_BUFSIZE);
-		else
-			strncpy(c->str, "False", NUMSTR_BUFSIZE);
-	} else {
-		sscanf(c->str, "%Le", &(c->data));
-	}
-
-	wprintw(outwin, "Got: %s (%Le)", c->str, c->data);
-	push_stack(stack, c);
-
-	return 1;
-}
-
 /* TODO: write test_scicalc(). */
 int test_scicalc(WINDOW *outwin)
 {
@@ -401,20 +283,20 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 				break;
 
 			default: /* Otherwise check if it is an op or print the char */
-				if (!(op = is_operator(num))) {
-					form_driver(form, num);
-					op = 0;
-				} else {
+				if ((op = is_operator(num))) {
 					wprintw(infowin, "Form read an op.\n");
 					op = 1;
 					opstr[0] = num;
+				} else {
+					form_driver(form, num);
+					op = 0;
 				}
 				break;
 		}
 
 		/* Validate form */
 		if (form_driver(form, REQ_VALIDATION) != E_INVALID_FIELD /* Good number */
-				&& isalnum(fstr[0])) { /* No blank cmds */
+				&& (isalnum(fstr[0]) || op)) { /* No blank cmds, but allow ops */
 			valid = 1;
 
 			getyx(outwin, oldpos[0], oldpos[1]);
@@ -422,18 +304,21 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 			wmove(outwin, oldpos[0], oldpos[1]);
 
 			/* Maybe push the form */
+			wprintw(infowin, "Maybe pushing the form...\n");
 			if (push) {
 				/* Either an op str or the normal field str. This is needed so
 				 * that an operator can be processed without the press of return
 				 * by the user. When this happens, fstr is blank, and causes
 				 * errors by get_num_str() in the future. */
 				if (!(numstr = get_num_str((op) ? opstr : fstr))) {
+					wprintw(infowin, "Invalid num_str\n");
 					getyx(outwin, oldpos[0], oldpos[1]);
 					mvwprintw(outwin, 0, 0,
 							"Unable to allocate memory for a num_str!\n");
 					wmove(outwin, oldpos[0], oldpos[1]);
 				} else {
 					getyx(outwin, oldpos[0], oldpos[1]);
+					wprintw(infowin, "Valid num_str\n");
 					mvwprintw(outwin, 0, 0,
 							"Got num_str: %s (field is %s).",
 							numstr->str, (op) ? opstr : fstr);
@@ -445,6 +330,7 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 				form_driver(form, REQ_CLR_FIELD);
 			}
 		} else { /* Form is invalid */
+			wprintw(infowin, "Invalid form\n");
 			valid = 0;
 		}
 

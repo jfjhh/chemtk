@@ -47,7 +47,6 @@ extern const char *title;
 enum out_format { SCIENTIFIC, EXPANDED };
 
 void scicalc(WINDOW *outwin, WINDOW *infowin);
-int operate(WINDOW *outwin, struct stack *stack);
 int test_scicalc(WINDOW *outwin);
 
 #endif /* SCICALC_H */

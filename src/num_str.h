@@ -7,6 +7,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "stack.h"
 #include "constants.h"
 #include "operator.h"
 
@@ -36,6 +37,7 @@ int get_constant(const char *buf, long double *number);
 int sig_figs(const char *line);
 int sig_before(const char *line);
 int sig_after(const char *line);
+int operate(WINDOW *outwin, struct stack *stack);
 
 #endif /* NUM_STR_H */
 

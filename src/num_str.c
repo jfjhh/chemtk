@@ -188,6 +188,124 @@ struct num_str *get_num_str(const char *line)
 	return read;
 }
 
+int operate(WINDOW *outwin, struct stack *stack)
+{
+	char operation;
+	struct num_str *a, *b, *c, *op;
+	int strbool;
+	strbool = 0;
+
+	/* Get the op from the stack and free it */
+	if (!(op = pop_stack(stack)))
+		return 0;
+
+	operation = op->str[0];
+	free(op);
+
+	if (!(c = (struct num_str *) malloc(sizeof(struct num_str))))
+		return 0;
+
+	/* Pop from the stack. */
+	if (operation != '~') {
+		/* This is the only unary op, so all the others are binary and need two
+		 * num_strs to be popped. */
+		b = pop_stack(stack);
+		a = pop_stack(stack);
+	} else { /* Operation is unary. */
+		a = pop_stack(stack);
+		b = a;
+	}
+
+	/* Check pop(s) went alright. */
+	if (!(a && b))
+		return 0;
+
+	/* Get sig. figs. for result based on operation. */
+	switch (operation) {
+		case '+':
+		case '-':
+			c->sig_figs = least(sig_after(a->str), sig_after(b->str));
+			break;
+		default: /* Same as for multiply/divide, and other ops. */
+			c->sig_figs = least(a->sig_figs, b->sig_figs);
+			break;
+	}
+
+	switch (operation) {
+		case '+':
+			c->data = a->data + b->data;
+			break;
+		case '-':
+			c->data = a->data - b->data;
+			break;
+		case '*':
+			c->data = a->data * b->data;
+			break;
+		case '/':
+			c->data = a->data / b->data;
+			break;
+		case '%':
+			c->data = LDTOI(a->data) % LDTOI(b->data);
+			break;
+		case '&':
+			c->data = LDTOI(a->data) & LDTOI(b->data);
+			break;
+		case '|':
+			c->data = LDTOI(a->data) | LDTOI(b->data);
+			break;
+		case 'x':
+			c->data = LDTOI(a->data) ^ LDTOI(b->data);
+			break;
+		case 'l':
+			c->data = LDTOI(a->data) << LDTOI(b->data);
+			break;
+		case 'r':
+			c->data = LDTOI(a->data) >> LDTOI(b->data);
+			break;
+		case '>':
+			c->data = (a->data > b->data) ? 1.0L : 0.0L;
+			break;
+		case '<':
+			c->data = (a->data < b->data) ? 1.0L : 0.0L;
+			break;
+		case '=':
+			c->data = (a->data == b->data) ? 1.0L : 0.0L;
+			break;
+		case '^':
+			c->data = powl(a->data, b->data);
+			break;
+		case 'o':
+			c->data = logl(a->data);
+			break;
+		default:
+			c->data = 0.0L;
+			break;
+	}
+
+	/* Free a and b */
+	if (b == a) {
+		free(a);
+	} else {
+		free(a);
+		free(b);
+	}
+
+	/* Fix c->str */
+	if (strbool) {
+		if (c->data == 1.0L)
+			strncpy(c->str, "True", NUMSTR_BUFSIZE);
+		else
+			strncpy(c->str, "False", NUMSTR_BUFSIZE);
+	} else {
+		sscanf(c->str, "%Le", &(c->data));
+	}
+
+	wprintw(outwin, "Got: %s (%Le)", c->str, c->data);
+	push_stack(stack, c);
+
+	return 1;
+}
+
 /* TODO: write test_num_str(). */
 int test_num_str(WINDOW *outwin)
 {
