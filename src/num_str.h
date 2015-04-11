@@ -10,6 +10,7 @@
 #include "stack.h"
 #include "constants.h"
 #include "operator.h"
+#include "ldmath.h"
 
 #define NUMSTR_BUFSIZE 16
 #define NUMSTR_CONST_CHAR '.'

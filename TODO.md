@@ -2,6 +2,8 @@
 
 ### Do it now!
 
+- Make stack be implemented like `foo = push(foo, bar);` and
+  `foo = pop(foo, &bar);` (bar is first value to push, then place to put it).
 - Test number validity with a regex.
 - Actual math.
 - Tab mode switching.

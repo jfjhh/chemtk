@@ -2,16 +2,6 @@
 
 const char *title = "Scicalc: A scientific calculator utility.";
 
-static int least(int a, int b)
-{
-	if (a < b)
-		return a; /* a is least. */
-	else if (a > b)
-		return b; /* b is least. */
-	else
-		return a; /* Same, so a or b doesn't matter. */
-}
-
 /* TODO: write test_scicalc(). */
 int test_scicalc(WINDOW *outwin)
 {
@@ -285,7 +275,7 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 			default: /* Otherwise check if it is an op or print the char */
 				if ((op = is_operator(num))) {
 					wprintw(infowin, "Form read an op.\n");
-					op = 1;
+					op = push = 1;
 					opstr[0] = num;
 				} else {
 					form_driver(form, num);

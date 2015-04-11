@@ -16,5 +16,11 @@
 #define NAN -INFINITY
 #endif
 
+/* Truncate a long double. */
+#define LDTOI(A) ((int)(A >= 0.0L ? (A + 0.5L) : (A - 0.5L)))
+
+/* Find the smallest of the two values. */
+#define least(A, B) ((A < B) ? A : B)
+
 #endif /* LD_MATH */
 
