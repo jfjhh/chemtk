@@ -119,7 +119,7 @@ static int run_cmd(WINDOW *outwin, struct num_str *numstr, struct stack *stack)
 		if (sym)
 			free(sym);
 
-	} else { /* Not an element cmd */
+	} else { /* Not an element cmd, maybe a constant? */
 		/* Strip trailing whitespace. */
 		for (i = 0; i < NUMSTR_BUFSIZE; i++)
 			if (!isalpha(numstr->str[i]))
@@ -142,11 +142,11 @@ static int run_cmd(WINDOW *outwin, struct num_str *numstr, struct stack *stack)
 		} else {
 			/* TODO: Parse other commands.
 			 * Stack rotations, popping, and actual math. */
-			return 0;
+			return 0; /* Command not found, so is error. */
 		}
 	}
 
-	return 1;
+	return 1; /* Command successfully "executed." */
 }
 
 static int handle_fields(WINDOW *outwin, struct num_str *numstr,
@@ -162,12 +162,10 @@ static int handle_fields(WINDOW *outwin, struct num_str *numstr,
 		/* TODO: Check for a valid number using regexp. */
 	}
 
-	if (status) {
-		if (numstr->type != CMD) /* cmd resulted in a number */
-			push_stack(stack, numstr);
-		else
-			free(numstr);
-	}
+	if (status && numstr->type != CMD) /* cmd resulted in a number */
+		push_stack(&stack, numstr);
+	else
+		free(numstr);
 
 	return status;
 }

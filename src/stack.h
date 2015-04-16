@@ -20,10 +20,10 @@ struct stack {
 struct stack *new_stack(void);
 
 /* Push to the stack */
-void push_stack(struct stack *stack, struct num_str *data);
+void push_stack(struct stack **stack, struct num_str *data);
 
 /* Pop from the stack */
-struct num_str *pop_stack(struct stack *stack);
+struct num_str *pop_stack(struct stack **stack);
 
 /* Delete everything in a stack */
 void delete_stack(struct stack *stack);
@@ -37,11 +37,9 @@ void print_stack(WINDOW *outwin, int y, int x, int width, struct stack *stack);
 /* Find out how deep a stack is */
 int stack_depth(struct stack *stack);
 
-#define stack_rotdown(A) (A = stack_rotdown_(A))
-struct stack *stack_rotdown_(struct stack *stack);
+void stack_rotdown(struct stack **stack);
 
-#define stack_rotup(A) (A = stack_rotup_(A))
-struct stack *stack_rotup_(struct stack *stack);
+void stack_rotup(struct stack **stack);
 
 #endif
 

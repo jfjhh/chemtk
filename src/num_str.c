@@ -185,6 +185,8 @@ struct num_str *get_num_str(const char *line)
 	strncpy(read->str, line, NUMSTR_BUFSIZE);
 	read->str[NUMSTR_BUFSIZE - 1] = '\0'; /* Force NULL termination. */
 
+	fprintf(stderr, "Created num_str: %p.\n", (void *) read);
+
 	return read;
 }
 
@@ -193,10 +195,12 @@ int operate(WINDOW *outwin, struct stack *stack)
 	char operation;
 	struct num_str *a, *b, *c, *op;
 	int strbool;
+
+	a = b = c = op = NULL;
 	strbool = 0;
 
 	/* Get the op from the stack and free it */
-	if (!(op = pop_stack(stack)))
+	if (!(op = pop_stack(&stack)))
 		return 0;
 
 	operation = op->str[0];
@@ -209,10 +213,10 @@ int operate(WINDOW *outwin, struct stack *stack)
 	if (operation != '~') {
 		/* This is the only unary op, so all the others are binary and need two
 		 * num_strs to be popped. */
-		b = pop_stack(stack);
-		a = pop_stack(stack);
+		a = pop_stack(&stack);
+		b = pop_stack(&stack);
 	} else { /* Operation is unary. */
-		a = pop_stack(stack);
+		a = pop_stack(&stack);
 		b = a;
 	}
 
@@ -301,7 +305,7 @@ int operate(WINDOW *outwin, struct stack *stack)
 	}
 
 	wprintw(outwin, "Got: %s (%Le)", c->str, c->data);
-	push_stack(stack, c);
+	push_stack(&stack, c);
 
 	return 1;
 }
