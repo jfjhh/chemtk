@@ -18,11 +18,11 @@
 #include "elements.h"
 #include "operator.h"
 
-#define SCICALC_NUMLEN NUMSTR_BUFSIZE
-#define SCICALC_NUM_REGEXP "^ *[-+]?[0-9]+\\.?[0-9]*([eE][-+]?[0-9]+)? *$"
+#define SCICALC_NUMLEN       NUMSTR_BUFSIZE
+#define SCICALC_NUM_REGEXP   "^ *[-+]?[0-9]+\\.?[0-9]*([eE][-+]?[0-9]+)? *$"
 
-#define SCIWIN_COLOR_NORMAL 1
-#define SCIWIN_COLOR_PROMPT 4
+#define SCIWIN_COLOR_NORMAL  1
+#define SCIWIN_COLOR_PROMPT  4
 
 extern const char *title;
 

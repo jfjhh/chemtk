@@ -4,7 +4,7 @@
 static int page_line_offset(WINDOW *outwin, FILE *file, int x_offset)
 {
 	int status;
-	char *line = NULL;
+	char *line   = NULL;
 	size_t bytes = 0;
 
 	if (getline(&line, &bytes, file) == -1) {
@@ -20,9 +20,9 @@ static int page_line_offset(WINDOW *outwin, FILE *file, int x_offset)
 
 void page_prompt(WINDOW *outwin, const char *prompt)
 {
-	wattron(outwin, A_BOLD);
-	wprintw(outwin, "<Press any key to %s>", prompt);
-	wattroff(outwin, A_BOLD);
+	wattron(outwin,   A_BOLD);
+	wprintw(outwin,   "<Press any key to %s>",  prompt);
+	wattroff(outwin,  A_BOLD);
 	wgetch(outwin);
 }
 
@@ -34,9 +34,9 @@ void page_bottom(WINDOW *outwin)
 
 void page_prompt_bottom(WINDOW *outwin, const char *prompt)
 { if (getcury(outwin) >= getmaxy(outwin) - 1) {
-	wattron(outwin, A_BOLD);
-	wprintw(outwin, "<Press any key to %s>", prompt);
-	wattroff(outwin, A_BOLD);
+	wattron(outwin,   A_BOLD);
+	wprintw(outwin,   "<Press any key to %s>",  prompt);
+	wattroff(outwin,  A_BOLD);
 	wgetch(outwin);
 	werase(outwin);
 											  }

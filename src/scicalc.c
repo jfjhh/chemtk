@@ -175,16 +175,16 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 	int ok, num, i, frows, fcols, fy, fx, push, valid, op;
 	int oldpos[2];
 	struct num_str *numstr;
-	struct stack *stack = NULL;
 	char *fstr, opstr[2];
-	FORM *form = NULL;
 	FIELD *number[2];
-	WINDOW *stackwin = NULL;
-	fstr = NULL;
-	opstr[1] = '\0';
+	struct stack *stack = NULL;
+	FORM *form          = NULL;
+	WINDOW *stackwin    = NULL;
+	fstr                = NULL;
+	opstr[1]            = '\0';
 
 	/* Positions for the number prompt. */
-	fy = getmaxy(outwin) - 5;
+	fy = getmaxy(outwin)  - 5;
 	fx = (getmaxx(outwin) - SCICALC_NUMLEN) / 2;
 
 	/* Allocate fields. */
@@ -202,14 +202,14 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 
 	/* Configure the input fields. */
 	/* 0: fstr */
-	set_field_just(number[0], JUSTIFY_LEFT);
+	set_field_just(number[0],  JUSTIFY_LEFT);
 
-	field_opts_off(number[0], O_AUTOSKIP);
-	field_opts_off(number[0], O_NULLOK);
-	field_opts_on(number[0], O_BLANK);
+	field_opts_off(number[0],  O_AUTOSKIP);
+	field_opts_off(number[0],  O_NULLOK);
+	field_opts_on(number[0],   O_BLANK);
 
-	set_field_fore(number[0], COLOR_PAIR(SCIWIN_COLOR_PROMPT) | A_STANDOUT);
-	set_field_back(number[0], A_UNDERLINE);
+	set_field_fore(number[0],  COLOR_PAIR(SCIWIN_COLOR_PROMPT) | A_STANDOUT);
+	set_field_back(number[0],  A_UNDERLINE);
 
 	if ((fstr = field_buffer(number[0], 0)) != E_OK) /* Use for cmd data. */
 		wprintw(outwin, "Bad field buffer: 2nd field, buf 0.");
@@ -243,8 +243,8 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 	wrefresh(outwin);
 
 	num = ' ';
-	ok = 1;
-	i = push = valid = op = 0;
+	ok  = 1;
+	i   = push = valid = op = 0;
 
 	while (ok && (num = wgetch(outwin))) {
 		if (num == 'Q' || num == KEY_F(1))
@@ -273,7 +273,7 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 			default: /* Otherwise check if it is an op or print the char */
 				if ((op = is_operator(num))) {
 					wprintw(infowin, "Form read an op.\n");
-					op = push = 1;
+					op       = push = 1;
 					opstr[0] = num;
 				} else {
 					form_driver(form, num);
@@ -287,9 +287,9 @@ void scicalc(WINDOW *outwin, WINDOW *infowin)
 				&& (isalnum(fstr[0]) || op)) { /* No blank cmds, but allow ops */
 			valid = 1;
 
-			getyx(outwin, oldpos[0], oldpos[1]);
-			mvwprintw(outwin, fy + 2, fx + 5, "        ");
-			wmove(outwin, oldpos[0], oldpos[1]);
+			getyx(outwin,      oldpos[0],  oldpos[1]);
+			mvwprintw(outwin,  fy + 2,     fx + 5,      "        ");
+			wmove(outwin,      oldpos[0],  oldpos[1]);
 
 			/* Maybe push the form */
 			wprintw(infowin, "Maybe pushing the form...\n");

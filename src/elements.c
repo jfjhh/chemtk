@@ -107,9 +107,9 @@ int print_element_info(struct element *e, WINDOW *outwin)
 	if (path && symbol) {
 		symbol[0] = (char) tolower(symbol[0]);
 
-		strncpy(path, ELEMENT_INFO_DIR, ELEMENT_INFO_DIR_LEN);
-		strncat(path, "/", 1);
-		strncat(path, symbol, ELEMENT_SYM_LEN - 1);
+		strncpy(path,  ELEMENT_INFO_DIR,  ELEMENT_INFO_DIR_LEN);
+		strncat(path,  "/",               1);
+		strncat(path,  symbol,            ELEMENT_SYM_LEN - 1);
 
 		wprintw(outwin, "Element info path is '%s'.\n", path);
 

@@ -6,11 +6,11 @@
 
 #include "chemtk.h"
 
-#define RUNTESTS_DONE_USEC 1500000
-#define NUM_TESTS 8
+#define RUNTESTS_DONE_USEC  1500000
+#define NUM_TESTS           8
 
 struct test_array {
-	int (*test_functions[NUM_TESTS])(WINDOW *outwin);
+	int  (*test_functions[NUM_TESTS])(WINDOW *outwin);
 	char *test_names[NUM_TESTS];
 };
 

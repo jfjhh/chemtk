@@ -8,7 +8,7 @@ struct stack *new_stack(void)
 		new->data = NULL;
 		new->next = NULL;
 	} else {
-		new = NULL;
+		new       = NULL;
 	}
 
 	return new;
@@ -37,7 +37,7 @@ struct num_str *pop_stack(struct stack **stack)
 	if (!(*stack)) {
 		return NULL;
 	} else {
-		data = (*stack)->data;
+		data     = (*stack)->data;
 		new_head = (*stack)->next;
 	}
 
@@ -101,16 +101,16 @@ int test_stack(WINDOW *outwin)
 		push_stack(&stack, get_num_str(test_lines[i]));
 
 	/* Test other ops, like rotations and depth. */
-	mvwprintw(outwin, getcury(outwin), 0, "\nDone pushing:\n");
-	print_stack(outwin, getcury(outwin), 0, STACK_WIDTH, stack);
+	mvwprintw(outwin,       getcury(outwin),  0,  "\nDone pushing:\n");
+	print_stack(outwin,     getcury(outwin),  0,  STACK_WIDTH, stack);
 
 	stack_rotdown(&stack);
-	mvwprintw(outwin, getcury(outwin), 0, "\nDone rotating down:\n");
-	print_stack(outwin, getcury(outwin), 0, STACK_WIDTH, stack);
+	mvwprintw(outwin,       getcury(outwin),  0,  "\nDone rotating down:\n");
+	print_stack(outwin,     getcury(outwin),  0,  STACK_WIDTH, stack);
 
 	stack_rotup(&stack);
-	mvwprintw(outwin, getcury(outwin), 0, "\nDone rotating up:\n");
-	print_stack(outwin, getcury(outwin), 0, STACK_WIDTH, stack);
+	mvwprintw(outwin,       getcury(outwin),  0,  "\nDone rotating up:\n");
+	print_stack(outwin,     getcury(outwin),  0,  STACK_WIDTH, stack);
 
 	status = ((depth = stack_depth(stack)) == 3) ? 0 : 1;
 	mvwprintw(outwin, getcury(outwin), 0,
@@ -158,30 +158,20 @@ void print_stack(WINDOW *outwin, int y, int x, int width, struct stack *stack)
 	struct stack *iterator;
 	int i, fcol, xoff;
 
-	i = 0;
+	i    = 0;
 	fcol = 3;
 	xoff = x;
 
-	wmove(outwin, y, xoff + ((STACK_WIDTH - 8) / 2)); /* 8 is size of %p string */
-	wprintw(outwin, "%p", stack);
+	/* 8 is size of %p string */
+	wmove(outwin,    y,     xoff + ((STACK_WIDTH - 8) / 2));
+	wprintw(outwin,  "%p",  stack);
+
 	iterator = stack;
-
-	/* if (stack->next == NULL) { */
-	/* 	mvwhline(outwin, y+(i+1), xoff, 0, width); */
-	/* 	mvwhline(outwin, y+(i+1)+2, xoff, 0, width); */
-	/* 	mvwvline(outwin, y+(i+1), xoff, 0, 3); */
-	/* 	mvwvline(outwin, y+(i+1), xoff+width-1, 0, 3); */
-
-	/* 	wmove(outwin, getcury(outwin) + 1, xoff + 1); */
-	/* 	for (i = 0; i < STACK_WIDTH - 2; i++) */
-	/* 		wprintw(outwin, "%c", '.'); */
-
-	/* } else { */
 	while (iterator != NULL) {
-		mvwhline(outwin, y+(i+1), xoff, 0, width);
-		mvwhline(outwin, y+(i+1)+2, xoff, 0, width);
-		mvwvline(outwin, y+(i+1), xoff, 0, 3);
-		mvwvline(outwin, y+(i+1), xoff+width-1, 0, 3);
+		mvwhline(outwin,  y+(i+1),    xoff,          0,  width);
+		mvwhline(outwin,  y+(i+1)+2,  xoff,          0,  width);
+		mvwvline(outwin,  y+(i+1),    xoff,          0,  3);
+		mvwvline(outwin,  y+(i+1),    xoff+width-1,  0,  3);
 
 		wmove(outwin, getcury(outwin) + 1, xoff + 1);
 
@@ -197,19 +187,18 @@ void print_stack(WINDOW *outwin, int y, int x, int width, struct stack *stack)
 
 		if (getcury(outwin) >= getmaxy(outwin) - 3) {
 			xoff += STACK_WIDTH;
-			i = 0;
+			i    =  0;
 		} else if (getcurx(outwin) + STACK_WIDTH
 				>= (getmaxx(outwin) - 2)) {
-			i = 0;
+			i    =  0;
 			fcol += 3;
-			xoff = x + fcol;
+			xoff =  x + fcol;
 		} else {
-			i += 2;
+			i    += 2;
 		}
 
 		iterator = iterator->next;
 	}
-	/* } */
 
 	wmove(outwin, getcury(outwin) + 2, 0);
 }
@@ -253,10 +242,9 @@ void stack_rotup(struct stack **stack)
 		new_end = new_end->next;
 
 	/* Get and place new_beg. */
-	new_beg = new_end->next;
+	new_beg       = new_end->next;
 	new_beg->next = *stack; /* now at top. */
 	new_end->next = NULL; /* 'capped off' new end. */
-
-	*stack = new_beg;
+	*stack        = new_beg;
 }
 

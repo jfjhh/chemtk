@@ -2,7 +2,7 @@
 #define ELEMENTS_H
 
 #if ! defined(_XOPEN_SOURCE) || _XOPEN_SOURCE < 700
-#define _XOPEN_SOURCE 700
+#define _XOPEN_SOURCE	700
 #endif
 
 #ifndef _BSD_SOURCE
@@ -21,21 +21,21 @@
 #include "directory.h"
 #include "pager.h"
 
-#define NUM_ELEMENTS 118
-#define ELEMENT_NAME_LEN 32
-#define ELEMENT_SYM_LEN 4
+#define NUM_ELEMENTS        118
+#define ELEMENT_NAME_LEN    32
+#define ELEMENT_SYM_LEN     4
 
-#define PTABLE_HEIGHT 23
-#define PTABLE_WIDTH 78
+#define PTABLE_HEIGHT       23
+#define PTABLE_WIDTH        78
 
-#define ELEMENT_AUTO_USEC 1000
-#define ELEMENT_PAUSE_USEC 500000
+#define ELEMENT_AUTO_USEC   1000
+#define ELEMENT_PAUSE_USEC  500000
 
 struct element {
-	char name[ELEMENT_NAME_LEN];
-	char symbol[ELEMENT_SYM_LEN];
+	char  name[ELEMENT_NAME_LEN];
+	char  symbol[ELEMENT_SYM_LEN];
 	float molar_mass;
-	int atomic_number;
+	int   atomic_number;
 };
 
 extern struct element *ptable[NUM_ELEMENTS];

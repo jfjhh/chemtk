@@ -12,10 +12,10 @@
 #include "operator.h"
 #include "ldmath.h"
 
-#define NUMSTR_BUFSIZE 16
+#define NUMSTR_BUFSIZE    16
 #define NUMSTR_CONST_CHAR '.'
-#define NUMSTR_PRECISION 4
-#define NUMSTR_FIG_TESTS 4
+#define NUMSTR_PRECISION  4
+#define NUMSTR_FIG_TESTS  4
 
 enum num_str_type {
 	NONE = 0,
@@ -27,9 +27,9 @@ enum num_str_type {
 
 struct num_str {
 	long double data;
-	int sig_figs;
-	enum num_str_type type;
-	char str[NUMSTR_BUFSIZE];
+	int         sig_figs;
+	enum        num_str_type type;
+	char        str[NUMSTR_BUFSIZE];
 };
 
 struct num_str *get_num_str(const char *line);

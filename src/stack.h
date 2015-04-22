@@ -6,15 +6,15 @@
 
 struct stack {
 	struct num_str *data;
-	struct stack *next;
-	struct stack *end;
+	struct stack   *next;
+	struct stack   *end;
 };
 
 #include "num_str.h"
 
-#define STACK_COLOR_NORMAL 2
-#define STACK_WIDTH NUMSTR_BUFSIZE + 5
-#define STACK_TESTS 3
+#define STACK_COLOR_NORMAL  2
+#define STACK_WIDTH         NUMSTR_BUFSIZE + 5
+#define STACK_TESTS         3
 
 /* Allocate memory for a new stack. */
 struct stack *new_stack(void);

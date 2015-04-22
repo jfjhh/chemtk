@@ -16,7 +16,7 @@
 #include "elements.h"
 #include "operator.h"
 
-#define INFOWIN_COLOR_NORMAL 5
+#define INFOWIN_COLOR_NORMAL	5
 
 #endif /* CHEMTK_H */
 

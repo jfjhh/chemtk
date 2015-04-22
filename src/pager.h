@@ -2,7 +2,7 @@
 #define PAGER_H
 
 #ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 200809L
+#define _POSIX_C_SOURCE	200809L
 #endif
 
 #ifndef _BSD_SOURCE
@@ -17,10 +17,9 @@
 #include "dirs.h"
 #include "directory.h"
 
-#define PAGER_COLOR_NORMAL 3
-#define PAGER_STR "see next page"
-/* #define PAGER_AUTO_USEC 5000 */
-#define PAGER_AUTO_USEC 1000
+#define PAGER_COLOR_NORMAL  3
+#define PAGER_STR           "see next page"
+#define PAGER_AUTO_USEC     1000
 
 void page_bottom(WINDOW *outwin);
 

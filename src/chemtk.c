@@ -15,22 +15,24 @@ int main(void)
 	noecho();
 
 	/* Init sciwin. */
-	sciwinborder = newwin((LINES / 2), (COLS / 2), 0, (COLS / 2));
-	sciwin = newwin((LINES / 2) - 2, (COLS / 2) - 2, 1, (COLS / 2) + 1);
+	sciwinborder = newwin((LINES / 2),      (COLS / 2),      0,  (COLS / 2));
+	sciwin       = newwin((LINES / 2) - 2,  (COLS / 2) - 2,  1,  (COLS / 2) + 1);
 	keypad(sciwin, TRUE);
 	box(sciwinborder, 0, 0);
 	wrefresh(sciwinborder);
 
 	keypad(sciwin, TRUE);
-	init_pair(SCIWIN_COLOR_NORMAL, COLOR_BLUE, COLOR_BLACK);
-	init_pair(SCIWIN_COLOR_PROMPT, COLOR_GREEN, COLOR_BLACK);
+	init_pair(SCIWIN_COLOR_NORMAL,  COLOR_BLUE,   COLOR_BLACK);
+	init_pair(SCIWIN_COLOR_PROMPT,  COLOR_GREEN,  COLOR_BLACK);
 	wattrset(sciwin, A_BOLD | COLOR_PAIR(SCIWIN_COLOR_NORMAL));
 
 	/* Init infowin. */
-	infowinborder = newwin((LINES / 2), (COLS / 2),
-			(LINES / 2), (COLS / 2));
-	infowin = newwin((LINES / 2) - 2, (COLS / 2) - 2,
-			(LINES / 2) + 1, (COLS / 2) + 1);
+	infowinborder = newwin((LINES / 2),      (COLS / 2),
+			(LINES / 2),                     (COLS / 2));
+
+	infowin       = newwin((LINES / 2) - 2,  (COLS / 2) - 2,
+			(LINES / 2) + 1,                 (COLS / 2) + 1);
+
 	keypad(infowin, TRUE);
 	box(infowinborder, 0, 0);
 	wrefresh(infowinborder);
@@ -40,8 +42,8 @@ int main(void)
 	wattrset(infowin, A_BOLD | COLOR_PAIR(INFOWIN_COLOR_NORMAL));
 
 	/* Init devwin. */
-	devwinborder = newwin(LINES, (COLS / 2), 0, 0);
-	devwin = newwin(LINES-2, (COLS / 2) - 2, 1, 1);
+	devwinborder = newwin(LINES,  (COLS / 2),      0,  0);
+	devwin = newwin(LINES-2,      (COLS / 2) - 2,  1,  1);
 	box(devwinborder, 0, 0);
 	wrefresh(devwinborder);
 
@@ -76,12 +78,14 @@ int main(void)
 exit: /* Exit */
 	if (scicalc_doc)
 		fclose(scicalc_doc);
+
 	delwin(devwin);
 	delwin(devwinborder);
 	delwin(sciwin);
 	delwin(sciwinborder);
 	delwin(infowin);
 	delwin(infowinborder);
+
 	endwin();
 	return 0;
 }

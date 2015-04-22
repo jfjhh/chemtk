@@ -38,8 +38,8 @@ int sig_figs(const char *line)
 				lastzeros++;
 			} else if (isdigit(line[i])) {
 				if (lastzeros > 0) {
-					figs += lastzeros;
-					lastzeros = 0;
+					figs      += lastzeros;
+					lastzeros =  0;
 				}
 				figs++;
 			}
@@ -86,8 +86,8 @@ int sig_before(const char *line)
 				lastzeros++;
 			} else if (isdigit(line[i])) {
 				if (lastzeros > 0) {
-					figs += lastzeros;
-					lastzeros = 0;
+					figs      += lastzeros;
+					lastzeros =  0;
 				}
 				figs++;
 			}
@@ -132,8 +132,8 @@ int sig_after(const char *line)
 				lastzeros++;
 			} else if (isdigit(line[i])) {
 				if (lastzeros > 0) {
-					figs += lastzeros;
-					lastzeros = 0;
+					figs      += lastzeros;
+					lastzeros =  0;
 				}
 				figs++;
 			}
@@ -152,8 +152,9 @@ struct num_str *get_num_str(const char *line)
 	if (!(read = (struct num_str *) malloc(sizeof(struct num_str))))
 		return NULL;
 
-	is_num = 0;
+	is_num     = 0;
 	read->type = NONE;
+
 	for (i = 0; i < 10; i++) {
 		if (line[0] == '0' + i) {
 			sscanf(line, "%Le", &(read->data));
@@ -164,7 +165,7 @@ struct num_str *get_num_str(const char *line)
 				read->type = NUMBER;
 
 			read->sig_figs = sig_figs(line);
-			is_num = 1;
+			is_num         = 1;
 
 			break;
 		}
@@ -197,7 +198,7 @@ int operate(WINDOW *outwin, struct stack *stack)
 	int strbool;
 
 	a = b = c = op = NULL;
-	strbool = 0;
+	strbool        = 0;
 
 	/* Get the op from the stack and free it */
 	if (!(op = pop_stack(&stack)))
@@ -249,16 +250,16 @@ int operate(WINDOW *outwin, struct stack *stack)
 			c->data = a->data / b->data;
 			break;
 		case '%':
-			c->data = LDTOI(a->data) % LDTOI(b->data);
+			c->data = LDTOI(a->data) %  LDTOI(b->data);
 			break;
 		case '&':
-			c->data = LDTOI(a->data) & LDTOI(b->data);
+			c->data = LDTOI(a->data) &  LDTOI(b->data);
 			break;
 		case '|':
-			c->data = LDTOI(a->data) | LDTOI(b->data);
+			c->data = LDTOI(a->data) |  LDTOI(b->data);
 			break;
 		case 'x':
-			c->data = LDTOI(a->data) ^ LDTOI(b->data);
+			c->data = LDTOI(a->data) ^  LDTOI(b->data);
 			break;
 		case 'l':
 			c->data = LDTOI(a->data) << LDTOI(b->data);
@@ -266,11 +267,11 @@ int operate(WINDOW *outwin, struct stack *stack)
 		case 'r':
 			c->data = LDTOI(a->data) >> LDTOI(b->data);
 			break;
-		case '>':
-			c->data = (a->data > b->data) ? 1.0L : 0.0L;
+		case '>' :
+			c->data = (a->data > b->data) ? 1.0L  : 0.0L;
 			break;
 		case '<':
-			c->data = (a->data < b->data) ? 1.0L : 0.0L;
+			c->data = (a->data < b->data) ? 1.0L  : 0.0L;
 			break;
 		case '=':
 			c->data = (a->data == b->data) ? 1.0L : 0.0L;
@@ -297,9 +298,9 @@ int operate(WINDOW *outwin, struct stack *stack)
 	/* Fix c->str */
 	if (strbool) {
 		if (c->data == 1.0L)
-			strncpy(c->str, "True", NUMSTR_BUFSIZE);
+			strncpy(c->str,  "True",   NUMSTR_BUFSIZE);
 		else
-			strncpy(c->str, "False", NUMSTR_BUFSIZE);
+			strncpy(c->str,  "False",  NUMSTR_BUFSIZE);
 	} else {
 		sscanf(c->str, "%Le", &(c->data));
 	}

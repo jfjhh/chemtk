@@ -3,28 +3,28 @@
 long double const_search(const char *line)
 {
 	FILE *const_file;
-	char *read_const = NULL;
+	char *read_const      = NULL;
 	size_t read_const_len = 0;
-	long double constant = 0;
-	int found_constant = 0;
+	long double constant  = 0;
+	int found_constant    = 0;
 
 	if ((const_file = fopen(CONST_FILE, "r"))) {
 		while (getline(&read_const, &read_const_len, const_file) != -1
 				&& !found_constant) {
 
 			if (strncmp(read_const, line, strlen(line)) == 0) {
-				found_constant = 1;
-
 				free(read_const);
-				read_const = NULL;
-				read_const_len = 0;
+
+				found_constant    = 1;
+				read_const        = NULL;
+				read_const_len    = 0;
 
 				getline(&read_const, &read_const_len, const_file);
 				constant = strtold(read_const, NULL);
 			}
 
 			free(read_const);
-			read_const = NULL;
+			read_const     = NULL;
 			read_const_len = 0;
 		}
 		fclose(const_file);
@@ -36,7 +36,7 @@ long double const_search(const char *line)
 
 int test_constants(WINDOW *outwin)
 {
-	char *mol = "mol";
+	char *mol            = "mol";
 	long double expected = 6.022141e+23L;
 	long double found;
 	int correct;

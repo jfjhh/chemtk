@@ -1,26 +1,29 @@
 #ifndef LD_MATH
 #define LD_MATH
 
-/* Strange floating point values. */
+/* Strange floating point values.
+ * INFINITY and NINFINITY are defined in C99, and
+ * NAN in IEEE Floating Point standard.
+ */
 #define _GNU_SOURCE
-#ifndef INFINITY /* ISO C99 standard. */
-#define INFINITY 1.0 / 0.0
+
+#ifndef INFINITY
+#define INFINITY  (1.0 / 0.0)
 #endif
-#ifndef NINFINITY /* ISO C99 standard. */
-#define NINFINITY 0 - INFINITY
+
+#ifndef NINFINITY
+#define NINFINITY (0 - INFINITY)
 #endif
-#ifndef N0 /* IEEE 754 */
-#define N0 1.0 / -INFINITY
-#endif
-#ifndef NAN /* IEEE floating point. */
-#define NAN -INFINITY
+
+#ifndef NAN
+#define NAN       -INFINITY
 #endif
 
 /* Truncate a long double. */
-#define LDTOI(A) ((int)(A >= 0.0L ? (A + 0.5L) : (A - 0.5L)))
+#define LDTOI(A)	((int)(A >= 0.0L ? (A + 0.5L) : (A - 0.5L)))
 
 /* Find the smallest of the two values. */
-#define least(A, B) ((A < B) ? A : B)
+#define least(A, B)	((A < B) ? A : B)
 
 #endif /* LD_MATH */
 
