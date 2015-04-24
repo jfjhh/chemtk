@@ -2,6 +2,31 @@
 
 ### Do it now!
 
+#### New Design
+
+- Use prefix `sc_`.
+
+- Move from `num_str` to `sc_token` (using similar to long `num_str`
+  implementation below).
+
+- Change `stack` to `sc_stack`, and have it accept `void *` type data.
+
+- General design aspects:
+
+	* Input goes in a `char *`, which is immediately tokenized into a `sc_token`
+	  as a part of the input mechanism.
+
+	* Type `CMD` is "executed" immediately, generating a `sc_token`.
+
+		+ Maybe have a separate *thing*, like `commands.{c,h}` or similar to
+		  process commands into `sc_token`s.
+
+	* Display of numbers is in scientific notation with correct significant
+	  figures, thanks to printf's `%- .*e` format specifier.
+
+	* `sc_token`s should not have a `char *` field; the data needed to reproduce
+	  the original string of the token should be present in the `sc_token`.
+
 - Possibly change `num_str` to use a sort of tagged union:
 
 ```c
