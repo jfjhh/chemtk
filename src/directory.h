@@ -3,10 +3,10 @@
 
 #define _GNU_SOURCE
 
-#include <ncurses.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "dirs.h"
@@ -30,7 +30,8 @@ char **get_files_strip(const char *dir);
  */
 void free_filelist(char **files);
 
-int test_directory(WINDOW *outwin);
+/* Tests directory funtions. */
+int test_directory(FILE *logfile);
 
 #endif /* DIRECTORY_H */
 

@@ -1,4 +1,4 @@
-#include "elements.h"
+#include "element.h"
 
 struct element *ptable[NUM_ELEMENTS];
 
@@ -25,6 +25,7 @@ static struct element *get_element(const char *element)
 
 	if ((file = fopen(epath, "r")) == NULL) {
 		free(epath);
+		perror("get_element: could not open element file for reading");
 		return NULL;
 	}
 
@@ -43,6 +44,7 @@ static struct element *get_element(const char *element)
 	}
 
 	free(epath);
+	fclose(file);
 	return read_element;
 }
 
@@ -58,12 +60,12 @@ static int valid_element(struct element *e)
 	return status;
 }
 
-int print_element(struct element *e, WINDOW *outwin)
+int print_element(struct element *e, FILE *file)
 {
 	int status;
 
 	if ((status = valid_element(e)))
-		wprintw(outwin,
+		fprintf(file,
 				"%s (%s)\n"
 				"Mass: %fg.\n"
 				"Atomic Number: %d.\n\n",
@@ -71,20 +73,19 @@ int print_element(struct element *e, WINDOW *outwin)
 				e->molar_mass,
 				e->atomic_number);
 	else
-		wprintw(outwin,
+		fprintf(file,
 				"Did not receive a valid element (print_element()).\n");
 
 	return status;
 }
 
-int print_element_info(struct element *e, WINDOW *outwin)
+int print_element_info(struct element *e, FILE *file)
 {
-	FILE *infofile;
 	char *path, *symbol;
 	int status;
 
 	if (!(status = valid_element(e))) {
-		wprintw(outwin,
+		fprintf(file,
 				"Did not receive a valid element (print_element_info()).\n");
 		return status;
 	}
@@ -93,13 +94,13 @@ int print_element_info(struct element *e, WINDOW *outwin)
 			(ELEMENT_INFO_DIR_LEN + ELEMENT_SYM_LEN) + 1);
 
 	if (!path) {
-		wprintw(outwin,
+		fprintf(file,
 				"Not enough memory for path string in print_element_info()!\n");
 		status = 0;
 	}
 
 	if (!(symbol = strndup(e->symbol, ELEMENT_SYM_LEN))) {
-		wprintw(outwin,
+		fprintf(file,
 				"Not enough memory for symbol string in print_element_info()!\n");
 		status = 0;
 	}
@@ -111,15 +112,8 @@ int print_element_info(struct element *e, WINDOW *outwin)
 		strncat(path,  "/",               1);
 		strncat(path,  symbol,            ELEMENT_SYM_LEN - 1);
 
-		wprintw(outwin, "Element info path is '%s'.\n", path);
-
-		if (!(infofile = fopen(path, "r"))) {
-			wprintw(outwin, "Could not open element infofile at '%s'!\n", path);
-			status = 0;
-		} else {
-			page_file(outwin, infofile);
-			fclose(infofile);
-		}
+		fprintf(file, "Element info path is '%s'.\n", path);
+		page_file(path);
 	}
 
 	free(symbol);
@@ -128,20 +122,21 @@ int print_element_info(struct element *e, WINDOW *outwin)
 	return status;
 }
 
-int print_ptable(WINDOW *outwin, int y, int x)
+int print_ptable(FILE *file)
 {
-	FILE *file = fopen(PTABLE_FILE, "r");
-	int status;
+	FILE *ptable_file = fopen(PTABLE_FILE, "r");
+	int status, c;
 
 	if (file) {
-		page_file_coords(outwin, file, y, x);
+		while ((c = fgetc(ptable_file)) != EOF)
+			fputc(c, file);
 		status = 1;
 	} else {
-		mvwprintw(outwin, y, x, "[Unable to open ptable file!]\n");
+		fprintf(file, "Unable to print ptable file!\n");
 		status = 0;
 	}
 
-	fclose(file);
+	fclose(ptable_file);
 	return status;
 }
 
@@ -205,14 +200,13 @@ struct element *find_element_name(const char *name)
 	return e;
 }
 
-int test_elements(WINDOW *outwin)
+int test_element(FILE *logfile)
 {
 	int status, element;
 
 	/* Print all the elements and their info files. */
 	if (!init_elements()) {
-		wprintw(outwin, "Error with init_elements!\n");
-		wgetch(outwin);
+		fprintf(logfile, "Error with init_elements!\n");
 		status = 0;
 	} else {
 		status = 1;
@@ -220,32 +214,25 @@ int test_elements(WINDOW *outwin)
 			status = 0;
 			status += valid_element(ptable[element]);
 
-			/* Print ALL the info to the window */
+			/* Print ALL the info to the file */
 #if (TEST_ELEMENTS_VERBOSE != 0)
-			status += print_element(ptable[element], outwin);
-			page_bottom(outwin);
-			wrefresh(outwin);
+			status += print_element(ptable[element], file);
 			usleep(ELEMENT_AUTO_USEC);
 
-			status += print_element_info(ptable[element], outwin);
-			page_bottom(outwin);
-			wrefresh(outwin);
+			status += print_element_info(ptable[element], file);
+			page_bottom(file);
 			usleep(ELEMENT_AUTO_USEC);
 #endif /* TEST_ELEMENTS_VERBOSE */
 		}
 	}
 	end_elements();
-	werase(outwin);
 
 	if (!status) {
-		wprintw(outwin, "Did not read all the elements properly!\n");
-		wgetch(outwin);
+		fprintf(logfile, "Did not read all the elements properly!\n");
 		status = 0;
 	} else {
 		/* Print a periodic table. */
-		werase(outwin);
-		status = print_ptable_centered(outwin, 3);
-		wrefresh(outwin);
+		status = print_ptable(logfile);
 #if (TEST_ELEMENTS_VERBOSE != 0)
 		usleep(ELEMENT_PAUSE_USEC);
 #endif /* TEST_ELEMENTS_VERBOSE */

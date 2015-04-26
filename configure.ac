@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([chemtk], [1.0], [https://github.com/jfjhh/chemtk/issues])
+AC_INIT([chemtk], [0.0.1], [https://github.com/jfjhh/chemtk/issues])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -17,8 +17,8 @@ AC_CHECK_PROG([TAR], [tar], [/bin/tar], [tar])
 
 # Checks for libraries.
 AC_CHECK_LIB([m], [cos])
-AC_CHECK_LIB([ncurses], [wprintw])
-AC_CHECK_LIB([form], [new_form])
+AC_CHECK_LIB([readline], [readline])
+AC_CHECK_LIB([history], [using_history])
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h stdio.h string.h unistd.h dirent.h])

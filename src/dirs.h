@@ -28,7 +28,7 @@
 #define GETFILES_FILE_MAX       256
 #define GETFILES_NAME_MAX       (NAME_MAX + 1)
 
-/* Directory locations for things like scientific constants, information, help
+/* Directory locations for things like scientific consant, information, help
  * files, etc. */
 
 #define CONST_FILE              DATA_DIR     "/constants.txt"
@@ -39,6 +39,7 @@
 #define PTABLE_FILE             ELEMENT_DIR  "/ptable.txt"
 #define SCICALC_DOCFILE         DATA_DIR     "/scicalc.txt"
 #define TEST_PAGER_FILE         DATA_DIR     "/pager.txt"
+#define SC_SELFFD_DIR           "/proc/self/fd/"
 
 #endif /* DIRS_H */
 

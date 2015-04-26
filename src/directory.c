@@ -76,20 +76,17 @@ void free_filelist(char **files)
 	free(files);
 }
 
-int test_directory(WINDOW *outwin)
+int test_directory(FILE *logfile)
 {
 	char **files;
 	int file;
 
-	/* TODO: write test_directory(). */
-	wprintw(outwin, "Write test_directory().\n");
-
-	wprintw(outwin, "=== Plain test ===\n");
+	fprintf(logfile, "=== Plain test ===\n");
 	if (!(files = get_files(GETFILES_TESTDIR))) {
 		goto fail;
 	} else {
 		for (file = 0; files[file] != NULL; file++) {
-			wprintw(outwin, "Got file: `%s'.\n", files[file]);
+			fprintf(logfile, "Got file: `%s'.\n", files[file]);
 			if (strlen(files[file]) != 5)
 				goto fail;
 		}
@@ -98,12 +95,12 @@ int test_directory(WINDOW *outwin)
 	}
 	free_filelist(files);
 
-	wprintw(outwin, "=== Strip test ===\n");
+	fprintf(logfile, "=== Strip test ===\n");
 	if (!(files = get_files_strip(GETFILES_TESTDIR))) {
 		goto fail;
 	} else {
 		for (file = 0; files[file] != NULL; file++) {
-			wprintw(outwin, "Got file: `%s'.\n", files[file]);
+			fprintf(logfile, "Got file: `%s'.\n", files[file]);
 			if (strlen(files[file]) != 1)
 				goto fail;
 		}

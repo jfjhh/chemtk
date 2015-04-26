@@ -9,31 +9,27 @@
 #define _BSD_SOURCE
 #endif
 
-#include <ncurses.h>
-#include <stdio.h>
+#define PAGER	"less"
+
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <math.h>
+#include <string.h>
+#include <limits.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #include "dirs.h"
-#include "directory.h"
 
-#define PAGER_COLOR_NORMAL  3
-#define PAGER_STR           "see next page"
-#define PAGER_AUTO_USEC     1000
+/* Returns 0 on error and 1 on success. */
+int page_file_stream(FILE *path);  /* More overhead. */
+int page_file(const char *path);   /* Preferred. */
 
-void page_bottom(WINDOW *outwin);
-
-void page_prompt(WINDOW *outwin, const char *prompt);
-void page_prompt_bottom(WINDOW *outwin, const char *prompt);
-#define page_prompt_file(A) page_prompt(A, PAGER_STR)
-
-void page_file(WINDOW *outwin, FILE *file);
-void page_file_coords(WINDOW *outwin, FILE *file, int y, int x);
-
-#define page_file_auto(A, B) page_file_delay(A, B, PAGER_AUTO_USEC)
-void page_file_delay(WINDOW *outwin, FILE *file, useconds_t time);
-
-int test_pager(WINDOW *outwin);
+/* Returns 0 on error and 1 on success. */
+int test_pager(FILE *logfile);
 
 #endif
 

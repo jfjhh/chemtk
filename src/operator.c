@@ -19,7 +19,7 @@ int is_operator(char op)
 	return is_member;
 }
 
-int test_operator(WINDOW *outwin)
+int test_operator(FILE *logfile)
 {
 	int i, is_op, status;
 	char test_ops[NUM_OPERATOR_TESTS] = {
@@ -28,7 +28,7 @@ int test_operator(WINDOW *outwin)
 
 	for (i = status = 0; i < NUM_OPERATOR_TESTS; i++) {
 		is_op = is_operator(test_ops[i]);
-		wprintw(outwin, "%c %s an operator.\n",
+		fprintf(logfile, "%c %s an operator.\n",
 				test_ops[i], ((is_op) ? "is" : "is not"));
 		status += is_op;
 	}

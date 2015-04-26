@@ -13,7 +13,7 @@
 #	include <unistd.h>
 #endif /* TEST_ELEMENTS_VERBOSE */
 
-#include <ncurses.h>
+#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -24,9 +24,6 @@
 #define NUM_ELEMENTS        118
 #define ELEMENT_NAME_LEN    32
 #define ELEMENT_SYM_LEN     4
-
-#define PTABLE_HEIGHT       23
-#define PTABLE_WIDTH        78
 
 #define ELEMENT_AUTO_USEC   1000
 #define ELEMENT_PAUSE_USEC  500000
@@ -40,17 +37,15 @@ struct element {
 
 extern struct element *ptable[NUM_ELEMENTS];
 
-/* Prints the data about an element to outwin. */
-int print_element(struct element *e, WINDOW *outwin);
+/* Prints the data about an element to file. */
+int print_element(struct element *e, FILE *file);
 
-/* Prints a longer description of the element to outwin. */
-int print_element_info(struct element *e, WINDOW *outwin);
+/* Prints a longer description of the element to file. */
+int print_element_info(struct element *e, FILE *file);
 
 /* Prints an ASCII Periodic table with the top-left corner at (x,y). The
  * centered version only needs a y-coordinate. */
-int print_ptable(WINDOW *outwin, int y, int x);
-#define print_ptable_centered(A, B) \
-	print_ptable(A, B, ((getmaxx(A) - PTABLE_WIDTH) / 2) - 2)
+int print_ptable(FILE *file);
 
 /* Read the entire periodic table into memory. */
 int init_elements(void);
@@ -63,7 +58,7 @@ void end_elements(void);
 struct element *find_element_sym(const char *symbol);
 struct element *find_element_name(const char *name);
 
-int test_elements(WINDOW *outwin);
+int test_element(FILE *logfile);
 
 #endif /* ELEMENTS_H */
 

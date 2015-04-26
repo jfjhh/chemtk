@@ -1,27 +1,27 @@
 #include "stack.h"
 
-struct stack *new_stack(void)
+sc_stack *new_sc_stack(void)
 {
-	struct stack *new;
+	sc_stack *new;
 
-	if ((new = (struct stack *) malloc(sizeof(struct stack)))) {
+	if ((new = (sc_stack *) malloc(sizeof(sc_stack)))) {
 		new->data = NULL;
 		new->next = NULL;
 	} else {
-		new       = NULL;
+		new = NULL;
 	}
 
 	return new;
 }
 
-void push_stack(struct stack **stack, struct num_str *data)
+void push_sc_stack(sc_stack **stack, void *data)
 {
-	struct stack *new;
+	sc_stack *new;
 
 	if ((*stack)->data == NULL) {
 		(*stack)->data = data;
 	} else {
-		if ((new = (struct stack *) malloc(sizeof(struct stack)))) {
+		if ((new = (sc_stack *) malloc(sizeof(sc_stack)))) {
 			new->data = data;
 			new->next = *stack;
 		}
@@ -29,19 +29,18 @@ void push_stack(struct stack **stack, struct num_str *data)
 	}
 }
 
-struct num_str *pop_stack(struct stack **stack)
+void *pop_sc_stack(sc_stack **stack)
 {
-	struct stack *new_head;
-	struct num_str *data;
+	sc_stack *new_head;
+	void *data;
 
 	if (!(*stack)) {
+		free(*stack);
 		return NULL;
-	} else {
-		data     = (*stack)->data;
-		new_head = (*stack)->next;
+	} else { data     = (*stack)->data; new_head = (*stack)->next;
 	}
 
-	fprintf(stderr, "\tPop Freeing: %p (stack), new_head: %p\n",
+	fprintf(stderr, "\tPop Freeing: %p (sc_stack), new_head: %p\n",
 			(void *) *stack, (void *) new_head);
 	free(*stack);
 	*stack = new_head;
@@ -49,164 +48,26 @@ struct num_str *pop_stack(struct stack **stack)
 	return data;
 }
 
-void delete_stack(struct stack *stack)
+/* TODO: Rewrite for sans-curses. */
+void sc_print_stack(FILE *file, sc_stack *stack,
+		void (*print_function)(void *data, FILE *file))
 {
-	struct stack *cur, *next;
+	sc_stack *iterator;
 
-	fprintf(stderr, "Recieved %p (stack) in delete_stack.\n", (void *) stack);
-
-	if ((cur = stack)) {
-		fprintf(stderr, "Deleting stack: %p (stack)\n", (void *) cur);
-		while (cur != NULL) {
-			next = cur->next;
-			if (cur->data) {
-				fprintf(stderr, "\tDelete Freeing Data: %p (num_str)\n",
-						(void *) cur->data);
-				free(cur->data);
-			} else {
-				fprintf(stderr, "\tDid not need to free data (num_str).\n");
-			}
-			fprintf(stderr, "\tDelete Freeing: %p (stack)\n", (void *) cur);
-			free(cur);
-			cur = next;
-		}
-	}
-}
-
-int test_stack(WINDOW *outwin)
-{
-	int i, status, depth;
-	struct stack *stack;
-	struct num_str *data;
-	const char *test_lines[STACK_TESTS] = {
-		"1.23",
-		"4.56",
-		"7.89",
-	};
-	status = 0;
-
-	fprintf(stderr, "FYI, sizeof(struct num_str) is %ld, "
-			"and sizeof(struct stack) is %ld.\n",
-			sizeof(struct num_str),
-			sizeof(struct stack));
-
-	/* Allocate memory. */
-	if (!(stack = new_stack())) {
-		wprintw(outwin, "Could not allocate a test stack (new_stack())!\n");
-		return 0;
-	}
-
-	/* Push. */
-	for (i = 0; i < STACK_TESTS; i++)
-		push_stack(&stack, get_num_str(test_lines[i]));
-
-	/* Test other ops, like rotations and depth. */
-	mvwprintw(outwin,       getcury(outwin),  0,  "\nDone pushing:\n");
-	print_stack(outwin,     getcury(outwin),  0,  STACK_WIDTH, stack);
-
-	stack_rotdown(&stack);
-	mvwprintw(outwin,       getcury(outwin),  0,  "\nDone rotating down:\n");
-	print_stack(outwin,     getcury(outwin),  0,  STACK_WIDTH, stack);
-
-	stack_rotup(&stack);
-	mvwprintw(outwin,       getcury(outwin),  0,  "\nDone rotating up:\n");
-	print_stack(outwin,     getcury(outwin),  0,  STACK_WIDTH, stack);
-
-	status = ((depth = stack_depth(stack)) == 3) ? 0 : 1;
-	mvwprintw(outwin, getcury(outwin), 0,
-			"\nDone testing depth: stack is %d deep.\n", depth);
-
-	/* Pop. */
-	for (i = STACK_TESTS; i-- > 0;) {
-		if ((data = pop_stack(&stack))) {
-			if (data->str) {
-				status += (strncmp(test_lines[i], data->str, \
-							strlen(test_lines[i]))) \
-						  ? 1 : 0;
-			} else {
-				fprintf(stderr, "No popped data->str!\n");
-				status += 1;
-			}
-		} else {
-			fprintf(stderr, "No popped data!\n");
-			status += 1;
-		}
-
-		fprintf(stderr, "Freeing data: %p (num_str).\n", (void *) data);
-		free(data);
-	}
-
-	/* Alloc again. */
-	if (!(stack = new_stack())) {
-		wprintw(outwin, "Could not allocate a test stack (new_stack())!\n");
-		return 0;
-	}
-
-	/* Push again. */
-	for (i = 0; i < STACK_TESTS; i++)
-		push_stack(&stack, get_num_str(test_lines[i]));
-
-	/* Test delete_stack. */
-	fprintf(stderr, "Passing %p (stack) to delete_stack.\n", (void *) stack);
-	delete_stack(stack);
-
-	return ((status == 0) ? 1 : 0); /* !0 is failed test. */
-}
-
-void print_stack(WINDOW *outwin, int y, int x, int width, struct stack *stack)
-{
-	struct stack *iterator;
-	int i, fcol, xoff;
-
-	i    = 0;
-	fcol = 3;
-	xoff = x;
-
-	/* 8 is size of %p string */
-	wmove(outwin,    y,     xoff + ((STACK_WIDTH - 8) / 2));
-	wprintw(outwin,  "%p",  stack);
+	fprintf(file, "Printing a stack [%p] (TODO).\n", (void *) stack);
 
 	iterator = stack;
-	while (iterator != NULL) {
-		mvwhline(outwin,  y+(i+1),    xoff,          0,  width);
-		mvwhline(outwin,  y+(i+1)+2,  xoff,          0,  width);
-		mvwvline(outwin,  y+(i+1),    xoff,          0,  3);
-		mvwvline(outwin,  y+(i+1),    xoff+width-1,  0,  3);
-
-		wmove(outwin, getcury(outwin) + 1, xoff + 1);
-
-		if (iterator->data) {
-			if (iterator->data->type == CONSTANT)
-				wprintw(outwin, "%s | C",
-						iterator->data->str);
-			else
-				wprintw(outwin, "%s |%2d",
-						iterator->data->str,
-						sig_figs(iterator->data->str));
-		}
-
-		if (getcury(outwin) >= getmaxy(outwin) - 3) {
-			xoff += STACK_WIDTH;
-			i    =  0;
-		} else if (getcurx(outwin) + STACK_WIDTH
-				>= (getmaxx(outwin) - 2)) {
-			i    =  0;
-			fcol += 3;
-			xoff =  x + fcol;
-		} else {
-			i    += 2;
-		}
-
+	while (iterator) {
+		print_function(iterator->data, file);
 		iterator = iterator->next;
 	}
-
-	wmove(outwin, getcury(outwin) + 2, 0);
+	fprintf(file, "[ bottom ]\n");
 }
 
-int stack_depth(struct stack *stack)
+int sc_stack_depth(sc_stack *stack)
 {
 	int depth;
-	struct stack *iterator;
+	sc_stack *iterator;
 
 	depth = 0;
 	if (!stack)
@@ -219,9 +80,9 @@ int stack_depth(struct stack *stack)
 	return depth; /* Includes the final NULL stack, so subtract 1. */
 }
 
-void stack_rotdown(struct stack **stack)
+void sc_stack_rotdown(sc_stack **stack)
 {
-	struct stack *new_beg, *new_end;
+	sc_stack *new_beg, *new_end;
 	new_beg = new_end = (*stack)->next; /* Sets new top. */
 
 	while (new_end->next != NULL)
@@ -232,9 +93,9 @@ void stack_rotdown(struct stack **stack)
 	*stack = new_beg;
 }
 
-void stack_rotup(struct stack **stack)
+void sc_stack_rotup(sc_stack **stack)
 {
-	struct stack *new_beg, *new_end;
+	sc_stack *new_beg, *new_end;
 
 	/* New end is two from NULL (bottom). */
 	new_end = *stack;
@@ -246,5 +107,66 @@ void stack_rotup(struct stack **stack)
 	new_beg->next = *stack; /* now at top. */
 	new_end->next = NULL; /* 'capped off' new end. */
 	*stack        = new_beg;
+}
+
+static void sc_print_ptr(void *data, FILE *file)
+{
+	fprintf(file, "[%p]\n", data);
+}
+
+int test_sc_stack(FILE *logfile)
+{
+	int i, status, depth;
+	sc_stack *stack;
+	void *data;
+	char *test_lines[3] = {
+		"1.23",
+		"4.56",
+		"7.89",
+	};
+	status = 0;
+
+	/* Should show an empty sc_stack. */
+	stack = NULL;
+	sc_print_stack(logfile, stack, sc_print_ptr);
+
+	/* Allocate memory. */
+	if (!(stack = new_sc_stack())) {
+		fprintf(logfile, "Could not allocate a test stack (new_sc_stack())!\n");
+		return 0;
+	}
+
+	/* Push. */
+	for (i = 0; i < 3; i++)
+		push_sc_stack(&stack, test_lines[i]);
+
+	fprintf(logfile, "\nDone pushing:\n");
+	sc_print_stack(logfile, stack, sc_print_ptr);
+
+	/* Test other ops, like rotating and finding depth. */
+	sc_stack_rotdown(&stack);
+	fprintf(logfile, "\nDone rotating down:\n");
+	sc_print_stack(logfile, stack, sc_print_ptr);
+
+	sc_stack_rotup(&stack);
+	fprintf(logfile, "\nDone rotating up:\n");
+	sc_print_stack(logfile, stack, sc_print_ptr);
+
+	status = ((depth = sc_stack_depth(stack)) == 3) ? 0 : 1;
+	fprintf(logfile, "\nDone testing depth: stack is %d deep.\n", depth);
+
+	/* Pop. */
+	fprintf(logfile, "\nPopping from stack.\n");
+	for (i = 3; i-- > 0;) {
+		data = pop_sc_stack(&stack);
+		if (data == test_lines[i])
+			status += 1;
+		else
+			fprintf(stderr, "No popped data!\n");
+		sc_print_stack(logfile, stack, sc_print_ptr);
+	}
+	fprintf(logfile, "Done popping.\n");
+
+	return ((status == 3) ? 1 : 0); /* 3 is number of successful pops for pass. */
 }
 

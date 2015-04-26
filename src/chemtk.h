@@ -3,20 +3,16 @@
 
 #define _GNU_SOURCE
 
-#include <ncurses.h>
-#include <form.h>
-
-#include "stack.h"
-#include "scicalc.h"
-#include "pager.h"
-#include "constants.h"
-#include "num_str.h"
-#include "runtests.h"
+#include "../config.h"
+#include "constant.h"
 #include "directory.h"
-#include "elements.h"
+#include "element.h"
 #include "operator.h"
-
-#define INFOWIN_COLOR_NORMAL	5
+#include "pager.h"
+#include "scicalc.h"
+#include "stack.h"
+#include "tests.h"
+#include "token.h"
 
 #endif /* CHEMTK_H */
 

@@ -1,96 +1,89 @@
 #include "pager.h"
 
-#define page_line(A, B) page_line_offset(A, B, 0)
-static int page_line_offset(WINDOW *outwin, FILE *file, int x_offset)
+int page_file_stream(FILE *path)
 {
-	int status;
-	char *line   = NULL;
-	size_t bytes = 0;
+	struct rlimit  self_rlim;
+	char           *filename, *page_path;
+	int            fd, fd_charlen, fd_totlen, status;
+	unsigned long  hard_fd_lim; /* should fit rlim_t */
 
-	if (getline(&line, &bytes, file) == -1) {
-		status = 0;
-	} else {
-		mvwprintw(outwin, getcury(outwin), x_offset, "%s", line);
-		status = 1;
+	/*
+	 * In order to figure out the max size of the str used to get the filename
+	 * of path, the following string must be generated:
+	 * '/proc/self/fd/FOO'
+
+	 * We must know the length of FOO, and thus the hard limit of file descriptors
+	 * for this process. This program probably won't be ran as superuser, and even
+	 * if the hard limit changed, it would be accounted for.
+	 *
+	 * This is done using getrlimit(2).
+	 */
+
+	if (getrlimit(RLIMIT_NOFILE, &self_rlim) != 0) {
+		perror("page_file_stream: failed to get max. process file descriptors");
+		return 0;
 	}
 
-	free(line);
+	fd          =          fileno(path); /* Determine fd from FILE *. */
+	hard_fd_lim =          self_rlim.rlim_max - (rlim_t) 1;
+	fd_charlen  = (int)    log10l(hard_fd_lim) + 1;
+	fd_totlen   =          strlen(SC_SELFFD_DIR) + fd_charlen + 1;
+	filename    = (char *) malloc(sizeof(char) * fd_totlen);
+	page_path   = (char *) malloc(sizeof(char) * PATH_MAX);
+
+	if (!(filename || page_path)) {
+		return 0;
+	} else {
+		snprintf(filename, fd_totlen, "%s%d", SC_SELFFD_DIR, fd);
+	}
+
+	if (readlink(filename, page_path, PATH_MAX) == -1) {
+		free(filename);
+		free(page_path);
+		perror("page_file_stream: readlink to get file name failed");
+		return 0;
+	}
+
+	fprintf(stderr, "DEBUG: Got filename '%s'.\n", page_path); /* DEBUG */
+
+	free(filename);
+	status = page_file(page_path);
+	free(page_path);
+
 	return status;
 }
 
-void page_prompt(WINDOW *outwin, const char *prompt)
+int page_file(const char *path)
 {
-	wattron(outwin,   A_BOLD);
-	wprintw(outwin,   "<Press any key to %s>",  prompt);
-	wattroff(outwin,  A_BOLD);
-	wgetch(outwin);
-}
+	int status;
+	pid_t child_pid;
 
-void page_bottom(WINDOW *outwin)
-{
-	if (getcury(outwin) >= getmaxy(outwin) - 1)
-		werase(outwin);
-}
-
-void page_prompt_bottom(WINDOW *outwin, const char *prompt)
-{ if (getcury(outwin) >= getmaxy(outwin) - 1) {
-	wattron(outwin,   A_BOLD);
-	wprintw(outwin,   "<Press any key to %s>",  prompt);
-	wattroff(outwin,  A_BOLD);
-	wgetch(outwin);
-	werase(outwin);
-											  }
-}
-
-void page_file(WINDOW *outwin, FILE *file)
-{
-	wattroff(outwin, A_BOLD);
-	while (page_line(outwin, file)) {
-		if (getcury(outwin) >= getmaxy(outwin) - 1) {
-			page_prompt_file(outwin);
-			werase(outwin);
-			wmove(outwin, 0, 0);
-		}
-	}
-}
-
-void page_file_coords(WINDOW *outwin, FILE *file, int y, int x)
-{
-	wattroff(outwin, A_BOLD);
-	wmove(outwin, y, x);
-
-	while (page_line_offset(outwin, file, x)) {
-		if (getcury(outwin) >= getmaxy(outwin) - 1) {
-			page_prompt_file(outwin);
-			werase(outwin);
-			wmove(outwin, 0, 0);
-		}
-	}
-}
-
-void page_file_delay(WINDOW *outwin, FILE *file, useconds_t time)
-{
-	wattroff(outwin, A_BOLD);
-	while (page_line(outwin, file)) {
-		if (getcury(outwin) >= getmaxy(outwin) - 1) {
-			usleep(time);
-			werase(outwin);
-			wmove(outwin, 0, 0);
-		}
-	}
-}
-
-int test_pager(WINDOW *outwin)
-{
-	FILE *test_file;
-
-	if ((test_file = fopen(TEST_PAGER_FILE, "r"))) {
-		page_file(outwin, test_file);
-		fclose(test_file);
-		return 1;
-	} else {
-		wprintw(outwin, "Cannot open test file for pager.\n");
+	/* Test file can be read. */
+	if (access(path, R_OK) == -1) {
+		perror("page_file: cannot read from file");
 		return 0;
 	}
+
+	if ((child_pid = fork()) >= 0) { /* fork() successful. */
+		if (child_pid == 0) { /* Child process. */
+			return execlp(PAGER, PAGER, path,
+					(char *) NULL);
+		} else { /* Parent process. */
+			wait(&status);
+			if (WIFEXITED(status) && (WEXITSTATUS(status) == 0))
+				return 1;
+			else
+				return 0;
+		}
+	} else { /* fork() failed. */
+		perror("page_file: cannot fork for pager");
+		exit(0);
+	}
+}
+
+int test_pager(FILE *logfile)
+{
+	fprintf(logfile, "Testing page_file with '" TEST_PAGER_FILE "'.\n");
+	return page_file(TEST_PAGER_FILE);
 }
 
