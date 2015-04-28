@@ -3,10 +3,11 @@
 
 #include <stdio.h> /* DEBUGGING */
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 
-#define SC_TOKEN_INLEN       64
+#define SC_TOKEN_INLEN	64
 
 typedef struct {
 	enum {         /* Scalar Type:   */
@@ -15,6 +16,7 @@ typedef struct {
 		SIG_FIG,   /* int            */
 		CMD,       /* char *         */
 		OPERATOR,  /* char           */
+		BOOL,      /* bool (_Bool)   */
 		NONE       /* uninitialized. */
 	} type;
 	union {
@@ -22,6 +24,7 @@ typedef struct {
 		char    op;
 		char    cmd[SC_TOKEN_INLEN];
 		int     sig_figs;
+		bool    b;
 	} data;
 } sc_token;
 

@@ -16,8 +16,14 @@
 #include "element.h"
 #include "operator.h"
 
-/* void scicalc(FILE *logfile); */
+/* Assumes a sc_stack with sc_tokens, and the tokens to be ordered:
+ * OPERATOR  <= top operator (like RPN).
+ * NUMBER    <= first operand.
+ * (NUMBER)  <= optional second operand.
+ *  [...]    <= rest of stack.
+ */
 int operate(sc_stack **stack);
+
 int test_scicalc(FILE *logfile);
 
 #endif /* SCICALC_H */

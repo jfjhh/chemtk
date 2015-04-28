@@ -22,14 +22,10 @@
 #define NAN       -INFINITY
 #endif
 
-/* Truncate a long double. */
-#define LDTOI(A)	((int)(A >= 0.0L ? (A + 0.5L) : (A - 0.5L)))
+#define DTOI(A)        ((int)(A >= 0.0 ? (A + 0.5) : (A - 0.5)))
+#define least(A, B)    ((A < B) ? A : B)
 
-/* Find the smallest of the two values. */
-#define least(A, B)	((A < B) ? A : B)
-
-/* (S)ignificant (F)igure (C)ode. */
-#define SFC_FIG_TESTS   4
+#define SFC_FIG_TESTS  4
 
 /* Returns an array 3 ints long, with each index containing the significant
  * figures found in line in total, before the decimal, and after the decimal,
