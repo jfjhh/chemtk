@@ -2,6 +2,8 @@
 
 ### Do it now!
 
+- Document all header files with Doxygen / code reveiew.
+
 #### New Design
 
 - Use prefix `sc_`.

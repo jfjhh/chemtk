@@ -26,3 +26,6 @@ src/Makefile
 src/Makefile.in
 stamp-h1
 
+# Doxygen
+doc/doxygen
+
