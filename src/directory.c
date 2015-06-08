@@ -1,3 +1,10 @@
+/**
+ * @file directory.c
+ * @author Alex Striff
+ *
+ * @brief Provides a basic @c ls like utility.
+ */
+
 #include "directory.h"
 
 char **get_files(const char *dir)
@@ -81,6 +88,12 @@ int test_directory(FILE *logfile)
 	char **files;
 	int file;
 
+	/**
+	 * @test Gets files from @c GETFILES_TESTDIR, expecting strings that are 5
+	 * @c chars long, as each file name looks something like
+	 * @code {'a', '.', 't', 'x', 't', '\0'} @endcode
+	 * Test also fails if there are not 7 files found.
+	 */
 	fprintf(logfile, "=== Plain test ===\n");
 	if (!(files = get_files(GETFILES_TESTDIR))) {
 		goto fail;
@@ -95,6 +108,12 @@ int test_directory(FILE *logfile)
 	}
 	free_filelist(files);
 
+	/**
+	 * @test Gets files from @c GETFILES_TESTDIR, expecting strings that are 2
+	 * @c chars long, as each file name looks something like
+	 * @code {'a', '\0'} @endcode
+	 * Test also fails if there are not 7 files found.
+	 */
 	fprintf(logfile, "=== Strip test ===\n");
 	if (!(files = get_files_strip(GETFILES_TESTDIR))) {
 		goto fail;

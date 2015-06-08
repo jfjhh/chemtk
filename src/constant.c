@@ -1,3 +1,10 @@
+/**
+ * @file constant.c
+ * @author Alex Striff
+ *
+ * @brief Provides lookup of constant values by string name.
+ */
+
 #include "constant.h"
 
 double const_search(const char *line)
@@ -40,23 +47,28 @@ double const_search(const char *line)
 	return constant;
 }
 
-int test_consant(FILE *logfile)
+int test_constant(FILE *logfile)
 {
-	char *mol            = "mol";
-	double expected = 6.022141e+23L;
+	/**
+	 * @test Checks to see if the value of @c "mol" can be found via
+	 * const_search() with it's expected value, within @c DBL_EPSILON.
+	 */
+
+	char *mol       = "mol";
+	double expected = 6.022141e+23;
 	double found;
 	int correct;
 
 	found = const_search(mol);
 
 	/* Check if they are "equal enough" (within DBL_EPSILON). */
-	if (fabsl(expected - found) < DBL_EPSILON)
+	if (fabs(expected - found) < DBL_EPSILON)
 		correct = 1;
 	else
 		correct = 0;
 
 	fprintf(logfile,
-			"According to test_consant(), %s is %e (%s, should be %e).\n",
+			"According to test_constant(), %s is %e (%s, should be %e).\n",
 			mol, found, ((correct) ? "Correct" : "Incorrect"), expected);
 
 	return correct;

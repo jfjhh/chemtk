@@ -1,3 +1,14 @@
+/**
+ * @file element.c
+ * @author Alex Striff
+ *
+ * @brief Routines for getting information about chemical elements.
+ *
+ * Information that can be gained ranges from specific data, such as atomic
+ * mass, to detailed paragraphs on an element, to printing out an ASCII
+ * periodic table.
+ */
+
 #include "element.h"
 
 struct element *ptable[NUM_ELEMENTS];
@@ -204,18 +215,32 @@ int test_element(FILE *logfile)
 {
 	int status, element;
 
-	/* Print all the elements and their info files. */
+	/**
+	 * @test
+	 * Tests the ability to load all elements into memory.
+	 */
 	if (!init_elements()) {
 		fprintf(logfile, "Error with init_elements!\n");
 		status = 0;
 	} else {
 		status = 1;
 		for (element = 0; element < NUM_ELEMENTS && status == 1; element++) {
+
+			/**
+			 * @test
+			 * Validates all elements.
+			 */
 			status = 0;
 			status += valid_element(ptable[element]);
 
-			/* Print ALL the info to the file */
-#if (TEST_ELEMENTS_VERBOSE != 0)
+			/**
+			 * @test
+			 * Tests if it is possible to print all the elements and their info
+			 * files.
+			 * @note
+			 * Only when @c TEST_ELEMENTS_VERBOSE is nonzero.
+			 */
+#if TEST_ELEMENTS_VERBOSE
 			status += print_element(ptable[element], file);
 			usleep(ELEMENT_AUTO_USEC);
 
@@ -233,7 +258,7 @@ int test_element(FILE *logfile)
 	} else {
 		/* Print a periodic table. */
 		status = print_ptable(logfile);
-#if (TEST_ELEMENTS_VERBOSE != 0)
+#if TEST_ELEMENTS_VERBOSE
 		usleep(ELEMENT_PAUSE_USEC);
 #endif /* TEST_ELEMENTS_VERBOSE */
 	}

@@ -1,3 +1,13 @@
+/**
+ * @file command.c
+ * @author Alex Striff
+ *
+ * @brief Runs commands that produce numbers to calculate with.
+ *
+ * An example of a command's output would be the atomic mass of an element from
+ * the periodic table.
+ */
+
 #include "command.h"
 
 int run_cmd(const char *line, sc_token *token, FILE *logfile)
@@ -8,7 +18,7 @@ int run_cmd(const char *line, sc_token *token, FILE *logfile)
 
 	/* Token defaults. */
 	token->type = NONE;
-	memset(token->data.cmd, '\0', SC_TOKEN_INLEN);
+	memset(token->data.cmd, '\0', CMD_LINELEN);
 
 	if (line[0] == 'e') { /* Only if this is an element command. */
 

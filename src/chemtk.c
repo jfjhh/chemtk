@@ -1,12 +1,20 @@
+/**
+ * @file chemtk.c
+ * @author Alex Striff
+ *
+ * @brief Main file for program execution.
+ */
+
 #include "chemtk.h"
 
 int main(void)
 {
-	/*
-	 * TODO: Parse command line args. They should include:
+	/**
+	 * @todo
+	 * Parse command line args. They should include:
 	 * The log file, which is stderr by default.
 	 * Other.
-	 * */
+	 */
 
 	printf("ChemTK SciCalc Version %s.\n\n", VERSION);
 	printf("Testing ...\n");

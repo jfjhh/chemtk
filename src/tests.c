@@ -1,3 +1,10 @@
+/**
+ * @file tests.c
+ * @author Alex Striff
+ *
+ * @brief Basic system for running tests.
+ */
+
 #include "tests.h"
 
 struct test_array all_tests = {

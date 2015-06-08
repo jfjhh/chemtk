@@ -1,6 +1,11 @@
-#include "scicalc.h"
+/**
+ * @file scicalc.c
+ * @author Alex Striff
+ *
+ * @brief Allows RPN style operation on a stack.
+ */
 
-/* TODO: write operate() to change stack in-place. */
+#include "scicalc.h"
 
 int operate(sc_stack **stack)
 {
@@ -119,7 +124,7 @@ int operate(sc_stack **stack)
 	return 1;
 }
 
-/* TODO: write test_scicalc(). */
+/* @test Write test_scicalc(). */
 int test_scicalc(FILE *logfile)
 {
 	fprintf(logfile, "TODO: write test_scicalc().\n");

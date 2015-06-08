@@ -1,30 +1,37 @@
+/**
+ * @file token.c
+ * @author Alex Striff
+ *
+ * @brief Provides a generic stack member datatype: a parsed token.
+ */
+
 #include "token.h"
 
-/* TODO: handle_fields will become a part of tokenizing (this includes rejecting
- * an invalid input string. */
+/**
+ * @todo handle_fields will become a part of @c sc_tokenize() (this includes
+ * rejecting an invalid input string.
+ */
+static int handle_fields(WINDOW *outwin, struct num_str *numstr,
+		struct stack *stack)
+{
+	int status = 1;
 
-/* static int handle_fields(WINDOW *outwin, struct num_str *numstr, */
-/* 		struct stack *stack) */
-/* { */
-/* 	int status = 1; */
+	/* Be sure that this is a cmd or operation. */
+	if (numstr->type == CMD || numstr->type == OPERATOR) {
+		wprintw(outwin, "handle_fields got a CMD or OPERATOR type numstr.\n");
+		status = run_cmd(outwin, numstr, stack);
+	} else {
+		/* @todo Check for a valid number using regexp. */
+	}
 
-/* 	/1* Be sure that this is a cmd or operation. *1/ */
-/* 	if (numstr->type == CMD || numstr->type == OPERATOR) { */
-/* 		wprintw(outwin, "handle_fields got a CMD or OPERATOR type numstr.\n"); */
-/* 		status = run_cmd(outwin, numstr, stack); */
-/* 	} else { */
-/* 		/1* TODO: Check for a valid number using regexp. *1/ */
-/* 	} */
+	if (status && numstr->type != CMD) /* cmd resulted in a number */
+		push_stack(&stack, numstr);
+	else
+		free(numstr);
 
-/* 	if (status && numstr->type != CMD) /1* cmd resulted in a number *1/ */
-/* 		push_stack(&stack, numstr); */
-/* 	else */
-/* 		free(numstr); */
+	return status;
+}
 
-/* 	return status; */
-/* } */
-
-/* TODO: write sc_tokenize(). */
 sc_token *sc_tokenize(const char *line)
 {
 	int i, is_num;
@@ -36,13 +43,13 @@ sc_token *sc_tokenize(const char *line)
 
 	i = is_num  = 0;
 	token->type = NONE;
-	memset(token->data.cmd, '\0', SC_TOKEN_INLEN); /* zero data. */
+	memset(token->data.cmd, '\0', CMD_LINELEN); /* zero data. */
 
 	for (i = 0; i < 10; i++) {
 		if (line[0] == '0' + i) {
 			sscanf(line, "%le", &(token->data.flt));
 
-			if (line[SC_TOKEN_INLEN - 2] == SC_CONST_CHAR)
+			if (line[CMD_LINELEN - 2] == SC_CONST_CHAR)
 				token->type = CONSTANT;
 			else
 				token->type = NUMBER;
@@ -66,15 +73,15 @@ sc_token *sc_tokenize(const char *line)
 		token->data.flt = tmp;
 	}
 
-	strncpy(token->data.cmd, line, SC_TOKEN_INLEN);
-	token->data.cmd[SC_TOKEN_INLEN - 1] = '\0'; /* Force NULL termination. */
+	strncpy(token->data.cmd, line, CMD_LINELEN);
+	token->data.cmd[CMD_LINELEN - 1] = '\0'; /* Force NULL termination. */
 
 	fprintf(stderr, "Created sc_token: %p.\n", (void *) token);
 
 	return token;
 }
 
-/* TODO: write test_sc_token(). */
+/* @test Write test_sc_token(). */
 int test_sc_token(FILE *logfile)
 {
 	int status;

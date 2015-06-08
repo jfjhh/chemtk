@@ -1,3 +1,10 @@
+/**
+ * @file pager.c
+ * @author Alex Striff
+ *
+ * @brief Pages files.
+ */
+
 #include "pager.h"
 
 int page_file_stream(FILE *path)
@@ -83,6 +90,10 @@ int page_file(const char *path)
 
 int test_pager(FILE *logfile)
 {
+	/**
+	 * @test
+	 * Tests to see if @c TEST_PAGER_FILE can be paged.
+	 */
 	fprintf(logfile, "Testing page_file with '" TEST_PAGER_FILE "'.\n");
 	return page_file(TEST_PAGER_FILE);
 }

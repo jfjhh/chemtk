@@ -1,3 +1,10 @@
+/**
+ * @file operator.c
+ * @author Alex Striff
+ *
+ * @brief Checks to see if characters are supported mathematical operators.
+ */
+
 #include "operator.h"
 
 const char operators[] = {
@@ -26,6 +33,11 @@ int test_operator(FILE *logfile)
 		'+', '-', 'o', '#', '$',
 	};
 
+	/**
+	 * @test
+	 * Tests if @c NUM_OPERATOR_TESTS example operators are valid operators.
+	 */
+
 	for (i = status = 0; i < NUM_OPERATOR_TESTS; i++) {
 		is_op = is_operator(test_ops[i]);
 		fprintf(logfile, "%c %s an operator.\n",
@@ -33,6 +45,6 @@ int test_operator(FILE *logfile)
 		status += is_op;
 	}
 
-	return ((status == 3) ? 1 : 0); /* Only 3 are actually ops. */
+	return ((status == 3) ? 1 : 0); /* Only 3 of the tested are actually ops. */
 }
 

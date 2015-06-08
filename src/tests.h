@@ -1,3 +1,10 @@
+/**
+ * @file tests.h
+ * @author Alex Striff
+ *
+ * @brief Basic system for running tests.
+ */
+
 #ifndef TESTS_H
 #define TESTS_H
 
@@ -5,17 +12,38 @@
 
 #include "chemtk.h"
 
+/**
+ * Number of tests to be run.
+ */
 #define NUM_TESTS         8
 
+/**
+ * A record structure to store arrays of all tests to run.
+ */
 struct test_array {
-	int  (*test_functions[NUM_TESTS])(FILE *logfile);
-	char *test_names[NUM_TESTS];
+	int  (*test_functions[NUM_TESTS])(FILE *logfile); /**< Function pointers. */
+	char *test_names[NUM_TESTS];                      /**< Test names. */
 };
 
+/**
+ * Stores all test functions and names that are ran by @c run_tests().
+ */
 struct test_array all_tests;
 
-/* Returns 0 if any tests failed, and the number passed if all passed. */
+/**
+ * Runs the tests for a single test array.
+ *
+ * @param logfile The file to log test output to.
+ * @param tests The test to run.
+ */
 int run_tests(FILE *logfile, struct test_array tests);
+
+/**
+ * @def run_all_tests(A)
+ * @brief Runs all project tests (found in @c all_tests).
+ *
+ * @param A The file to log test output to.
+ */
 #define run_all_tests(A) run_tests(A, all_tests)
 
 #endif /* TESTS_H */

@@ -1,3 +1,10 @@
+/**
+ * @file stack.c
+ * @author Alex Striff
+ *
+ * @brief An implementation of a stack.
+ */
+
 #include "stack.h"
 
 sc_stack *new_sc_stack(void)
@@ -37,7 +44,8 @@ void *pop_sc_stack(sc_stack **stack)
 	if (!(*stack)) {
 		free(*stack);
 		return NULL;
-	} else { data     = (*stack)->data; new_head = (*stack)->next;
+	} else {
+		data     = (*stack)->data; new_head = (*stack)->next;
 	}
 
 	fprintf(stderr, "\tPop Freeing: %p (sc_stack), new_head: %p\n",
@@ -48,9 +56,8 @@ void *pop_sc_stack(sc_stack **stack)
 	return data;
 }
 
-/* TODO: Rewrite for sans-curses. */
 void sc_print_stack(FILE *file, sc_stack *stack,
-		void (*print_function)(void *data, FILE *file))
+		sc_stack_pfun pfun);
 {
 	sc_stack *iterator;
 
@@ -58,7 +65,7 @@ void sc_print_stack(FILE *file, sc_stack *stack,
 
 	iterator = stack;
 	while (iterator) {
-		print_function(iterator->data, file);
+		pfun(iterator->data, file);
 		iterator = iterator->next;
 	}
 	fprintf(file, "[ bottom ]\n");
@@ -109,9 +116,17 @@ void sc_stack_rotup(sc_stack **stack)
 	*stack        = new_beg;
 }
 
-static void sc_print_ptr(void *data, FILE *file)
+void sc_print_ptr(void *data, FILE *file)
 {
-	fprintf(file, "[%p]\n", data);
+	if (data)
+		fprintf(file, "[%p]\n", data);
+	else
+		fprintf(file, "[NULL]\n");
+}
+
+void sc_print_double(void *data, FILE *file)
+{
+	fprintf(file, "[%f]\n", (double) *data);
 }
 
 int test_sc_stack(FILE *logfile)
@@ -124,38 +139,63 @@ int test_sc_stack(FILE *logfile)
 		"4.56",
 		"7.89",
 	};
-	status = 0;
 
-	/* Should show an empty sc_stack. */
+	status = 0;
 	stack = NULL;
+
+	/**
+	 * @test
+	 * Tests if printing an empty (or @c NULL) stack with @c sc_print_ptr()
+	 * works.
+	 */
 	sc_print_stack(logfile, stack, sc_print_ptr);
 
-	/* Allocate memory. */
+	/**
+	 * @test
+	 * Tests if a stack can be allocated.
+	 */
 	if (!(stack = new_sc_stack())) {
 		fprintf(logfile, "Could not allocate a test stack (new_sc_stack())!\n");
 		return 0;
 	}
 
-	/* Push. */
+	/**
+	 * @test
+	 * Tests if a stack can be pushed to.
+	 */
 	for (i = 0; i < 3; i++)
 		push_sc_stack(&stack, test_lines[i]);
 
 	fprintf(logfile, "\nDone pushing:\n");
 	sc_print_stack(logfile, stack, sc_print_ptr);
 
-	/* Test other ops, like rotating and finding depth. */
+	/**
+	 * @test
+	 * Tests if a stack can be rotated down.
+	 */
 	sc_stack_rotdown(&stack);
 	fprintf(logfile, "\nDone rotating down:\n");
 	sc_print_stack(logfile, stack, sc_print_ptr);
 
+	/**
+	 * @test
+	 * Tests if a stack can be rotated up.
+	 */
 	sc_stack_rotup(&stack);
 	fprintf(logfile, "\nDone rotating up:\n");
 	sc_print_stack(logfile, stack, sc_print_ptr);
 
+	/**
+	 * @test
+	 * Tests if a stack's depth can be correctly found.
+	 */
 	status = ((depth = sc_stack_depth(stack)) == 3) ? 0 : 1;
 	fprintf(logfile, "\nDone testing depth: stack is %d deep.\n", depth);
 
-	/* Pop. */
+	/**
+	 * @test
+	 * Tests if a stack can be popped from.
+	 */
 	fprintf(logfile, "\nPopping from stack.\n");
 	for (i = 3; i-- > 0;) {
 		data = pop_sc_stack(&stack);
