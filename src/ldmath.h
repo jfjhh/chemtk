@@ -17,6 +17,12 @@
 #ifndef LD_MATH
 #define LD_MATH
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif /* _GNU_SOURCE */
+
+#include <math.h>
+
 #ifndef INFINITY
 /**
  * Definition of @c INFINITY, if not present.
@@ -30,12 +36,6 @@
 #endif /* INFINITY */
 
 #ifndef NAN
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif /* _GNU_SOURCE */
-
-#include <math.h>
-
 /**
  * Replacement for standard definition of @c NAN, if not present.
  */
@@ -86,7 +86,7 @@
  * operate on.
  * @param B The value to set all fields to.
  */
-#define SIG_FIG_SET(A, B)	B[ALL] = B[BEFORE] = B[AFTER] = A;
+#define SIG_FIG_SET(A, B)	A[ALL] = A[BEFORE] = A[AFTER] = B;
 
 /**
  * Used to index the @link sig_fig_array <tt>significant figure array</tt>@endlink

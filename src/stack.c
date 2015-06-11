@@ -56,8 +56,7 @@ void *pop_sc_stack(sc_stack **stack)
 	return data;
 }
 
-void sc_print_stack(FILE *file, sc_stack *stack,
-		sc_stack_pfun pfun);
+void sc_print_stack(FILE *file, sc_stack *stack, sc_stack_pfun pfun)
 {
 	sc_stack *iterator;
 
@@ -126,7 +125,7 @@ void sc_print_ptr(void *data, FILE *file)
 
 void sc_print_double(void *data, FILE *file)
 {
-	fprintf(file, "[%f]\n", (double) *data);
+	fprintf(file, "[%f]\n", *(double *) data);
 }
 
 int test_sc_stack(FILE *logfile)

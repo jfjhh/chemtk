@@ -31,6 +31,16 @@
 #include "element.h"
 
 /**
+ * Checks if a string is a valid command.
+ *
+ * @param line The command string.
+ *
+ * @retval 0 @p line is not a command.
+ * @retval 1 @p line is a valid command.
+ */
+int is_cmd(const char *line);
+
+/**
  * Runs a command specfied in line.
  *
  * Not all commands will result in a token being generated.
@@ -39,15 +49,11 @@
  * @param out The token result.
  * @param logfile The file to output of the command to.
  *
- * @retval 1
- * Success.
+ * @retval 1 Command succeeded.
+ * @retval 0 Command failed.
  * @note
  * In a case where the command does not produce a token, the token will be of
  * type @c NONE.
- *
- * @retval 0
- * In a case of a failed command that *should* produce a token, the token will
- * be of type @c NONE.
  */
 int run_cmd(const char *line, sc_token *out, FILE *logfile);
 

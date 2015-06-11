@@ -17,7 +17,7 @@ int valid_num(const char *line)
 
 	d = strtod(line, NULL);
 
-	if (d == 0F || d == HUGE_VALF)
+	if (d == 0.0 || d == HUGE_VALF)
 		return 0;
 	else
 		return 1;
@@ -34,7 +34,7 @@ int sig_figs(const char *line, int *figs)
 		return 0;
 
 	/* Check for unlimited sig. figs. (constant). */
-	if (line[SC_TOKEN_INLEN - 2] == SC_CONST_CHAR) {
+	if (line[CMD_LINELEN - 2] == SC_CONST_CHAR) {
 		SIG_FIG_SET(figs, -1);
 		return -1;
 	}

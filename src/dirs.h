@@ -90,7 +90,7 @@
 #define GETFILES_BUFLEN         (GETFILES_FILE_MAX *  GETFILES_NAME_MAX)
 
 /*******************************************************************************
- * Directory locations for things like scientific consant, information, help
+ * Directory locations for things like scientific constant, information, help
  * files, etc.
  ******************************************************************************/
 

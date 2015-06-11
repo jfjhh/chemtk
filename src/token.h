@@ -3,6 +3,11 @@
  * @author Alex Striff
  *
  * @brief Provides a generic stack member datatype: a parsed token.
+ *
+ * @todo Make accessor macros work with pointers. E.g.:
+ * @code
+ * #define SC_FLT(A)	A->data.value.flt
+ * @endcode
  */
 
 #ifndef TOKEN_H
@@ -23,6 +28,62 @@ enum sc_token_type {
 	OPERATOR,  /**< A stack operator. */
 };
 
+/**
+ * @def SCT_FLT(A)
+ * @brief Access a sc_token's floating point data.
+ *
+ * @param A The sc_token to access.
+ */
+#define SCT_FLT(A)	A->data.value.flt
+
+/**
+ * @def SCT_FIG(A, B)
+ * @brief Access a sc_token's sig. fig. data.
+ *
+ * @param A The sc_token to access.
+ * @param B The sig_fig_field to access.
+ */
+#define SCT_FIG(A, B)	A->data.value.figs[B]
+
+/**
+ * @def SCT_FIGS(A)
+ * @brief Access a sc_token's <tt>significant figure array</tt>.
+ *
+ * @param A The sc_token to access.
+ */
+#define SCT_FIGS(A)	A->data.value.figs
+
+/**
+ * @def SCT_BOOL(A)
+ * @brief Access a sc_token's boolean value data.
+ *
+ * @param A The sc_token to access.
+ */
+#define SCT_BOOL(A)	A->data.value.boolean
+
+/**
+ * @def SCT_CMD(A)
+ * @brief Access a sc_token's command string.
+ *
+ * @param A The sc_token to access.
+ */
+#define SCT_CMD(A)	A->data.cmd
+
+/**
+ * @def SCT_OP(A)
+ * @brief Access a sc_token's operator char.
+ *
+ * @param A The sc_token to access.
+ */
+#define SCT_OP(A)	A->data.op
+
+/**
+ * @def SCT_TYPE(A)
+ * @brief Access a sc_token's type.
+ *
+ * @param A The sc_token to access.
+ */
+#define SCT_TYPE(A)	A->type
 
 #include <stdio.h> /* DEBUGGING */
 #include <stdlib.h>
@@ -39,9 +100,9 @@ enum sc_token_type {
  * Generic numeric value structure.
  */
 struct sc_token_value {
-	double value;           /**< The number's value. */
+	double flt;             /**< The number's value. */
 	int figs[SIG_FIG_LEN];  /**< The significant figure array. */
-	bool b;                 /**< Boolean representation of the number. */
+	bool boolean;           /**< Boolean representation of the number. */
 };
 
 /**
@@ -50,7 +111,7 @@ struct sc_token_value {
 union sc_token_data {
 	struct sc_token_value value;         /**< A numeric value structure. */
 	char           op;                   /**< A character operator. */
-	char           cmd[CMD_LINELEN];  /**< A string that represents a command
+	char           cmd[CMD_LINELEN];     /**< A string that represents a command
 										   to be evaluated. */
 };
 

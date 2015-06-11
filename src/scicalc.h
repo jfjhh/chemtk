@@ -22,6 +22,7 @@
 #include "token.h"
 #include "element.h"
 #include "operator.h"
+#include "stack.h"
 
 /**
  * Performs an operation on @p stack (RPN calculation).
