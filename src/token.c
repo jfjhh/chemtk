@@ -26,8 +26,8 @@ sc_token *sc_tokenize(const char *line)
 	} else if (is_operator(line[0])) { /* type is OPERATOR. */
 		SCT_TYPE(result_token) = OPERATOR;
 		SCT_OP(result_token) = line[0];
-	} else if (is_cmd(line)) { /* type is CMD. */
-		if (!run_cmd(line, result_token, stderr)) {
+	} else if (is_sc_command(line)) { /* type is CMD. */
+		if (!run_sc_command(line, result_token, stderr)) {
 			fprintf(stderr, "sc_tokenize(): failed to run command.\n");
 			SCT_TYPE(result_token) = NONE;
 		} else {
