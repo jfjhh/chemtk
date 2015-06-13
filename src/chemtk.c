@@ -27,10 +27,17 @@ int main(void)
 		printf("All tests passed!\n");
 	}
 
+	/* Add all commands to memory. */
+	init_sc_commands();
+	add_sc_command(fun, CONSTANT_CMD);
+	add_sc_command(fun, ELEMENT_CMD);
+
 	page_file(SCICALC_DOCFILE); /* Init/Help file. */
 
 	/* TODO: Start calculating. */
 	printf("TODO: Start calculating.\n");
+
+	free_sc_commands();
 
 	return 0;
 }

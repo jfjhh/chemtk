@@ -33,11 +33,13 @@ enum sc_command_type {
 	NOT_CMD      = 0,   /**< Invalid command (@c 0). */
 	ELEMENT_CMD  = 'e', /**< An element command. */
 	CONSTANT_CMD = 'c', /**< A constant command. */
+	STACK_CMD    = 's', /**< A stack command. */
 	TEST_CMD     = 't', /**< A testing command. */
 };
 
 struct sc_command_entry;
 struct sc_command_table;
+struct sc_command_data;
 
 /**
  * Table to hold all command entries.
@@ -49,6 +51,7 @@ struct sc_command_table *sc_commands;
 #include <string.h>
 
 #include "token.h"
+#include "stack.h"
 #include "element.h"
 #include "constant.h"
 
@@ -70,19 +73,34 @@ struct sc_command_table *sc_commands;
 typedef int (*sc_command_fun)(const char *line, sc_token *token, FILE *logfile);
 
 /**
+ * Contains all the data needed to run a command.
+ */
+struct sc_command_data {
+	char line[CMD_LINELEN]; /**< The command to run. */
+	sc_token *token;        /**< The token to change (opt). */
+	FILE *logfile;          /**< The writable file to write output to (opt). */
+	sc_stack *stack;        /**< The stack to change (opt). */
+};
+
+/**
  * Entry of a command for the lookup table.
  */
 struct sc_command_entry {
-	enum sc_command_type type;
-	sc_command_fun *cmd_fun;
+	enum sc_command_type type; /**< General type of a command. */
+	char subcommand_delim;     /**< Optional delimiter for subcommand within an
+								 overarching command type. */
+	sc_command_fun *cmd_fun;   /**< Function pointer to the actual command
+								 function. */
 };
 
 /**
  * All command entries.
  */
 struct sc_command_table {
-	struct sc_command_entry *entries;
-	int count;
+	struct sc_command_entry *entries; /**< Dynamically allocated array of all
+										command entries. */
+	int count;                        /** The current number of commands in the
+										table. */
 };
 
 /**
@@ -96,10 +114,14 @@ int init_sc_commands(void);
 /**
  * Adds a command to the lookup table.
  *
+ * @param entry The command entry to add to the table.
+ *
  * @retval 0 Failed to add to the table.
  * @retval 1 Succeeded in adding the function to the table.
+ *
+ * @todo Reimplement adding.
  */
-int add_sc_command(sc_command_fun *cmd_fun, enum sc_command_type type);
+int add_sc_command(struct sc_command_entry *entry);
 
 /**
  * Frees the command lookup table from memory.

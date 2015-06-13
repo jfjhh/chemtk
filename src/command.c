@@ -115,13 +115,13 @@ int test_command(FILE *logfile)
 		return 0;
 	}
 
-	if (!run_sc_command(test_sc_command_fun, test_token, logfile)) {
+	if (!run_sc_command("test", test_token, logfile)) {
 		fprintf(logfile, "Could not run_sc_command() [failed].\n");
 		return 0;
 	}
 
 	if (SCT_TYPE(test_token) != VALUE) { /* Set by the command as a check. */
-		fprintf(logfile, "Could not run_sc_command() [failed].\n");
+		fprintf(logfile, "Test command executed wrong.\n");
 		return 0;
 	}
 
