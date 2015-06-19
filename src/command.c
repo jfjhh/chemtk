@@ -77,9 +77,14 @@ int run_sc_command(const char *line, sc_token *token, FILE *logfile)
 	/**
 	 * @todo write run_sc_command().
 	 */
+	int i;
 	enum sc_command_type type = line[0];
 
 	/* Search through sc_commands for type, and execute that function. */
+	for (i = 0; i < sc_commands->count; i++) {
+		if (type == sc_commands->entries[i].type)
+			return sc_commands->entries[i].cmd_fun(line, token, logfile);
+	}
 
 	return 0;
 }

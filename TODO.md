@@ -2,6 +2,8 @@
 
 ### Do it now!
 
+- Fix scicalc's operate() function to recalculate other significant figures upon evaluation.
+
 - Update scicalc documentation file (also remove silly ops that override normal
   typing.
 
