@@ -156,6 +156,23 @@ int valid_num(const char *line);
 int sig_figs(const char *line, int *figs);
 
 /**
+ * Sets the @link sig_fig_array <tt>significant figure array</tt>@endlink
+ * @p figs, based on the result of an operation.
+ *
+ * @param a The first token to work with.
+ * @param b The second token to work with.
+ * @param field The field to choose off of. E.g. @c AFTER for addition.
+ * @param figs The @link sig_fig_array <tt>significant figure array</tt>@endlink
+ * to modify.
+ *
+ * @retval 1 if arguments were valid and setting succeeded.
+ * @retval 0 if an invalid operation was requested (bad arguments, memory
+ * errors, etc.).
+ */
+int sig_figs_op(const sc_token *a, const sc_token *b,
+		enum sig_fig_field field, int *figs);
+
+/**
  * Tests math routines, logging results to @p logfile.
  *
  * @param logfile The file to log notes and the ongoing status of the test to.
