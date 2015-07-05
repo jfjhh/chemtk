@@ -1,5 +1,7 @@
 # ChemTK
 
+![Build Status](https://travis-ci.org/jfjhh/chemtk.svg?branch=master)
+
 A toolkit of a few little programs for chemistry.
 They include things like a scientific calculator, and element info lookup.
 
