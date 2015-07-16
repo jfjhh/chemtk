@@ -14,8 +14,8 @@
  * @see https://www.gnu.org/software/libc/manual/html_node/Infinity-and-NaN.html
  */
 
-#ifndef LD_MATH
-#define LD_MATH
+#ifndef LDMATH_H
+#define LDMATH_H
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -181,5 +181,5 @@ int sig_figs_op(const sc_token *a, const sc_token *b,
  */
 int test_ldmath(FILE *logfile);
 
-#endif /* LD_MATH */
+#endif /* LDMATH_H */
 

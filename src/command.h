@@ -89,7 +89,7 @@ struct sc_command_entry {
 	enum sc_command_type type; /**< General type of a command. */
 	char subcommand_delim;     /**< Optional delimiter for subcommand within an
 								 overarching command type. */
-	sc_command_fun *cmd_fun;   /**< Function pointer to the actual command
+	sc_command_fun cmd_fun;    /**< Function pointer to the actual command
 								 function. */
 };
 
@@ -115,13 +115,14 @@ int init_sc_commands(void);
  * Adds a command to the lookup table.
  *
  * @param entry The command entry to add to the table.
+ * @param type The type of the command to add to the table.
  *
  * @retval 0 Failed to add to the table.
  * @retval 1 Succeeded in adding the function to the table.
  *
  * @todo Reimplement adding.
  */
-int add_sc_command(struct sc_command_entry *entry);
+int add_sc_command(sc_command_fun cmd_fun, enum sc_command_type type);
 
 /**
  * Frees the command lookup table from memory.

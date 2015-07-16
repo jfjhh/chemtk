@@ -27,7 +27,7 @@ int init_sc_commands(void)
 	return 1;
 }
 
-int add_sc_command(sc_command_fun *cmd_fun, enum sc_command_type type)
+int add_sc_command(sc_command_fun cmd_fun, enum sc_command_type type)
 {
 	sc_commands->count++;
 
@@ -41,8 +41,8 @@ int add_sc_command(sc_command_fun *cmd_fun, enum sc_command_type type)
 		return 0;
 	}
 
-	sc_commands->entries[sc_commands->count -1].type = type;
-	sc_commands->entries[sc_commands->count -1].cmd_fun = cmd_fun;
+	sc_commands->entries[sc_commands->count - 1].type = type;
+	sc_commands->entries[sc_commands->count - 1].cmd_fun = cmd_fun;
 
 	return 1;
 }

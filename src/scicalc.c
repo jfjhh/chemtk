@@ -14,10 +14,10 @@ int operate(sc_stack **stack)
 	a = b = c = op = NULL;
 
 	/* Get the op from the stack and free it (and check for validity). */
-	if (!(op = sc_pop_stack(stack))
+	if (!(op = pop_sc_stack(stack))
 			|| SCT_TYPE(op) == OPERATOR
 			|| !is_operator(SCT_OP(op))) {
-		sc_push_stack(stack, op); /* Undo changes to stack. */
+		push_sc_stack(stack, op); /* Undo changes to stack. */
 		return 0;
 	}
 
@@ -31,10 +31,10 @@ int operate(sc_stack **stack)
 	if (operation != '~') {
 		/* This is the only unary op, so all the others are binary and need two
 		 * sc_tokens to be popped. */
-		a = sc_pop_stack(stack);
-		b = sc_pop_stack(stack);
+		a = pop_sc_stack(stack);
+		b = pop_sc_stack(stack);
 	} else { /* Operation is unary. */
-		a = sc_pop_stack(stack);
+		a = pop_sc_stack(stack);
 		b = a;
 	}
 
@@ -122,7 +122,7 @@ int operate(sc_stack **stack)
 	 * total figs. 3 - 1 == 2 figs.  after the decimal. */
 	fprintf(stderr, "Got: %- .*e).",
 			SCT_FIG(c, ALL) - 1, SCT_FLT(c));
-	sc_push_stack(stack, c);
+	push_sc_stack(stack, c);
 
 	return 1;
 }

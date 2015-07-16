@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 /**
  * Linked list structure of a stack member.
@@ -36,7 +37,7 @@ typedef void (*sc_stack_pfun)(void *data, FILE *file);
  * @retval NULL
  * If memory allocation fails.
  */
-sc_stack *sc_new_stack(void);
+sc_stack *new_sc_stack(void);
 
 /**
  * Pushes @p data to @p stack.
@@ -44,7 +45,7 @@ sc_stack *sc_new_stack(void);
  * @param stack A pointer to the stack to be modified.
  * @param data The data to be pushed to the stack.
  */
-void sc_push_stack(sc_stack **stack, void *data);
+void push_sc_stack(sc_stack **stack, void *data);
 
 /**
  * Pops @p data from @p stack.
@@ -56,7 +57,16 @@ void sc_push_stack(sc_stack **stack, void *data);
  * @retval NULL
  * The stack was @c NULL and could not be popped from.
  */
-void *sc_pop_stack(sc_stack **stack);
+void *pop_sc_stack(sc_stack **stack);
+
+/**
+ * Completely deletes @p stack (and all associated data).
+ *
+ * @param stack A pointer to the stack to be deleted.
+ * @param free_data A function pointer to the function that is used to free
+ * the data of stack members. @c NULL can be used to do nothing.
+ */
+void delete_sc_stack(sc_stack *stack, void (*free_data)(void *data));
 
 /**
  * Finds out how deep a stack is.
@@ -93,7 +103,7 @@ void sc_stack_rotup(sc_stack **stack);
  * @param pfun The function pointer that prints each member of the
  * stack.
  */
-void sc_print_stack(FILE *file, sc_stack *stack,
+void print_sc_stack(FILE *file, sc_stack *stack,
 		sc_stack_pfun pfun);
 
 /**

@@ -1,5 +1,5 @@
 # what flags you want to pass to the C compiler & linker
-AM_CFLAGS  = --std=c99 -pedantic -Wall -Wextra -O2 -DDATA_DIR=\"$(pkgdatadir)\"
+AM_CFLAGS  = --std=c99 -pedantic -Wall -Wextra -O0 -g -DDATA_DIR=\"$(pkgdatadir)\"
 AM_LDFLAGS =
 
 # this lists the binaries to produce, the (non-PHONY, binary) targets in

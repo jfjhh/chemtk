@@ -45,7 +45,8 @@ void *pop_sc_stack(sc_stack **stack)
 		free(*stack);
 		return NULL;
 	} else {
-		data     = (*stack)->data; new_head = (*stack)->next;
+		data     = (*stack)->data;
+		new_head = (*stack)->next;
 	}
 
 	fprintf(stderr, "\tPop Freeing: %p (sc_stack), new_head: %p\n",
@@ -56,7 +57,37 @@ void *pop_sc_stack(sc_stack **stack)
 	return data;
 }
 
-void sc_print_stack(FILE *file, sc_stack *stack, sc_stack_pfun pfun)
+sc_stack *copy_sc_stack(sc_stack *stack)
+{
+	sc_stack *new = new_sc_stack();
+	sc_stack *tmp = stack;
+
+	while (tmp) {
+		push_sc_stack(&new, tmp->data);
+		tmp = tmp->next;
+	}
+
+	return NULL;
+}
+
+void delete_sc_stack(sc_stack *stack, void (*free_data)(void *data))
+{
+	sc_stack *tmp;
+	sc_stack *cur = stack;
+
+	if (stack) {
+		while (cur) {
+			if (free_data)
+				free_data(cur->data);
+
+			tmp = cur->next;
+			free(cur);
+			cur = tmp;
+		}
+	}
+}
+
+void print_sc_stack(FILE *file, sc_stack *stack, sc_stack_pfun pfun)
 {
 	sc_stack *iterator;
 
@@ -131,7 +162,7 @@ void sc_print_double(void *data, FILE *file)
 int test_sc_stack(FILE *logfile)
 {
 	int i, status, depth;
-	sc_stack *stack;
+	sc_stack *stack, *extra;
 	void *data;
 	char *test_lines[3] = {
 		"1.23",
@@ -140,14 +171,14 @@ int test_sc_stack(FILE *logfile)
 	};
 
 	status = 0;
-	stack = NULL;
+	stack = extra = NULL;
 
 	/**
 	 * @test
 	 * Tests if printing an empty (or @c NULL) stack with @c sc_print_ptr()
 	 * works.
 	 */
-	sc_print_stack(logfile, stack, sc_print_ptr);
+	print_sc_stack(logfile, stack, sc_print_ptr);
 
 	/**
 	 * @test
@@ -166,7 +197,10 @@ int test_sc_stack(FILE *logfile)
 		push_sc_stack(&stack, test_lines[i]);
 
 	fprintf(logfile, "\nDone pushing:\n");
-	sc_print_stack(logfile, stack, sc_print_ptr);
+	print_sc_stack(logfile, stack, sc_print_ptr);
+
+	// Duplicate the stack for more testing.
+	extra = copy_sc_stack(stack);
 
 	/**
 	 * @test
@@ -174,7 +208,7 @@ int test_sc_stack(FILE *logfile)
 	 */
 	sc_stack_rotdown(&stack);
 	fprintf(logfile, "\nDone rotating down:\n");
-	sc_print_stack(logfile, stack, sc_print_ptr);
+	print_sc_stack(logfile, stack, sc_print_ptr);
 
 	/**
 	 * @test
@@ -182,7 +216,7 @@ int test_sc_stack(FILE *logfile)
 	 */
 	sc_stack_rotup(&stack);
 	fprintf(logfile, "\nDone rotating up:\n");
-	sc_print_stack(logfile, stack, sc_print_ptr);
+	print_sc_stack(logfile, stack, sc_print_ptr);
 
 	/**
 	 * @test
@@ -202,9 +236,16 @@ int test_sc_stack(FILE *logfile)
 			status += 1;
 		else
 			fprintf(stderr, "No popped data!\n");
-		sc_print_stack(logfile, stack, sc_print_ptr);
+		print_sc_stack(logfile, stack, sc_print_ptr);
 	}
 	fprintf(logfile, "Done popping.\n");
+
+	/**
+	 * @test
+	 * Tests if a stack can be completely removed with @c delete_sc_stack.
+	 */
+	delete_sc_stack(extra, NULL);
+	free(extra);
 
 	return ((status == 3) ? 1 : 0); /* 3 is number of successful pops for pass. */
 }

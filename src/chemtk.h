@@ -17,8 +17,8 @@
 #include "element.h"
 #include "operator.h"
 #include "pager.h"
-#include "scicalc.h"
 #include "stack.h"
+#include "scicalc.h"
 #include "tests.h"
 #include "token.h"
 
