@@ -60,6 +60,18 @@ void push_sc_stack(sc_stack **stack, void *data);
 void *pop_sc_stack(sc_stack **stack);
 
 /**
+ * Duplicates @p stack, so that the new stack is independent from the original.
+ *
+ * @param stack The stack to duplicate.
+ *
+ * @retval sc_stack *
+ * A pointer to the new stack.
+ * @retval NULL
+ * A memory error occured.
+ */
+sc_stack *dup_sc_stack(sc_stack *stack);
+
+/**
  * Completely deletes @p stack (and all associated data).
  *
  * @param stack A pointer to the stack to be deleted.

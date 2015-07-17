@@ -11,12 +11,8 @@ sc_stack *new_sc_stack(void)
 {
 	sc_stack *new;
 
-	if ((new = (sc_stack *) malloc(sizeof(sc_stack)))) {
-		new->data = NULL;
-		new->next = NULL;
-	} else {
-		new = NULL;
-	}
+	if ((new = (sc_stack *) malloc(sizeof(sc_stack))))
+		new->data = new->next = NULL;
 
 	return new;
 }
@@ -57,17 +53,20 @@ void *pop_sc_stack(sc_stack **stack)
 	return data;
 }
 
-sc_stack *copy_sc_stack(sc_stack *stack)
+sc_stack *dup_sc_stack(sc_stack *stack)
 {
 	sc_stack *new = new_sc_stack();
 	sc_stack *tmp = stack;
+
+	if (!new)
+		return NULL;
 
 	while (tmp) {
 		push_sc_stack(&new, tmp->data);
 		tmp = tmp->next;
 	}
 
-	return NULL;
+	return new;
 }
 
 void delete_sc_stack(sc_stack *stack, void (*free_data)(void *data))
@@ -199,8 +198,11 @@ int test_sc_stack(FILE *logfile)
 	fprintf(logfile, "\nDone pushing:\n");
 	print_sc_stack(logfile, stack, sc_print_ptr);
 
-	// Duplicate the stack for more testing.
-	extra = copy_sc_stack(stack);
+	/**
+	 * @test
+	 * Tests if a stack can be copied.
+	 */
+	extra = dup_sc_stack(stack);
 
 	/**
 	 * @test
