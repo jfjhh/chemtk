@@ -67,7 +67,7 @@ void *pop_sc_stack(sc_stack **stack);
  * @retval sc_stack *
  * A pointer to the new stack.
  * @retval NULL
- * A memory error occured.
+ * A (likley allocation-related) error occured.
  */
 sc_stack *dup_sc_stack(sc_stack *stack);
 

@@ -40,7 +40,7 @@ int main(void)
 	/* TODO: Start calculating. */
 	printf("TODO: Start calculating.\n");
 
-	delete_sc_stack(&stack, free);
+	delete_sc_stack(stack, free);
 	free_sc_commands();
 
 	return 0;

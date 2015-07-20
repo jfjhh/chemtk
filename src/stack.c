@@ -247,7 +247,6 @@ int test_sc_stack(FILE *logfile)
 	 * Tests if a stack can be completely removed with @c delete_sc_stack.
 	 */
 	delete_sc_stack(extra, NULL);
-	free(extra);
 
 	return ((status == 3) ? 1 : 0); /* 3 is number of successful pops for pass. */
 }
