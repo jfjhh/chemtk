@@ -14,7 +14,7 @@ char **get_files(const char *dir)
 	struct dirent *ent;
 	int file = 0;
 
-	if ((files = (char **) malloc(sizeof(char *) * GETFILES_FILE_MAX)) == NULL) {
+	if ((files = malloc(sizeof(char *) * GETFILES_FILE_MAX)) == NULL) {
 		free(files);
 		return NULL;
 	}

@@ -12,7 +12,7 @@ sc_token *sc_tokenize(const char *line)
 	sc_token *result_token;
 	double flt;
 
-	if (!(result_token = (sc_token *) malloc(sizeof(sc_token)))) {
+	if (!(result_token = malloc(sizeof(sc_token)))) {
 		fprintf(stderr,
 				"sc_tokenize(): failed to allocate memory for sc_token.\n");
 		return NULL;
@@ -53,7 +53,7 @@ sc_token *sc_tokenize(const char *line)
 /* 	long double tmp; */
 /* 	sc_token *token; */
 
-/* 	if (!(token = (sc_token *) malloc(sizeof(sc_token)))) */
+/* 	if (!(token = malloc(sizeof(sc_token)))) */
 /* 		return NULL; */
 
 /* 	i = is_num  = 0; */

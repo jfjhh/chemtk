@@ -8,11 +8,11 @@
 #ifndef PAGER_H
 #define PAGER_H
 
-#ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE	200809L
-#endif
+#ifndef _POSIX_SOURCE // For fileno()
+#define _POSIX_SOURCE
+#endif /* _POSIX_SOURCE */
 
-#ifndef _BSD_SOURCE
+#ifndef _BSD_SOURCE // For snprintf()
 #define _BSD_SOURCE
 #endif
 

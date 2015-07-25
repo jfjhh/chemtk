@@ -86,12 +86,6 @@ int sig_figs(const char *line, int *figs)
 	return figs[ALL];
 }
 
-int sig_figs_op(const sc_token *a, const sc_token *b,
-		enum sig_fig_field field, int *figs)
-{
-	return 0;
-}
-
 int test_ldmath(FILE *logfile)
 {
 	int i, j,  status, result_figs[SIG_FIG_LEN];

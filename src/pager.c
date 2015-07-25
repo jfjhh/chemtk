@@ -35,10 +35,10 @@ int page_file_stream(FILE *path)
 	hard_fd_lim =          self_rlim.rlim_max - (rlim_t) 1;
 	fd_charlen  = (int)    log10l(hard_fd_lim) + 1;
 	fd_totlen   =          strlen(SC_SELFFD_DIR) + fd_charlen + 1;
-	filename    = (char *) malloc(sizeof(char) * fd_totlen);
-	page_path   = (char *) malloc(sizeof(char) * PATH_MAX);
+	filename    = malloc(sizeof(char) * fd_totlen);
+	page_path   = malloc(sizeof(char) * PATH_MAX);
 
-	if (!(filename || page_path)) {
+	if (!filename || !page_path) {
 		return 0;
 	} else {
 		snprintf(filename, fd_totlen, "%s%d", SC_SELFFD_DIR, fd);

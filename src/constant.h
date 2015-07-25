@@ -8,7 +8,7 @@
 #ifndef CONSTANT_H
 #define CONSTANT_H
 
-#ifndef _POSIX_C_SOURCE
+#ifndef _POSIX_C_SOURCE // For getline()
 #define _POSIX_C_SOURCE	200809L
 #endif
 

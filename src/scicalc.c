@@ -24,7 +24,7 @@ int operate(sc_stack **stack)
 	operation = SCT_OP(op);
 	free(op);
 
-	if (!(c = (sc_token *) malloc(sizeof(sc_token))))
+	if (!(c = malloc(sizeof(sc_token))))
 		return 0;
 
 	/* Pop from the stack. */

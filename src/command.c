@@ -12,8 +12,7 @@
 
 int init_sc_commands(void)
 {
-	sc_commands = (struct sc_command_table *) \
-				  malloc(sizeof(struct sc_command_table));
+	sc_commands = malloc(sizeof(struct sc_command_table));
 
 	if (!sc_commands) {
 		fprintf(stderr,
@@ -77,14 +76,13 @@ int run_sc_command(const char *line, sc_token *token, FILE *logfile)
 	/**
 	 * @todo write run_sc_command().
 	 */
-	int i;
+	int  i;
 	enum sc_command_type type = line[0];
 
 	/* Search through sc_commands for type, and execute that function. */
-	for (i = 0; i < sc_commands->count; i++) {
+	for (i = 0; i < sc_commands->count; i++)
 		if (type == sc_commands->entries[i].type)
 			return sc_commands->entries[i].cmd_fun(line, token, logfile);
-	}
 
 	return 0;
 }
@@ -103,36 +101,25 @@ static int test_sc_command_fun(const char *line, sc_token *token, FILE *logfile)
 
 int test_command(FILE *logfile)
 {
-	sc_token *test_token = (sc_token *) malloc(sizeof(sc_token));
+	int status = 0;
+	sc_token *test_token = malloc(sizeof(sc_token));
 
-	if (!test_token) {
+	if (!test_token)
 		fprintf(logfile, "Could not create a testing sc_token.\n");
-		return 0;
-	}
-
-	if (!init_sc_commands()) {
+	else if (!init_sc_commands())
 		fprintf(logfile, "Could not init_sc_commands().\n");
-		return 0;
-	}
-
-	if (!add_sc_command(test_sc_command_fun, ELEMENT_CMD)) {
+	else if (!add_sc_command(test_sc_command_fun, ELEMENT_CMD))
 		fprintf(logfile, "Could not add_sc_command().\n");
-		return 0;
-	}
-
-	if (!run_sc_command("test", test_token, logfile)) {
+	else if (!run_sc_command("test", test_token, logfile))
 		fprintf(logfile, "Could not run_sc_command() [failed].\n");
-		return 0;
-	}
-
-	if (SCT_TYPE(test_token) != VALUE) { /* Set by the command as a check. */
+	else if (SCT_TYPE(test_token) != VALUE) /* Set by the command as a check. */
 		fprintf(logfile, "Test command executed wrong.\n");
-		return 0;
-	}
+	else
+		status = 1;
 
 	free_sc_commands();
 	free(test_token);
 
-	return 1;
+	return status;
 }
 

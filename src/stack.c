@@ -11,7 +11,7 @@ sc_stack *new_sc_stack(void)
 {
 	sc_stack *new;
 
-	if ((new = (sc_stack *) malloc(sizeof(sc_stack))))
+	if ((new = malloc(sizeof(sc_stack))))
 		new->data = new->next = NULL;
 
 	return new;
@@ -24,7 +24,7 @@ void push_sc_stack(sc_stack **stack, void *data)
 	if ((*stack)->data == NULL) {
 		(*stack)->data = data;
 	} else {
-		if ((new = (sc_stack *) malloc(sizeof(sc_stack)))) {
+		if ((new = malloc(sizeof(sc_stack)))) {
 			new->data = data;
 			new->next = *stack;
 		}
