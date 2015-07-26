@@ -21,11 +21,17 @@ configure
 depcomp
 install-sh
 missing
+test-driver
 src/.deps/
 src/Makefile
 src/Makefile.in
+src/check_chemtk
+src/check_chemtk-*
+src/check_chemtk.trs
 stamp-h1
 
 # Doxygen
 doc/doxygen
+
+.ignore
 

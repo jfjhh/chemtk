@@ -5,4 +5,6 @@ script:
   - autoconf
   - ./configure
   - make
+  - make check
+  - cat src/test-suite.log
 

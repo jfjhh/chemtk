@@ -1,11 +1,11 @@
 /**
- * @file tests.c
+ * @file check_chemtk.c
  * @author Alex Striff
  *
  * @brief Basic system for running tests.
  */
 
-#include "tests.h"
+#include "check_chemtk.h"
 
 struct test_array all_tests = {
 	{
@@ -30,7 +30,6 @@ struct test_array all_tests = {
 	}
 };
 
-#define fprintline(A, B)	fprintlinel(A, B, 79)
 static void fprintlinel(FILE *file, char c, int l)
 {
 	int i;
@@ -38,6 +37,11 @@ static void fprintlinel(FILE *file, char c, int l)
 	for (i = 0; i < l; i++)
 		fputc(c, file);
 	fputc ('\n', file);
+}
+
+static void fprintline(FILE *file, char c)
+{
+	fprintlinel(file, c, 79);
 }
 
 static int run_test(FILE *logfile, int (*test_function)(FILE *logfile),
@@ -94,5 +98,14 @@ int run_tests(FILE *logfile, struct test_array tests)
 	fprintline(logfile, '*');
 
 	return ((tests_passed == NUM_TESTS) ? NUM_TESTS : 0);
+}
+
+
+int main(void)
+{
+	if (run_all_tests(stderr))
+		return 0;
+	else
+		return 1;
 }
 

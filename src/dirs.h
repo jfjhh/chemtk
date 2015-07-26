@@ -12,6 +12,8 @@
 #ifndef DIRS_H
 #define DIRS_H
 
+/* START DATA_DIR macro craziness! */
+
 #ifndef DATA_DIR
 /**
  * The directory for all associated project test files and data to be
@@ -32,23 +34,34 @@
 #define DATA_DIR
 #endif /* DATA_DIR */
 
+#ifndef CHECK_CHEMTK_FLAG
+/**
+ * The prefix for @c DATA_DIR, which comes in to play when automated test
+ * scripts are ran. It is changed accordingly based upon @c CHECK_CHEMTK_FLAG.
+ */
+#	define DATA_DIR_PRE	"."
+#else
+#	define DATA_DIR_PRE	".."
+#endif /* CHECK_CHEMTK_FLAG */
+
 /* Define DATA_DIR to be either the installation dir (default), or to be the
  * local, source repository location */
-
 #ifdef __has_include
 /* (__has_include) repo-local data dir exists (using it). */
 #	if __has_include("data/data.h")
 #		undef  DATA_DIR
-#		define DATA_DIR	"./data"
+#		define DATA_DIR	DATA_DIR_PRE "/data"
 #	endif
 #else /* Just try to include it anyways, even if it may not exist. */
 #	include "data/data.h"
 /* (No __has_include) repo-local data dir exists (using it). */
 #	ifdef DATA_H
 #		undef  DATA_DIR
-#		define DATA_DIR	"./data"
+#		define DATA_DIR	DATA_DIR_PRE "/data"
 #	endif
 #endif
+
+/* END DATA_DIR macro craziness! */
 
 /*******************************************************************************
  * Macros for buffer sizes for various data structures and printing widths.

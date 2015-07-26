@@ -17,7 +17,6 @@
 #include "pager.h"
 #include "stack.h"
 #include "scicalc.h"
-#include "tests.h"
 #include "token.h"
 
 #endif /* CHEMTK_H */

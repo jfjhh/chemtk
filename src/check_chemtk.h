@@ -1,12 +1,12 @@
 /**
- * @file tests.h
+ * @file check_chemtk.h
  * @author Alex Striff
  *
  * @brief Basic system for running tests.
  */
 
-#ifndef TESTS_H
-#define TESTS_H
+#ifndef CHECK_CHEMTK_H
+#define CHECK_CHEMTK_H
 
 #include <stdio.h>
 
@@ -46,5 +46,5 @@ int run_tests(FILE *logfile, struct test_array tests);
  */
 #define run_all_tests(A) run_tests(A, all_tests)
 
-#endif /* TESTS_H */
+#endif /* CHECK_CHEMTK_H */
 
