@@ -17,9 +17,17 @@
 #endif
 
 /**
+ * Aliases for true or false automatic paging exit preferences.
+ */
+enum page_exit {
+	MANUAL_PAGE  = 0, /**< Manually exit the pager. */
+	AUTO_PAGE    = 1  /**< Auto-exit on EOF. */
+};
+
+/**
  * The pager program used, present in the user's @c PATH.
  */
-#define PAGER	"less"
+#define SC_PAGER	"less"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,7 +43,27 @@
 #include "dirs.h"
 
 /**
- * Pages the file at @p path via @c PAGER.
+ * Pages the file at @p path via @c SC_PAGER, manually.
+ *
+ * Lazy way of doing the following:
+ * @code
+ * page_file_exit(file, MANUAL_PAGE);
+ * @endcode
+ */
+#define page_file(A)	page_file_exit(A, MANUAL_PAGE)
+
+/**
+ * Pages the file at @p path via @c SC_PAGER, automatically.
+ *
+ * Lazy way of doing the following:
+ * @code
+ * page_file_exit(file, AUTO_PAGE);
+ * @endcode
+ */
+#define page_auto(A)	page_file_exit(A, AUTO_PAGE)
+
+/**
+ * Pages the file at @p path via @c SC_PAGER.
  *
  * @param path The path to the file to page.
  *
@@ -44,10 +72,10 @@
  *
  * @note This function is preferred over @c page_file_stream().
  */
-int page_file(const char *path);
+int page_file_exit(const char *path, enum page_exit auto_exit);
 
 /**
- * Pages the file stream @p path via @c PAGER.
+ * Pages the file stream @p path via @c SC_PAGER.
  *
  * @param path The file stream of the file to page.
  *

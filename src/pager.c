@@ -60,7 +60,7 @@ int page_file_stream(FILE *path)
 	return status;
 }
 
-int page_file(const char *path)
+int page_file_exit(const char *path, enum page_exit auto_exit)
 {
 	int status;
 	pid_t child_pid;
@@ -73,8 +73,10 @@ int page_file(const char *path)
 
 	if ((child_pid = fork()) >= 0) { /* fork() successful. */
 		if (child_pid == 0) { /* Child process. */
-			return execlp(PAGER, PAGER, path,
-					(char *) NULL);
+			if (auto_exit)
+				return execlp(SC_PAGER, SC_PAGER, "-E", path, (char *) NULL);
+			else
+				return execlp(SC_PAGER, SC_PAGER, path, (char *) NULL);
 		} else { /* Parent process. */
 			wait(&status);
 			if (WIFEXITED(status) && (WEXITSTATUS(status) == 0))
@@ -95,6 +97,6 @@ int test_pager(FILE *logfile)
 	 * Tests to see if @c TEST_PAGER_FILE can be paged.
 	 */
 	fprintf(logfile, "Testing page_file with '" TEST_PAGER_FILE "'.\n");
-	return page_file(TEST_PAGER_FILE);
+	return page_auto(TEST_PAGER_FILE);
 }
 
