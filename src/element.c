@@ -27,8 +27,7 @@ static struct element *get_element(const char *element)
 		return NULL;
 	}
 
-	snprintf(epath, ELEMENT_PATH_LEN + 1 + ELEMENT_PTABLE_DIR_LEN, // +1 for '/'
-			ELEMENT_PTABLE_DIR "/%s", element);
+	snprintf(epath, ELEMENT_PATH_LEN, ELEMENT_PTABLE_DIR "/%s", element);
 
 	/* Convert to lowercase, element may be something like "Be". */
 	for (i = 0; i < strlen(epath); i++)
@@ -119,7 +118,7 @@ int print_element_info(struct element *e, FILE *file)
 	if (path && symbol) {
 		symbol[0] = (char) tolower(symbol[0]);
 
-		snprintf(path, ELEMENT_INFO_DIR_LEN + 1 + ELEMENT_SYM_LEN, // +1 for '/'
+		snprintf(path, ELEMENT_INFO_DIR_LEN + ELEMENT_SYM_LEN + 1, // +1 for '/'
 				ELEMENT_INFO_DIR "/%s", symbol);
 
 		fprintf(file, "Element info path is '%s'.\n", path);
