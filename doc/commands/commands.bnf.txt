@@ -1,0 +1,10 @@
+(* ChemTK Command BNF *)
+<command>        ::= <token> <opt-whitespace> <value> <end>
+<value>          ::= <data> <value> | ""
+<token>          ::= <const> <token> | ""
+<const>          ::= <alpha> | <num>
+<data>           ::= <const> | <punct>
+<opt-whitespace> ::= <space> <opt-whitespace> | ""
+<space>          ::= <SPACE> | <TAB>
+<end>            ::= <NEWLINE> <NUL>
+
