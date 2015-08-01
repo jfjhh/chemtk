@@ -1,0 +1,49 @@
+--
+-- commands.cf
+-- Alex Striff
+--
+-- A LBNF Grammar for the command file, which is used to create a tree of all
+-- commands, used in execution of what the user enters as a command.
+--
+
+-- Accept optional semicolons at end of Sections.
+_. Section ::= Section ";" ;
+
+-- Delimiter of Fields.
+token FieldDelimiter (',') ;
+
+-- Inputs, or numbers of characters that some token CommandGroup takes.
+-- E.g. "symbol,4" is an input that means 4 chars are taken by any CommandGroup
+-- with that input specified by the group's ParentCommand.
+InputName.   InputField ::= String ;
+InputValue.  InputField ::= Integer ;
+Input. Section ::= InputField FieldDelimiter InputField ;
+
+-- Depth (One or more tabs) for ChildCommands.
+token DepthDelimiter ('\t') ;
+terminator DepthDelimiter "" ;
+Depth. CommandField  ::= [DepthDelimiter] ;
+
+-- Command Fields.
+CommandLetter.   CommandField ::= Char ;
+CommandName.     CommandField ::= String ;
+CommandFunction. CommandField ::= String ;
+separator CommandField "," ;
+
+-- A Parent is {commandletter, commandname, commandfunction, inputname}.
+ParentCommand. Command ::= [CommandField] FieldDelimiter InputField ;
+
+-- A Child is {depth, commandletter, commandname, commandfunction}.
+ChildCommand.  Command ::= [CommandField] ;
+
+-- A Parent with optional children.
+separator nonempty Command "\n" ;
+CommandGroup.  Section ::= [Command] ;
+
+-- Let comments be used in the file.
+comment "#" ;
+
+-- File layout: A list of Sections.
+terminator Section "" ;
+CmdFile. File ::= [Section] ;
+
