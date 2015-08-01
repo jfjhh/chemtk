@@ -34,7 +34,7 @@ int sig_figs(const char *line, int *figs)
 		return 0;
 
 	/* Check for unlimited sig. figs. (constant). */
-	if (line[CMD_LINELEN - 2] == SC_CONST_CHAR) {
+	if (line[CMD_STRLEN - 2] == SC_CONST_CHAR) {
 		SIG_FIG_SET(figs, -1);
 		return -1;
 	}

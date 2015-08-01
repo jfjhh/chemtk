@@ -111,7 +111,7 @@ struct sc_token_value {
 union sc_token_data {
 	struct sc_token_value value;         /**< A numeric value structure. */
 	char           op;                   /**< A character operator. */
-	char           cmd[CMD_LINELEN];     /**< A string that represents a command
+	char           cmd[CMD_STRLEN];      /**< A string that represents a command
 										   to be evaluated. */
 };
 

@@ -11,6 +11,7 @@
 #include "../config.h"
 #include "config.h"
 #include "constant.h"
+#include "command.h"
 #include "directory.h"
 #include "element.h"
 #include "operator.h"

@@ -15,23 +15,24 @@ int main(void)
 	 * The log file, which is stderr by default.
 	 * Other.
 	 */
-	sc_stack *stack;
+	sc_stack *stack = NULL;
 
 	printf("ChemTK SciCalc Version %s.\n\n", VERSION);
 	printf("Testing ...\n");
 
 	/* Add all commands to memory. */
-	init_sc_commands();
-	// add_sc_command(fun, CONSTANT_CMD);
-	// add_sc_command(fun, ELEMENT_CMD);
+	if (!init_sc_commands())
+		goto exit;
 
-	stack = new_sc_stack();
+	if (!(stack = new_sc_stack()))
+		goto exit;
 
 	page_file(SCICALC_DOCFILE); /* Init/Help file. */
 
 	/* TODO: Start calculating. */
 	printf("TODO: Start calculating.\n");
 
+exit:
 	delete_sc_stack(stack, free);
 	free_sc_commands();
 

@@ -151,6 +151,11 @@
 #define TEST_PAGER_FILE         DATA_DIR     "/pager.txt"
 
 /**
+ * The file that all the commands are read from.
+ */
+#define COMMAND_FILE            DATA_DIR     "/commands.txt"
+
+/**
  * The virtual directory that provides access to the process file descriptors.
  * @see proc(5) http://linux.die.net/man/5/proc
  */

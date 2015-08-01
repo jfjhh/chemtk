@@ -16,12 +16,15 @@ AC_ARG_VAR([TAR], [Program used to unarchive program data.])
 AC_CHECK_PROG([TAR], [tar], [/bin/tar], [tar])
 
 # Checks for libraries.
+AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([m], [cos])
 AC_CHECK_LIB([readline], [readline])
 AC_CHECK_LIB([history], [using_history])
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h stdio.h string.h unistd.h dirent.h])
+AC_CHECK_HEADERS([stdio.h stdlib.h stdarg.h dlfcn.h string.h ctype.h math.h \
+		  float.h unistd.h sys/types.h dirent.h limits.h sys/wait.h \
+		  sys/time.h sys/resource.h assert.h stdbool.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
