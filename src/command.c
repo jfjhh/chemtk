@@ -119,7 +119,7 @@ static inline void command_syntax_error(int line, const char *msg, ...)
 	va_list ap;
 
 	fprintf(stderr, "Syntax error while generating command tree:\n"
-			"\t['" COMMAND_FILE "', line %03d]: ", line);
+			"\t['" COMMAND_FILE "', line %03d]: \n\t\t", line);
 
 	va_start(ap, msg);
 	vfprintf(stderr, msg, ap);
@@ -128,20 +128,35 @@ static inline void command_syntax_error(int line, const char *msg, ...)
 	fprintf(stderr, ".\n");
 }
 
+static void print_sc_commands(void)
+{
+	/**
+	 * @todo Have @c print_sc_commands() pretty-print the entire command tree.
+	 */
+}
+
 static int parse_command_tree(const char *data, void *handle)
 {
 	/**
 	 * @todo: Finish writing @c parse_command_tree().
 	 * @todo: Refactor @c parse_command_tree() into smaller chunks.
 	 */
-	int i, input_value, line, depth;
+	int i, input_value, line, depth, status = 0;
 	struct sc_command_tree  *cur_child;
 	struct sc_command_tree  *subtree   = NULL;
+	struct sc_command_tree  *parent    = NULL;
 	struct sc_command_entry *entry     = NULL;
+	struct sc_stack         *parents   = NULL;
 	char token = '\0';
 	char name[CMD_STRLEN]  = { '\0' },
 		 func[CMD_STRLEN]  = { '\0' },
 		 input[CMD_STRLEN] = { '\0' };
+
+	if (!(parents = new_sc_stack())) {
+		fprintf(stderr, "parse_command_tree: Could not allocate a sc_stack for "
+				"command tree generation.\n");
+		goto exit;
+	}
 
 	cur_child = sc_commands->children;
 	while (cur_child++)
@@ -163,7 +178,7 @@ static int parse_command_tree(const char *data, void *handle)
 				sc_inputs->count++;
 				if (sc_inputs->count > CMD_NAME_LEN) { // Too many inputs.
 					command_syntax_error(line, "Too many command inputs");
-					return 0;
+					goto exit;
 				}
 
 				// Copy over the input fields to the global table.
@@ -183,45 +198,105 @@ static int parse_command_tree(const char *data, void *handle)
 					fprintf(stderr, "parse_command_tree: could not add parent"
 							"command entry to sc_commands tree.\n");
 					free(entry);
-					return 0;
+					goto exit;
 				}
 
+				push_sc_stack(&parents, entry);
 				line++;
+
 			} else if (data[i] == CMD_DEPTH_DELIM) {
-				/**
-				 * @todo Parse children, and recursively insert into tree.
-				 *
-				 * Determine depth of tabs ('\t')!
-				 * (recurse entries to children trees based on this).
-				 * Get fields from line.
-				 * Insert the entry into the tree.
-				 */
+				// Prepare thyself, intrepid reader...
 
 				// Get depth.
 				depth++;
 				while (data[i++] == CMD_DEPTH_DELIM)
 					depth++;
 
+				// Check a parent for the child even exists.
+				if (!(parent = peek_sc_stack(&parents))) {
+					command_syntax_error(line, "Could not add child to tree, "
+							"because it had no parent.");
+					goto exit;
+				}
+
+				//
+				// If the child is less deep than the parent at the top
+				// of the stack, then pop parents until they are at the
+				// same level.
+				//
+				// [ Diagram ]: CommandGroup Tree (Parent and Children)
+				//              ---------------------------------------
+				//
+				//    root (depth 0). <- parent at bottom of stack.
+				//    |
+				//    :-- child (depth 1). <- parent at middle of stack.
+				//    |   |
+				//    |   :-- child (depth 2). <- parent at top of stack.
+				//    |   |   |
+				//    |   |   :-- NULL
+				//    |   |
+				//    |   :-- NULL
+				//    |
+				//    :-- child <- now (depth 1).
+				//    |   |
+				//    |   :-- NULL
+				//    |
+				//    :-- NULL
+				//
+				// === Result ===
+				// The stack is popped from twice.
+				//
+				// Now, stack depth is 1, like the child's depth, and the
+				// top of the stack is now 'root.'
+				//
+				while (depth < sc_stack_depth(parents)) {
+					if (!(parent = pop_sc_stack(&parents))) {
+						fprintf(stderr, "parse_command_tree: accidentally "
+								"reached top of stack when popping up a "
+								"depth level from the stack.\n");
+						return 0;
+					}
+				}
+
+				// Get child data.
 				if (sscanf(data + i, "%c, %s, %s\n", &token, name, func) != 3) {
 					command_syntax_error(line, "Malformed child, depth %d.",
 							depth);
-					return 0;
+					goto exit;
 				}
 
-				// Add child entry to parent tree.
-				if(!(subtree = add_command_child(
-								create_command_entry(token, name, func, NULL,
-									handle),
-								subtree))) {
-					fprintf(stderr, "parse_command_tree: could not add child"
-							"command entry to parent tree.\n");
+				// Add the child entry to the tree.
+				if (!(subtree = add_command_child(create_command_entry(
+									token, name, func, NULL, handle),
+								parent))) {
+					fprintf(stderr, "parse_command_tree: could not add "
+							"child command entry to parent tree.\n");
+					free(entry);
+					goto exit;
+				}
+
+				// Push the child to the top of the stack, it now becomes a
+				// parent for future iterations.
+				if(!push_sc_stack(&parents, subtree)) {
+					fprintf(stderr, "parse_command_tree: could not "
+							"push subtree to parent stack.\n");
 					free(entry);
 					return 0;
 				}
+
+				//
+				// Wow, it's finally over.
+				// Note to self: Please make function less indented.
+				//
+				// Please.
+				//     Please.
+				//         Please.
+				//
 			} else {
 				// An unknown syntax error occured.
-				command_syntax_error(line, NULL);
-				return 0;
+				command_syntax_error(line, "Unknown syntax error, %d bytes into"
+						" file, char was '%c'", i, data[i]);
+				goto exit;
 			}
 
 			// Skip to the end of this line.
@@ -230,7 +305,11 @@ static int parse_command_tree(const char *data, void *handle)
 		}
 	}
 
-	return 1;
+	status = 1; // Everything was OK.
+
+exit: // Falls through on success.
+	delete_sc_stack(parents, NULL);
+	return status;
 }
 
 static struct sc_command_entry *get_next_entry(struct sc_command_tree *tree,
@@ -417,6 +496,8 @@ int test_sc_command(FILE *logfile)
 		fprintf(logfile, "Test command executed wrong.\n");
 	else
 		status = 1;
+
+	print_sc_commands();
 
 	free_sc_commands();
 	free(test_token);
