@@ -17,19 +17,23 @@ sc_stack *new_sc_stack(void)
 	return new;
 }
 
-void push_sc_stack(sc_stack **stack, void *data)
+void *push_sc_stack(sc_stack **stack, void *data)
 {
 	sc_stack *new;
 
-	if ((*stack)->data == NULL) {
+	if (!(*stack)->data) {
 		(*stack)->data = data;
 	} else {
 		if ((new = malloc(sizeof(sc_stack)))) {
 			new->data = data;
 			new->next = *stack;
+		} else {
+			return NULL;
 		}
 		*stack = new;
 	}
+
+	return data;
 }
 
 void *pop_sc_stack(sc_stack **stack)
@@ -51,6 +55,14 @@ void *pop_sc_stack(sc_stack **stack)
 	*stack = new_head;
 
 	return data;
+}
+
+void *peek_sc_stack(sc_stack **stack)
+{
+	if (*stack)
+		return (*stack)->data;
+	else
+		return NULL;
 }
 
 sc_stack *dup_sc_stack(sc_stack *stack)
@@ -197,6 +209,15 @@ int test_sc_stack(FILE *logfile)
 
 	fprintf(logfile, "\nDone pushing:\n");
 	print_sc_stack(logfile, stack, sc_print_ptr);
+
+	/**
+	 * @test
+	 * Tests if a stack can be peeked at.
+	 */
+	if (peek_sc_stack(&stack) != test_lines[2]) {
+		fprintf(logfile, "Could not peek at a stack!\n");
+		return 0;
+	}
 
 	/**
 	 * @test
