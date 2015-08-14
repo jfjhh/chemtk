@@ -33,5 +33,9 @@ stamp-h1
 # Doxygen
 doc/doxygen
 
+# Jekyll and GitHub pages
+Gemfile.lock
+_site
+
 .ignore
 
