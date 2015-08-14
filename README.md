@@ -21,7 +21,12 @@ freely due to their [disclaimer](http://www.periodni.com/disclaimer.html):
 
 ### Do it now!
 
-- Fix scicalc's operate() function to recalculate other significant figures upon evaluation.
+- ***Current focus*****: writing code to generate a parse tree from the command
+  file, and then searching in that tree for the commands that the user enters.
+  See branch: `command_parsing`.**
+
+- Fix scicalc's operate() function to recalculate other significant figures
+  upon evaluation.
 	* Add some utility functions to `ldmath.c`.
 
 - Make installation of data files not require the ridiculous archive,
