@@ -23,10 +23,10 @@ typedef struct sc_stack {
 /**
  * A function pointer that will print a member of a stack.
  * @anchor sc_stack_pfun *
- * @param data The data to be printed.
  * @param file The writable stream to print to.
+ * @param data The data to be printed.
  */
-typedef void (*sc_stack_pfun)(void *data, FILE *file);
+typedef void (*sc_stack_pfun)(FILE *file, void *data);
 
 /**
  * Allocates memory for a new stack.
@@ -137,10 +137,10 @@ void print_sc_stack(FILE *file, sc_stack *stack,
  * A @link sc_stack_pfun @endlink
  * that prints a stack element that is a pointer.
  *
- * @param data The pointer to be printed.
  * @param file The writable stream to print to.
+ * @param data The pointer to be printed.
  */
-void sc_print_ptr(void *data, FILE *file);
+void sc_print_ptr(FILE *file, void *data);
 
 /**
  * A @link sc_stack_pfun @endlink
