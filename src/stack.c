@@ -17,18 +17,25 @@ sc_stack *new_sc_stack(void)
 	return new;
 }
 
-void push_sc_stack(sc_stack **stack, void *data)
+void *push_sc_stack(sc_stack **stack, void *data)
 {
 	sc_stack *new;
 
-	if ((*stack)->data == NULL) {
-		(*stack)->data = data;
-	} else {
-		if ((new = malloc(sizeof(sc_stack)))) {
-			new->data = data;
-			new->next = *stack;
+	if (stack && (*stack)) {
+		if (!(*stack)->data) {
+			(*stack)->data = data;
+		} else {
+			if ((new = malloc(sizeof(sc_stack)))) {
+				new->data = data;
+				new->next = *stack;
+			} else {
+				return NULL;
+			}
+			*stack = new;
 		}
-		*stack = new;
+		return data;
+	} else {
+		return NULL;
 	}
 }
 
@@ -45,12 +52,22 @@ void *pop_sc_stack(sc_stack **stack)
 		new_head = (*stack)->next;
 	}
 
-	fprintf(stderr, "\tPop Freeing: %p (sc_stack), new_head: %p\n",
-			(void *) *stack, (void *) new_head);
+	fprintf(stderr, "\tPop from stack <%p> (old head be freed):\n"
+			"\tnew_head: <%p>,\n"
+			"\tpopped data:\t<%p>.\n",
+			(void *) *stack, (void *) new_head, data);
 	free(*stack);
 	*stack = new_head;
 
 	return data;
+}
+
+void *peek_sc_stack(sc_stack **stack)
+{
+	if (*stack)
+		return (*stack)->data;
+	else
+		return NULL;
 }
 
 sc_stack *dup_sc_stack(sc_stack *stack)
@@ -90,11 +107,11 @@ void print_sc_stack(FILE *file, sc_stack *stack, sc_stack_pfun pfun)
 {
 	sc_stack *iterator;
 
-	fprintf(file, "Printing a stack [%p] (TODO).\n", (void *) stack);
+	fprintf(file, "Printing Stack at <%p>:\n", (void *) stack);
 
 	iterator = stack;
 	while (iterator) {
-		pfun(iterator->data, file);
+		pfun(file, iterator->data);
 		iterator = iterator->next;
 	}
 	fprintf(file, "[ bottom ]\n");
@@ -145,12 +162,12 @@ void sc_stack_rotup(sc_stack **stack)
 	*stack        = new_beg;
 }
 
-void sc_print_ptr(void *data, FILE *file)
+void sc_print_ptr(FILE *file, void *data)
 {
 	if (data)
 		fprintf(file, "[%p]\n", data);
 	else
-		fprintf(file, "[NULL]\n");
+		fprintf(file, "[  NULL   ]\n");
 }
 
 void sc_print_double(void *data, FILE *file)
@@ -197,6 +214,15 @@ int test_sc_stack(FILE *logfile)
 
 	fprintf(logfile, "\nDone pushing:\n");
 	print_sc_stack(logfile, stack, sc_print_ptr);
+
+	/**
+	 * @test
+	 * Tests if a stack can be peeked at.
+	 */
+	if (peek_sc_stack(&stack) != test_lines[2]) {
+		fprintf(logfile, "Could not peek at a stack!\n");
+		return 0;
+	}
 
 	/**
 	 * @test

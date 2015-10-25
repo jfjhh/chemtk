@@ -12,4 +12,5 @@ install-data-hook:
 uninstall-local:
 	cd $(DESTDIR)$(pkgdatadir); \
 		cat uninstall_manifest.txt | sed 's/ /\\ /g' | xargs rm -rf; \
-		rm -f uninstall_manifest.txt
+		rm -f uninstall_manifest.txt; rmdir $(DESTDIR)$(pkgdatadir)
+

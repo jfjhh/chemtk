@@ -7,133 +7,112 @@
  * An example of a command's output would be the atomic mass of an element from
  * the periodic table.
  *
- * @todo Write the doc file for what commands do and do not exist.
+ * @todo Write down the specs for @c COMMAND_FILE.
+ * @todo Document all available commands.
  */
 
 #ifndef COMMAND_H
 #define COMMAND_H
 
+// #if ! defined(_XOPEN_SOURCE) || _XOPEN_SOURCE < 700 // For getline()
+// #define _XOPEN_SOURCE	700
+// #endif
+
 /**
  * The maximum length of a command string, including the terminating @c NULL
  * byte.
  */
-#define CMD_LINELEN	64
+#define CMD_STRLEN	256
 
 /**
- * Denotes a type of command.
- *
- * Each member is a @c char that is used to delimit the command.
- * E.g. A command that starts with 'c' could be of @c cmd_type CONSTANT.
+ * Maximum length of a command "long" name identifier string.
  */
-enum sc_command_type {
-	NOT_CMD      = 0,   /**< Invalid command (@c 0). */
-	ELEMENT_CMD  = 'e', /**< An element command. */
-	CONSTANT_CMD = 'c', /**< A constant command. */
-	STACK_CMD    = 's', /**< A stack command. */
-	TEST_CMD     = 't', /**< A testing command. */
-};
-
-struct sc_command_entry;
-struct sc_command_table;
-struct sc_command_data;
+#define CMD_NAME_LEN	48
 
 /**
- * Table to hold all command entries.
+ * The maximum number of command children that there can be.
  */
-struct sc_command_table *sc_commands;
+#define CMD_CHILDREN	32
+
+/**
+ * The maximum theoretical command depth.
+ */
+#define MAX_CHILD_DEPTH	32
+
+/**
+ * Max lines in a command tree file.
+ */
+#define CMD_MAX_LINES	1024
+
+/**
+ * Character used to delimit command depth (nesting / children in the tree).
+ */
+#define CMD_DEPTH_DELIM	'\t'
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
+#include <stdarg.h>
+#include <dlfcn.h>
 #include <string.h>
+#include <ctype.h>
 
+#include "dirs.h"
 #include "token.h"
 #include "stack.h"
 #include "element.h"
 #include "constant.h"
+#include "input.h"
+#include "commands/command_interface.h"
 
 /**
- * Generic function pointer to run commands.
- *
- * Not all commands will result in a token being generated.
- *
- * @param line The command string.
- * @param out The token result.
- * @param logfile The file to output of the command to.
- *
- * @retval 1 Command succeeded.
- * @retval 0 Command failed.
- * @note
- * In a case where the command does not produce a token, the token will be of
- * type @c NOT_CMD.
+ * The global command tree.
  */
-typedef int (*sc_command_fun)(const char *line, sc_token *token, FILE *logfile);
+extern struct sc_command_tree *sc_commands;
 
 /**
- * Contains all the data needed to run a command.
- */
-struct sc_command_data {
-	char line[CMD_LINELEN]; /**< The command to run. */
-	sc_token *token;        /**< The token to change (opt). */
-	FILE *logfile;          /**< The writable file to write output to (opt). */
-	sc_stack *stack;        /**< The stack to change (opt). */
-};
-
-/**
- * Entry of a command for the lookup table.
+ * An entry in the command tree.
  */
 struct sc_command_entry {
-	enum sc_command_type type; /**< General type of a command. */
-	char subcommand_delim;     /**< Optional delimiter for subcommand within an
-								 overarching command type. */
-	sc_command_fun cmd_fun;    /**< Function pointer to the actual command
-								 function. */
+	char delimiter;          /**< A single character delimiter. */
+	char name[CMD_NAME_LEN]; /**< The "long" name of the command entry. */
+	struct sc_input *input;  /**< An input in the global table. */
+	sc_command_func  func;   /**< The command function to run. */
 };
 
 /**
- * All command entries.
+ * Command (parse) tree.
  */
-struct sc_command_table {
-	struct sc_command_entry *entries; /**< Dynamically allocated array of all
-										command entries. */
-	int count;                        /** The current number of commands in the
-										table. */
+struct sc_command_tree {
+	int num_children; /**< The number of children in use. */
+	int depth;        /**< The depth of the tree from the root. */
+	struct sc_command_entry *entry;                  /**< The node's entry. */
+	struct sc_command_tree  *children[CMD_CHILDREN]; /**< The children. */
 };
 
 /**
- * Creates the command lookup table in memory.
- *
- * @retval 0 Failed to create the table.
- * @retval 1 Succeeded in creating the table.
+ * Allocates a command tree, and initializes values to @c NULL -like values.
+ * 
+ * @returns a pointer to a @c sc_command_tree, or @c NULL on error.
  */
-int init_sc_commands(void);
+struct sc_command_tree *alloc_command_tree(void);
 
 /**
- * Adds a command to the lookup table.
- *
- * @param entry The command entry to add to the table.
- * @param type The type of the command to add to the table.
- *
- * @retval 0 Failed to add to the table.
- * @retval 1 Succeeded in adding the function to the table.
- *
- * @todo Reimplement adding.
+ * Frees the global command tree from memory.
  */
-int add_sc_command(sc_command_fun cmd_fun, enum sc_command_type type);
-
-/**
- * Frees the command lookup table from memory.
- */
-void free_sc_commands(void);
+void free_command_tree(struct sc_command_tree *root);
 
 /**
  * Checks if a string is a valid command.
  *
  * @param line The command string.
  *
- * @retval enum sc_command_type
- * The type of the command (nonzero), where @c NOT_CMD is not a command (@c 0).
+ * @retval 0
+ * @p line is not a command.
+ * @retval 1
+ * @p line is a command.
  */
-enum sc_command_type is_sc_command(const char *line);
+int is_sc_command(char *line);
 
 /**
  * Runs a command specfied in line.
@@ -151,7 +130,46 @@ enum sc_command_type is_sc_command(const char *line);
  * @retval 1 Command succeeded.
  * @retval 0 Command failed.
  */
-int run_sc_command(const char *line, sc_token *out, FILE *logfile);
+int run_sc_command(char *line, sc_token *out, FILE *logfile);
+
+/**
+ * Creates a command entry from the given data.
+ *
+ * @param delimiter A single character delimiter.
+ * @param name      The "long" name of the command entry.
+ * @param func      The command function to run.
+ * @param input     An input in the global table.
+ * @param handle    Handle returned from @c dlopen(NULL, RTLD_LAZY).
+ *
+ * @returns An entry with the specified data, or @c NULL on error.
+ */
+struct sc_command_entry *create_command_entry(char delimiter,
+		const char *name, const char *func, const char *input, void *handle);
+
+/**
+ * Encapsulates an @p entry into a new tree, and then makes that new tree a
+ * child of @p tree.
+ *
+ * @param entry The entry to add to the tree.
+ * @param tree  The parent tree of the entry.
+ *
+ * @returns The new tree or @c NULL on error.
+ */
+struct sc_command_tree *add_command_entry(struct sc_command_entry *entry,
+		struct sc_command_tree *tree);
+
+/**
+ * Matches the long name of an entry with the entry's parent tree.
+ *
+ * @param name The name to search for.
+ * @param tree The tree to start searching in.
+ */
+struct sc_command_tree *name_to_sc_parent_tree(const char *name);
+
+/**
+ * Prints the sc_commands tree to @c stderr.
+ */
+void print_sc_commands(FILE *file);
 
 /**
  * Tests command @c operate() routine, logging results to @p logfile.
@@ -160,10 +178,8 @@ int run_sc_command(const char *line, sc_token *out, FILE *logfile);
  *
  * @retval 1 if test succeeded.
  * @retval 0 if test failed.
- *
- * @todo Write test_command().
  */
-int test_command(FILE *logfile);
+int test_sc_command(FILE *logfile);
 
 #endif /* COMMAND_H */
 

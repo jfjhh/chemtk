@@ -1,3 +1,4 @@
 AUTOMAKE_OPTIONS = -Wportability gnu dist-xz subdir-objects
-SUBDIRS = src doc data man
+ACLOCAL_AMFLAGS  = -I m4
+SUBDIRS          = src doc data man
 

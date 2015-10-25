@@ -22,12 +22,11 @@ typedef struct sc_stack {
 
 /**
  * A function pointer that will print a member of a stack.
- * @anchor sc_stack_pfun
- *
- * @param data The data to be printed.
+ * @anchor sc_stack_pfun *
  * @param file The writable stream to print to.
+ * @param data The data to be printed.
  */
-typedef void (*sc_stack_pfun)(void *data, FILE *file);
+typedef void (*sc_stack_pfun)(FILE *file, void *data);
 
 /**
  * Allocates memory for a new stack.
@@ -44,8 +43,11 @@ sc_stack *new_sc_stack(void);
  *
  * @param stack A pointer to the stack to be modified.
  * @param data The data to be pushed to the stack.
+ *
+ * @retval void *
+ * The pointer that was pushed to the stack.
  */
-void push_sc_stack(sc_stack **stack, void *data);
+void *push_sc_stack(sc_stack **stack, void *data);
 
 /**
  * Pops @p data from @p stack.
@@ -58,6 +60,19 @@ void push_sc_stack(sc_stack **stack, void *data);
  * The stack was @c NULL and could not be popped from.
  */
 void *pop_sc_stack(sc_stack **stack);
+
+/**
+ * Peeks at the top of @p stack.
+ *
+ * @param stack A pointer to the stack to be peeked.
+ *
+ * @retval void *
+ * The data at the head of the stack.
+ * @retval @c NULL
+ * Either the data at the head of the stack was @c NULL, or the entire stack,
+ * itself was @c NULL.
+ */
+void *peek_sc_stack(sc_stack **stack);
 
 /**
  * Duplicates @p stack, so that the new stack is independent from the original.
@@ -122,10 +137,10 @@ void print_sc_stack(FILE *file, sc_stack *stack,
  * A @link sc_stack_pfun @endlink
  * that prints a stack element that is a pointer.
  *
- * @param data The pointer to be printed.
  * @param file The writable stream to print to.
+ * @param data The pointer to be printed.
  */
-void sc_print_ptr(void *data, FILE *file);
+void sc_print_ptr(FILE *file, void *data);
 
 /**
  * A @link sc_stack_pfun @endlink

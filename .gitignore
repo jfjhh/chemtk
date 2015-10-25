@@ -1,37 +1,44 @@
-scicalc
 *.o
 
-chemtk
+src/chemtk
 bin/
 build/
 ascii.periodni.com*
 *.log
 
-# autoconf
-Makefile
-Makefile.in
+# autoconf, automake, and libtool
 aclocal.m4
 autom4te.cache/
 compile
-config.h
-config.h.in
-config.h.in~
-config.status
+config.*
 configure
 depcomp
 install-sh
+libtool
+ltmain.sh
+m4
+Makefile
+Makefile.in
 missing
-test-driver
-src/.deps/
-src/Makefile
-src/Makefile.in
 src/check_chemtk
 src/check_chemtk-*
 src/check_chemtk.trs
+.deps/
+.dirstamp
+.libs/
+*.la
+*.lo
+src/Makefile
+src/Makefile.in
 stamp-h1
+test-driver
 
 # Doxygen
 doc/doxygen
+
+# Jekyll and GitHub pages
+Gemfile.lock
+_site
 
 .ignore
 

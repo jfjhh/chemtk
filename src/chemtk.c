@@ -15,25 +15,34 @@ int main(void)
 	 * The log file, which is stderr by default.
 	 * Other.
 	 */
-	sc_stack *stack;
+	sc_stack *stack = NULL;
 
-	printf("ChemTK SciCalc Version %s.\n\n", VERSION);
-	printf("Testing ...\n");
+	puts("\033[0;1m"); // start bold.
+	puts("ChemTK SciCalc Version " VERSION ".\n\n");
 
-	/* Add all commands to memory. */
-	init_sc_commands();
-	// add_sc_command(fun, CONSTANT_CMD);
-	// add_sc_command(fun, ELEMENT_CMD);
+	puts("[ Parsing Command File ]\n");
+	puts("\033[0m"); // end bold.
+	if (parse_command_file(COMMAND_FILE, stderr) != 0) { // Init. commands.
+		fputs("Failed to parse command file (init sc_commands)!\n", stderr);
+		goto exit;
+	} else if (!(stack = new_sc_stack())) { // Init. stack.
+		fputs("Failed to init sc_stack!\n", stderr);
+		free_command_info();
+		goto exit;
+	}
 
-	stack = new_sc_stack();
+	puts("\033[0;1m"); // start bold.
+	print_sc_commands(stdout);
+	puts("\033[0m"); // end bold.
 
-	page_file(SCICALC_DOCFILE); /* Init/Help file. */
+	page_auto(SCICALC_DOCFILE); /* Init/Help file. */
 
-	/* TODO: Start calculating. */
-	printf("TODO: Start calculating.\n");
+	/* @todo: Start calculating (i.e. "scicalc"). */
+	printf("TODO: Start calculating!\n");
 
+exit:
 	delete_sc_stack(stack, free);
-	free_sc_commands();
+	free_command_info();
 
 	return 0;
 }
