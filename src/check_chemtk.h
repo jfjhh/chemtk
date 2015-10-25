@@ -15,7 +15,7 @@
 /**
  * Number of tests to be run.
  */
-#define NUM_TESTS         9
+#define NUM_TESTS         8
 
 /**
  * A record structure to store arrays of all tests to run.

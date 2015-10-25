@@ -1,8 +1,13 @@
 # TODO
 
+### commands.yml parsing procedure
+
+- Ugh, maybe Unicode support all the things in the future.
+
 ### Do it now!
 
-- Fix scicalc's operate() function to recalculate other significant figures upon evaluation.
+- Fix scicalc's operate() function to recalculate other significant figures upon
+  evaluation.
 
 - Update scicalc documentation file (also remove silly ops that override normal
   typing.
@@ -29,5 +34,6 @@
 - Unit conversion interface (e.g. from `mol` to `liters`), with drawing of the
   dimensional analysis bars and correct units. Maybe expand to generic problems
   like stoichiometry given a balanced equation, reagents, and desired output.
+
 - History with up/down arrows (libreadline).
 

@@ -1,9 +1,24 @@
 language: c
 
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - libyaml-dev
+      - libreadline-dev
+
+cache:
+  directories:
+    - $HOME/build/jfjhh/chemtk/data
+    - $HOME/build/jfjhh/chemtk/autom4te.cache
+    - $HOME/build/jfjhh/chemtk/m4
+
 script:
-  - autoreconf -i
-  - autoconf
-  - ./configure
+  - mkdir -p m4
+  - autoreconf -ivfs
+  - ./configure --prefix=`pwd`/_dist
   - make
-  - make check
+  - make install
+  - make uninstall
 

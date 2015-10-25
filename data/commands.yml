@@ -1,0 +1,45 @@
+---
+inputs: !!omap
+        - symbol : 4
+        - name   : 48
+        - digit  : 1
+        - letter : 1
+        - file   : 256
+        - none   : 0
+
+commands: !!seq
+        - !!map &Root
+          parent    : !!null
+          delimiter : '\0'
+          function  : !!null
+          input     : none
+
+        - !!map &Element
+          parent    : *Root
+          delimiter : e
+          function  : !!null
+          input     : symbol
+
+        - !!map &Information
+          parent    : *Element
+          delimiter : i
+          function  : element_information
+          input     : symbol
+        - !!map &VerboseInformation
+          parent    : *Element
+          delimiter : I
+          function  : element_verbose_information
+          input     : symbol
+        - !!map &PeriodicTable
+          parent    : *Element
+          delimiter : p
+          function  : element_periodic_table
+          input     : none
+
+        - !!map &Test
+          parent    : *Root
+          delimiter : T
+          function  : test_sc_command_fun
+          input     : none
+...
+

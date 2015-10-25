@@ -153,7 +153,7 @@
 /**
  * The file that all the commands are read from.
  */
-#define COMMAND_FILE            DATA_DIR     "/commands.txt"
+#define COMMAND_FILE            DATA_DIR     "/commands.yml"
 
 /**
  * The virtual directory that provides access to the process file descriptors.

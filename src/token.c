@@ -7,7 +7,7 @@
 
 #include "token.h"
 
-sc_token *sc_tokenize(const char *line)
+sc_token *sc_tokenize(char *line)
 {
 	sc_token *result_token;
 	double flt;

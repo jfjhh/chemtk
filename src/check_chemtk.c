@@ -9,23 +9,25 @@
 
 struct test_array all_tests = {
 	{
+		test_sc_parse, // Must be before test_sc_command.
 		test_sc_stack,
-		test_scicalc,
+		// test_scicalc,
 		test_pager,
 		test_constant,
 		test_sc_command,
-		test_sc_token,
+		// test_sc_token,
 		test_directory,
 		test_element,
 		test_operator,
 	},
 	{
+		"sc_parse",
 		"sc_stack",
-		"scicalc",
+		// "scicalc",
 		"pager",
 		"constant",
 		"sc_command",
-		"sc_token",
+		// "sc_token",
 		"directory",
 		"element",
 		"operator",
@@ -105,9 +107,6 @@ int run_tests(FILE *logfile, struct test_array tests)
 
 int main(void)
 {
-	if (run_all_tests(stderr))
-		return 0;
-	else
-		return 1;
+	return run_all_tests(stderr) ? 0 : 1;
 }
 
