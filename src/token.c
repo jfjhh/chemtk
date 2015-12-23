@@ -12,9 +12,9 @@ sc_token *sc_tokenize(char *line)
 	sc_token *result_token;
 	double flt;
 
-	if (!(result_token = malloc(sizeof(sc_token)))) {
-		fprintf(stderr,
-				"sc_tokenize(): failed to allocate memory for sc_token.\n");
+	if (!(result_token = calloc(sizeof(sc_token), 1))) {
+		fputs("sc_tokenize(): failed to allocate memory for sc_token.\n",
+				stderr);
 		return NULL;
 	}
 
@@ -22,29 +22,26 @@ sc_token *sc_tokenize(char *line)
 		SCT_TYPE(result_token) = VALUE;
 		SCT_FLT(result_token) = flt;
 		if (sig_figs(line, SCT_FIGS(result_token)) <= 0)
-			fprintf(stderr, "sc_tokenize(): could not get sig. figs.\n");
+			fputs("sc_tokenize(): could not get sig. figs.\n", stderr);
 	} else if (is_operator(line[0])) { /* type is OPERATOR. */
 		SCT_TYPE(result_token) = OPERATOR;
 		SCT_OP(result_token) = line[0];
 	} else if (is_sc_command(line)) { /* type is CMD. */
+		fputs("Token type is CMD.\n", stderr);
 		if (!run_sc_command(line, result_token, stderr)) {
-			fprintf(stderr, "sc_tokenize(): failed to run command.\n");
+			fputs("sc_tokenize(): failed to run command.\n", stderr);
 			SCT_TYPE(result_token) = NONE;
 		} else {
-			fprintf(stderr, "sc_tokenize(): command successful.\n");
+			fputs("sc_tokenize(): command successful.\n", stderr);
 		}
 	} else {
-		SCT_TYPE(result_token) = NONE;
-	}
-
-	if (SCT_TYPE(result_token) != NONE) {
-		fprintf(stderr, "sc_tokenize(): valid token.");
-		return result_token;
-	} else {
-		fprintf(stderr, "sc_tokenize(): invalid token.");
+		fputs("sc_tokenize(): invalid token.", stderr);
 		free(result_token);
 		return NULL;
 	}
+
+	fputs("sc_tokenize(): valid token.", stderr);
+	return result_token;
 }
 
 /* sc_token *sc_tokenize(const char *line) */
@@ -107,13 +104,50 @@ sc_token *sc_tokenize(char *line)
 /* 		return -2; */
 /* } */
 
-/* @test Write test_sc_token(). */
+void print_sc_token(sc_token *token, FILE *file)
+{
+	switch (SCT_TYPE(token)) {
+		case VALUE:
+			fprintf(file, "< %.*f (%s) > :: VALUE\n",
+					SCT_FIG(token, AFTER),
+					SCT_FLT(token),
+					SCT_BOOL(token) ? "true" : "false");
+			break;
+		case CMD:
+			fprintf(file, "< `%s` > :: CMD\n",
+					SCT_CMD(token));
+			break;
+		case OPERATOR:
+			fprintf(file, "< '%c' > :: OPERATOR\n",
+					SCT_OP(token));
+			break;
+		case NONE:
+		default:
+			fputs("< Empty Token > :: NONE\n", file);
+			break;
+	}
+}
+
+/* @test TODO: Write test_sc_token(). */
 int test_sc_token(FILE *logfile)
 {
+	/* Command tree initialized in previous test. */
 	int status;
 	status = 0;
+	sc_token *out;
 
-	fprintf(logfile, "TODO: write test_sc_token().\n");
+	fputs("TODO: write test_sc_token().\n", logfile);
+
+	if (!(out = sc_tokenize("T"))) {
+		fputs("Could not tokenize!", stderr);
+	} else {
+		print_sc_token(out, logfile);
+		free(out);
+		status = 1;
+	}
+
+	free(sc_inputs);
+	free_command_tree(sc_commands);
 
 	return status;
 }

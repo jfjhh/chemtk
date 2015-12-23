@@ -276,9 +276,10 @@ int test_sc_command(FILE *logfile)
 	else
 		status = 1;
 
-	free(sc_inputs);
-	free_command_tree(sc_commands);
+	print_sc_token(test_token, logfile);
+
 	free(test_token);
+	/* Command tree freed in subsequent test. */
 
 	return status;
 }
