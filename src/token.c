@@ -128,7 +128,6 @@ void print_sc_token(sc_token *token, FILE *file)
 	}
 }
 
-/* @test TODO: Write test_sc_token(). */
 int test_sc_token(FILE *logfile)
 {
 	/* Command tree initialized in previous test. */

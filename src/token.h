@@ -58,8 +58,6 @@ struct sc_token {
  * A successfully parsed token.
  * @retval NULL
  * An error occured.
- *
- * @todo Write sc_tokenize().
  */
 sc_token *sc_tokenize(char *line);
 
@@ -78,8 +76,6 @@ void print_sc_token(sc_token *token, FILE *file);
  *
  * @retval 1 if test succeeded.
  * @retval 0 if test failed.
- *
- * @todo Write test_sc_token().
  */
 int test_sc_token(FILE *logfile);
 

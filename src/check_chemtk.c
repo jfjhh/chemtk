@@ -9,28 +9,28 @@
 
 struct test_array all_tests = {
 	{
-		test_sc_parse, // Must be before test_sc_command.
-		test_sc_stack,
-		// test_scicalc,
-		test_pager,
-		test_constant,
-		test_sc_command,
-		test_sc_token,
 		test_directory,
 		test_element,
 		test_operator,
+		test_sc_stack,
+		test_pager,
+		test_constant,
+		test_sc_parse,   /* Must be before test_sc_command. */
+		test_sc_command, /* Must be before test_sc_token.   */
+		test_sc_token,
+		test_scicalc,
 	},
 	{
-		"sc_parse",
-		"sc_stack",
-		// "scicalc",
-		"pager",
-		"constant",
-		"sc_command",
-		"sc_token",
 		"directory",
 		"element",
 		"operator",
+		"sc_stack",
+		"pager",
+		"constant",
+		"sc_parse",
+		"sc_command",    /* Must be before test_sc_command. */
+		"sc_token",      /* Must be before test_sc_token.   */
+		"scicalc",
 	}
 };
 
