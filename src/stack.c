@@ -21,7 +21,10 @@ void *push_sc_stack(sc_stack **stack, void *data)
 {
 	sc_stack *new;
 
-	if (stack && (*stack)) {
+	if (!stack) /* Cannot push to a NULL pointer. */
+		return NULL;
+
+	if (*stack) {
 		if (!(*stack)->data) {
 			(*stack)->data = data;
 		} else {
@@ -33,10 +36,14 @@ void *push_sc_stack(sc_stack **stack, void *data)
 			}
 			*stack = new;
 		}
-		return data;
-	} else {
-		return NULL;
+	} else { /* If at 'bottom', then re-create and push. */
+		if (!(*stack = new_sc_stack()))
+			return NULL;
+		else
+			push_sc_stack(stack, data);
 	}
+
+	return data;
 }
 
 void *pop_sc_stack(sc_stack **stack)
@@ -52,7 +59,7 @@ void *pop_sc_stack(sc_stack **stack)
 		new_head = (*stack)->next;
 	}
 
-	fprintf(stderr, "\tPop from stack <%p> (old head be freed):\n"
+	fprintf(stderr, "\tPop from stack <%p> (old head will be freed):\n"
 			"\tnew_head: <%p>,\n"
 			"\tpopped data:\t<%p>.\n",
 			(void *) *stack, (void *) new_head, data);

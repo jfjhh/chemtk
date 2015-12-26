@@ -64,10 +64,10 @@ sc_token *sc_tokenize(char *line);
 /**
  * Prints a token.
  *
- * @param token	The sc_token to print.
  * @param file	The file to print it to.
+ * @param token	The sc_token to print.
  */
-void print_sc_token(sc_token *token, FILE *file);
+void print_sc_token(FILE *file, sc_token *token);
 
 /**
  * Tests token routines, logging results to @p logfile.

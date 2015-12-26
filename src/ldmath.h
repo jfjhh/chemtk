@@ -43,6 +43,23 @@
 
 #endif /* NAN */
 
+/**
+ * Replacement for @c LDBL_EPSILON.
+ */
+#ifndef LDBL_EPSILON
+#define LDBL_EPSILON	1e-10
+#endif
+
+/**
+ * Convenience macro for comparing floating-point values for equality.
+ *
+ * @param A	The first number.
+ * @param B	The first number.
+ *
+ * @retval 1	The numbers are equal (within the tolerance of @c LDBL_EPSILON).
+ * @retval 0	The numbers are not equal.
+ */
+#define LD_EQUAL(A, B)	((fabsl((A) - (B)) <= LDBL_EPSILON) ? 1 : 0)
 
 /**
  * @def DTOI(A)

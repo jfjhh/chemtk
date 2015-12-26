@@ -8,6 +8,11 @@
 #ifndef SCICALC_H
 #define SCICALC_H
 
+/* Feature test macro for fabsl(3). */
+#ifndef _BSD_SOURCE
+#define _BSD_SOURCE
+#endif /* _BSD_SOURCE */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -32,13 +37,15 @@
  * Assumes a sc_stack with sc_tokens, and the tokens to be ordered:
  * @code
  * OPERATOR  <= top operator (like RPN).
- * NUMBER    <= first operand.
- * (NUMBER)  <= optional second operand.
- *  [...]    <= rest of stack.
+ *  NUMBER   <= first operand.
+ *  NUMBER   <= optional second operand.
+ *   [...]   <= rest of stack.
  * @endcode
  *
+ * @retval 0 if operation failed. @p stack may be unusable on error.
+ * @retval 1 if operation succeeded.
+ *
  * @todo Write operate() to change stack in-place.
- * @todo Write operate() to use new sig. fig. array functionality.
  */
 int operate(sc_stack **stack);
 
