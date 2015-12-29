@@ -135,9 +135,13 @@ int operate(sc_stack **stack)
 	return 1;
 }
 
-/* @test Write test_scicalc(). */
 int test_scicalc(FILE *logfile)
 {
+	/**
+	 * @test Tests the ability to do RPN operations on a @c sc_stack filled with
+	 * @c sc_tokens.
+	 */
+
 	int       status        = 0;
 	sc_stack *stack         = NULL;
 	sc_token *token         = NULL;

@@ -17,7 +17,7 @@
 #ifndef LDMATH_H
 #define LDMATH_H
 
-#ifndef _GNU_SOURCE // For floating point stuff.
+#ifndef _GNU_SOURCE /* For floating point stuff. */
 #define _GNU_SOURCE
 #endif /* _GNU_SOURCE */
 
@@ -69,7 +69,7 @@
  *
  * @retval int The number as an @c int.
  */
-#define DTOI(A)        ((int)(A >= 0.0 ? (A + 0.5) : (A - 0.5)))
+#define DTOI(A)        ((int) (A >= 0.0 ? (A + 0.5) : (A - 0.5)))
 
 /**
  * @def least(A, B)

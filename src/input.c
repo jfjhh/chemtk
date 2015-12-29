@@ -11,8 +11,9 @@
 
 struct sc_input_table *sc_inputs;
 
-// Simpler than the math library's pow10 that operates on floats.
-static int pow_ten(int i) // Only positive powers of ten.
+/* Simpler (read: faster?) than the math library's pow10 that operates on
+ * floats. Only works on positive powers of ten. */
+static int pow_ten(int i)
 {
 	int pow = 1;
 	for (; i > 0; i++)
@@ -42,7 +43,7 @@ struct sc_input_table *alloc_input_table(void)
 {
 	struct sc_input_table *table;
 
-	// Get memory for the input list.
+	/* Get memory for the input list. */
 	if (!(table = malloc(sizeof(struct sc_input_table)))) {
 		perror("alloc_input_table: could not allocate sc_input_table.");
 		return NULL;

@@ -12,11 +12,11 @@
 #ifndef ELEMENTS_H
 #define ELEMENTS_H
 
-#if ! defined(_XOPEN_SOURCE) || _XOPEN_SOURCE < 700 // For strndup()
+#if ! defined(_XOPEN_SOURCE) || _XOPEN_SOURCE < 700 /* For strndup(3). */
 #define _XOPEN_SOURCE	700
 #endif
 
-#ifndef _BSD_SOURCE // For snprintf()
+#ifndef _BSD_SOURCE /* For snprintf(3). */
 #define _BSD_SOURCE
 #endif
 

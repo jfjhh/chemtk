@@ -118,7 +118,8 @@ int print_element_info(struct element *e, FILE *file)
 	if (path && symbol) {
 		symbol[0] = (char) tolower(symbol[0]);
 
-		snprintf(path, ELEMENT_INFO_DIR_LEN + ELEMENT_SYM_LEN + 1, // +1 for '/'
+		/* Add 1 for the '/'. */
+		snprintf(path, ELEMENT_INFO_DIR_LEN + ELEMENT_SYM_LEN + 1,
 				ELEMENT_INFO_DIR "/%s", symbol);
 
 		fprintf(file, "Element info path is '%s'.\n", path);

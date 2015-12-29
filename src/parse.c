@@ -4,8 +4,6 @@
  *
  * @brief Parses the command (and input) specification YAML file, and generates
  * the global datastructures used to access the commands and their inputs.
- *
- * @todo Write the doc file for how the YAML file is structured.
  */
 
 #include "parse.h"
@@ -22,7 +20,7 @@ static int parse_inputs(yaml_parser_t *parser, yaml_event_t *event,
 	if (!(sc_inputs = alloc_input_table()))
 		return 1;
 
-	yaml_event_delete(event); // Remove the old "root" scalar event.
+	yaml_event_delete(event); /* Remove the old "root" scalar event. */
 	if (!yaml_parser_parse(parser, event)) {
 		fprintf(stderr, "Parser error %d\n", parser->error);
 		return 2;
@@ -44,13 +42,13 @@ static int parse_inputs(yaml_parser_t *parser, yaml_event_t *event,
 				fputs("No event!\n", logfile);
 				break;
 
-			case YAML_MAPPING_START_EVENT: // Start of an input.
+			case YAML_MAPPING_START_EVENT: /* Start of an input. */
 				fprintf(logfile,
 						" *** Start Mapping *** (anchor: %s)(tag: %s)\n",
 						event->data.mapping_start.anchor,
 						event->data.mapping_start.tag);
 				break;
-			case YAML_MAPPING_END_EVENT: // End of an input.
+			case YAML_MAPPING_END_EVENT: /* End of an input. */
 				scalar_num = 0;
 				sc_inputs->count++;
 				fputs(" *** End Mapping *** \n", logfile);
@@ -59,10 +57,10 @@ static int parse_inputs(yaml_parser_t *parser, yaml_event_t *event,
 			case YAML_SCALAR_EVENT:
 				scalar_num++;
 
-				if (scalar_num == 1) { // The name of the symbol.
+				if (scalar_num == 1) { /* The name of the symbol. */
 					snprintf(cur_input()->name, CMD_INPUT_LEN, "%s",
 							event->data.scalar.value);
-				} else if (scalar_num == 2) { // The value of the symbol.
+				} else if (scalar_num == 2) { /* The value of the symbol. */
 					cur_input()->length =
 						atoin((char *) event->data.scalar.value,
 								event->data.scalar.length);
@@ -76,11 +74,11 @@ static int parse_inputs(yaml_parser_t *parser, yaml_event_t *event,
 						(int) event->start_mark.column);
 				break;
 
-			case YAML_SEQUENCE_END_EVENT: // End of all inputs.
+			case YAML_SEQUENCE_END_EVENT: /* End of all inputs. */
 				fputs(" *** End Sequence *** \n", logfile);
 				break;
 
-			default: // Some weird event that shouldn't be there.
+			default: /* Some weird event that shouldn't be there. */
 				yaml_event_delete(event);
 				fputs("Wtf is this weird event doing in the sc_inputs?\n",
 						stderr);
@@ -100,11 +98,10 @@ static int parse_inputs(yaml_parser_t *parser, yaml_event_t *event,
 static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 		FILE *logfile)
 {
-	// Command field variables:
+	/* Command field variables: */
 	char delimiter, name[CMD_NAME_LEN], func[CMD_NAME_LEN], input[CMD_NAME_LEN];
 	struct sc_command_entry *cur;
 	struct sc_command_tree  *parent;
-	// void *sc_handle; // for dlsym.
 
 	int scalar_num, status, attrib, len;
 
@@ -119,13 +116,13 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 
 	fputs("\n\tParsing commands!\n", logfile);
 
-	// Open commands library for access to function symbols.
+	/* Open commands library for access to function symbols. */
 	if (!(sc_handle = dlopen(COMMAND_LIB,
 					RTLD_NOW || RTLD_GLOBAL || RTLD_NODELETE))) {
-		// Open local for testing.
+		/* Open local for testing. */
 		if (!(sc_handle = dlopen("./commands/.libs/libsccommands.so",
 						RTLD_NOW || RTLD_GLOBAL || RTLD_NODELETE))) {
-			// Open self for access to function symbols.
+			/* Open self for access to function symbols. */
 			if (!(sc_handle = dlopen(NULL, RTLD_LAZY))) {
 				fprintf(stderr,
 						"init_sc_commands: could not open opaque dl handle.\n");
@@ -135,14 +132,14 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 		}
 	}
 
-	// Allocate root / global command tree.
+	/* Allocate root / global command tree. */
 	if (!(sc_commands = alloc_command_tree())) {
 		status = 2;
 		goto exit;
 	}
 	fprintf(logfile, " *** sc_commands is <%p> ***\n", (void *) sc_commands);
 
-	yaml_event_delete(event); // Remove the old "root" scalar event.
+	yaml_event_delete(event); /* Remove the old "root" scalar event. */
 	if (!yaml_parser_parse(parser, event)) {
 		fprintf(stderr, "Parser error %d\n", parser->error);
 		status = 3;
@@ -163,7 +160,7 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 		}
 
 		switch (event->type) {
-			case YAML_SEQUENCE_END_EVENT: // Command sequence exit condition.
+			case YAML_SEQUENCE_END_EVENT: /* Command sequence exit condition. */
 				goto exit;
 				break;
 
@@ -171,7 +168,7 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 				fputs("No event!\n", logfile);
 				break;
 
-			case YAML_MAPPING_START_EVENT: // Start of a command.
+			case YAML_MAPPING_START_EVENT: /* Start of a command. */
 				snprintf(name, CMD_NAME_LEN,
 						"%s", event->data.mapping_start.anchor);
 
@@ -184,7 +181,7 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 						event->data.mapping_start.anchor,
 						event->data.mapping_start.tag);
 				break;
-			case YAML_MAPPING_END_EVENT: // End of a command.
+			case YAML_MAPPING_END_EVENT: /* End of a command. */
 				scalar_num = 0;
 				if (!(cur = create_command_entry(delimiter, name,
 								func, input, sc_handle))) {
@@ -194,16 +191,15 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 					goto exit;
 				} else if(cur->func == NULL && func[0] != '\0'
 						&& parent != NULL) {
-					// Check for unfound symbols (not intentionally NULL).
+					/* Check for unfound symbols (not intentionally NULL). */
 					fprintf(stderr, "Could not find symbol: '%s'.\n", func);
 					status = 7;
 					goto exit;
 				}
 
 				fprintf(logfile, "Created command entry <%p>.\n", (void *) cur);
-				// print_sc_command_entry(logfile, cur);
 
-				if (parent == NULL) { // This is sc_commands' entry.
+				if (parent == NULL) { /* This is sc_commands' entry. */
 					sc_commands->entry = cur;
 					fputs("\tAdded root entry to sc_commands!\n", logfile);
 				} else if (!add_command_entry(cur, parent)) {
@@ -218,18 +214,18 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 				break;
 
 			case YAML_SCALAR_EVENT:
-				if (scalar_num == 1) { // an "attribute" scalar.
+				if (scalar_num == 1) { /* an "attribute" scalar. */
 					if (SCALAR_CMP(PARENT_SCALAR,
-								event->data.scalar) == 0) { // Parent.
+								event->data.scalar) == 0) { /* Parent. */
 						attrib = 1;
 					} else if (SCALAR_CMP(DELIMITER_SCALAR,
-								event->data.scalar) == 0) { // Delimiter.
+								event->data.scalar) == 0) { /* Delimiter. */
 						attrib = 2;
 					} else if (SCALAR_CMP(FUNCTION_SCALAR,
-								event->data.scalar) == 0) { // Function.
+								event->data.scalar) == 0) { /* Function. */
 						attrib = 3;
 					} else if (SCALAR_CMP(INPUT_SCALAR,
-								event->data.scalar) == 0) { // Input.
+								event->data.scalar) == 0) { /* Input. */
 						attrib = 4;
 					} else {
 						fputs("This attribute scalar doesn't belong in a "
@@ -240,12 +236,12 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 					fprintf(logfile, "Got attribute scalar (#%02d).\n", attrib);
 
 					scalar_num++;
-				} else if (scalar_num == 2) { // a "value" scalar.
+				} else if (scalar_num == 2) { /* a "value" scalar. */
 					fprintf(logfile,
 							"Got value scalar (from attrib #%02d)(%s).\n",
 							attrib, event->data.scalar.value);
 					switch (attrib) {
-						case 1: // Parent *scalar* value: only if NULL.
+						case 1: /* Parent *scalar* value: only if NULL. */
 							if (event->data.scalar.value[0] == '\0') {
 								parent = NULL;
 							} else {
@@ -255,7 +251,7 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 								status = 10;
 							}
 							break;
-						case 2: // Delimiter.
+						case 2: /* Delimiter. */
 							delimiter = (char) event->data.scalar.value[0];
 							if (delimiter == '\\')
 								delimiter = ESCAPE_CHAR((char)
@@ -263,8 +259,8 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 							fprintf(logfile,
 									"Delimiter is '%c'.\n", delimiter);
 							break;
-						case 3: // Function.
-							// Allows !!null as the function, to specify none.
+						case 3: /* Function. `!!null` is allowed as the
+								   function, to specify none. */
 							if (event->data.scalar.value[0] != '\0') {
 								snprintf(func, CMD_NAME_LEN,
 										"%s", event->data.scalar.value);
@@ -272,7 +268,7 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 							fprintf(logfile,
 									"Function (string) is '%s'.\n", func);
 							break;
-						case 4: // Input.
+						case 4: /* Input. */
 							snprintf(input, CMD_NAME_LEN,
 									"%s", event->data.scalar.value);
 
@@ -297,7 +293,8 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 				break;
 
 			case YAML_ALIAS_EVENT:
-				if (attrib != 1) { // Not value of a parent "attribute" scalar.
+				if (attrib != 1) { /* Not value of a parent "attribute" scalar.
+									  */
 					fputs("Found YAML_ALIAS_EVENT (ref to command) but not in "
 							"a parent attribute!\n", stderr);
 				}
@@ -305,10 +302,10 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 					name_to_sc_parent_tree((char *) event->data.alias.anchor);
 				fprintf(logfile, "parent is <%p>.\n", (void *) parent);
 
-				scalar_num = 1; // allow parsing of following "attributes."
+				scalar_num = 1; /* allow parsing of following "attributes." */
 				break;
 
-			default: // Some weird event that shouldn't be there.
+			default: /* Some weird event that shouldn't be there. */
 				fprintf(stderr,
 						"Wtf is this weird event doing in a command (%s)?\n",
 						EVENT_TYPE(event->type));
@@ -322,13 +319,11 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 
 	} while (event->type != YAML_SEQUENCE_END_EVENT);
 
-exit: // Fallthrough on success.
+exit: /* Fallthrough on success. */
 	if (status != 0)
 		free(sc_commands);
-	// Intentionally leaving unclosed so later functions can use syms.
-	// if (sc_handle && dlclose(sc_handle) != 0)
-	// 	fprintf(stderr, "init_sc_commands: error closing the self dl handle "
-	// 			"(meh, it'll probably be OK).\n");
+
+	/* Intentionally leaving syms unclosed so later functions can use syms. */
 	yaml_event_delete(event);
 
 	return status;
@@ -411,11 +406,11 @@ int parse_command_file(const char *file, FILE *logfile)
 						"Got alias (anchor: %s)\n", event.data.alias.anchor);
 				break;
 			case YAML_SCALAR_EVENT:
-				if (parse_depth == 1) { // A "root" scalar.
+				if (parse_depth == 1) { /* A "root" scalar. */
 					if (strncmp((char *) event.data.scalar.value,
 								ROOT_INPUTS_SCALAR,
 								strlen(ROOT_INPUTS_SCALAR)) == 0) {
-						// Parse the inputs sequence that follows.
+						/* Parse the inputs sequence that follows. */
 						if ((status = parse_inputs(&parser, &event, logfile))
 								!= 0) {
 							fprintf(stderr,
@@ -426,7 +421,7 @@ int parse_command_file(const char *file, FILE *logfile)
 					} else if (strncmp((char *) event.data.scalar.value,
 								ROOT_COMMANDS_SCALAR,
 								strlen(ROOT_COMMANDS_SCALAR)) == 0) {
-						// Parse the command sequence that follows.
+						/* Parse the command sequence that follows. */
 						if ((status = parse_commands(&parser, &event, logfile))
 								!= 0) {
 							fprintf(stderr,
@@ -468,9 +463,11 @@ void free_command_info(void)
 
 int test_sc_parse(FILE *logfile)
 {
-	int i, status;
-	status = 0;
+	/**
+	 * @test Tests if @c COMMAND_FILE can be parsed into a @c sc_command_tree.
+	 */
 
+	int i, status;
 	status = parse_command_file(COMMAND_FILE, logfile);
 
 	if (!sc_inputs) {
@@ -490,12 +487,10 @@ int test_sc_parse(FILE *logfile)
 		return 0;
 	}
 
-	if (status == 0) // Ensure commands not corrupted from bad test.
+	if (status == 0) /* Ensure commands not corrupted from bad test. */
 		print_sc_commands(logfile);
 
-	// Leave alloc'd for test_sc_command().
-	// free(sc_inputs);
-	// free_command_tree(sc_commands);
+	/* Leave alloc'd for test_sc_command(). */
 
 	return (status == 0) ? 1 : 0;
 }

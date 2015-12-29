@@ -14,10 +14,6 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-// #if ! defined(_XOPEN_SOURCE) || _XOPEN_SOURCE < 700 // For getline()
-// #define _XOPEN_SOURCE	700
-// #endif
-
 /**
  * The maximum length of a command string, including the terminating @c NULL
  * byte.

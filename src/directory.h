@@ -8,11 +8,11 @@
 #ifndef DIRECTORY_H
 #define DIRECTORY_H
 
-#ifndef _GNU_SOURCE // For DT_DIR and NAME_MAX macros
+#ifndef _GNU_SOURCE /* For DT_DIR and NAME_MAX macros. */
 #define _GNU_SOURCE
 #endif /* _GNU_SOURCE */
 
-#if ! defined(_XOPEN_SOURCE) || _XOPEN_SOURCE < 700 // For strndup()
+#if ! defined(_XOPEN_SOURCE) || _XOPEN_SOURCE < 700 /* For strndup(3). */
 #define _XOPEN_SOURCE	700
 #endif /* _XOPEN_SOURCE */
 

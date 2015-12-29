@@ -18,9 +18,10 @@ static sc_command_func strtofunc(const char *str, void *handle)
 
 	dlerror();
 	if (str)
-		// ISO C disallows casting of `void *` to function pointer:
-		// sym = dlsym(handle, "test_dlsym"); // Supported in `POSIX.1-2013`.
-		// ... so use this messy casting, instead.
+		/* ISO C disallows casting of `void *` to function pointer, though this
+		 * is supported in `POSIX.1-2013`:
+		 * sym = dlsym(handle, "test_dlsym");
+		 * ... so use this messy casting, instead. */
 		*(void **) (&sym) = dlsym(handle, str);
 
 	if (dlerror())
@@ -39,10 +40,10 @@ static struct sc_command_tree *name_to_parent_tree(const char *name,
 		tree = sc_commands;
 
 	if (tree && tree->entry) {
-		// Check current node.
+		/* Check current node. */
 		if (strncmp(tree->entry->name, name, CMD_NAME_LEN) == 0)
 			return tree;
-		else if (tree->num_children > 0) // Check children.
+		else if (tree->num_children > 0) /* Check children. */
 			for (i = 0; i < tree->num_children; i++)
 				if ((result = name_to_parent_tree(name, tree->children[i])))
 					return result;
@@ -86,10 +87,10 @@ static void print_commands(FILE *file, struct sc_command_tree *tree, int depth)
 		print_sc_command_entry(file, tree->entry);
 		if (tree->num_children > 0) {
 			for (c = 0; c < tree->num_children; c++) {
-				// Extra vertical space.
-				// for (i = 0; i < depth; i++)
-				// 	fputs("  \u2502   ", file);
-				// fputs("  \u2502\n", file);
+				/* Extra vertical space. */
+				/* for (i = 0; i < depth; i++) */
+				/* 	fputs("  \u2502   ", file); */
+				/* fputs("  \u2502\n", file); */
 
 				for (i = 0; i <= depth; i++) {
 					if (i == depth) {
@@ -132,11 +133,11 @@ static struct sc_command_entry *get_next_entry(struct sc_command_tree *tree,
 		print_sc_command_entry(stderr, tree->entry);
 
 
-		// Check current node.
+		/* Check current node. */
 		if (isalnum(line[0]) && tree->entry->delimiter == line[0]) {
 			return tree->entry;
-		} else if (tree->num_children > 0) { // Check children.
-			// Check if this is the root tree (so we don't compare to '\0').
+		} else if (tree->num_children > 0) { /* Check children. */
+			/* Check if this is the root tree (so we don't compare to '\0'). */
 			next = (tree->entry->delimiter == '\0') ? line : line + 1;
 
 			for (i = 0; i < tree->num_children; i++)
@@ -156,13 +157,13 @@ static inline struct sc_command_entry *get_sc_command(char *line)
 struct sc_command_tree *alloc_command_tree(void) {
 	struct sc_command_tree *tree;
 
-	// Get memory for the tree.
+	/* Get memory for the tree. */
 	if (!(tree = malloc(sizeof(struct sc_command_tree)))) {
 		perror("alloc_command_tree: could not allocate sc_command_tree.");
 		return NULL;
 	}
 
-	// Initialize children to NULL.
+	/* Initialize children to NULL. */
 	memset(tree->children, '\0',
 			sizeof(struct sc_command_tree *) * CMD_CHILDREN);
 
@@ -192,14 +193,14 @@ struct sc_command_entry *create_command_entry(char delimiter,
 {
 	struct sc_command_entry *entry;
 
-	// Get memory for the entry.
+	/* Get memory for the entry. */
 	if (!(entry = malloc(sizeof(struct sc_command_entry)))) {
 		perror("parse_command_tree: "
 				"could not allocate sc_command_entry.");
 		return NULL;
 	}
 
-	// Add command fields to entry.
+	/* Add command fields to entry. */
 	strncpy(entry->name, name, CMD_NAME_LEN);
 	entry->delimiter = delimiter;
 	entry->input = name_to_input(input);
@@ -231,8 +232,8 @@ struct sc_command_tree *add_command_entry(struct sc_command_entry *entry,
 
 	tree->num_children++;
 
-	// tree->num_children is a count, not an offset, so subtract one to do
-	// proper pointer indexing on tree->children.
+	/* tree->num_children is a count, not an offset, so subtract one to do
+	 * proper pointer indexing on tree->children. */
 	tree->children[tree->num_children - 1] = new;
 
 	return new;
@@ -261,17 +262,21 @@ int run_sc_command(char *line, sc_token *out, FILE *logfile)
 
 int test_sc_command(FILE *logfile)
 {
+	/**
+	 * @test Attempts to run the test command, testing both the validity of the
+	 * command tree and output token.
+	 */
 
 	int status = 0;
 	sc_token *test_token;
 
-	// Global commands initialized by test_sc_parse().
+	/* Global commands initialized by test_sc_parse() (a previous test). */
 
 	if (!(test_token = malloc(sizeof(sc_token))))
 		fputs("Could not create a testing sc_token.\n", logfile);
 	else if (!run_sc_command("T", test_token, logfile))
 		fputs("Could not run_sc_command().\n", logfile);
-	else if (SCT_TYPE(test_token) != VALUE) // Set by the command as a check.
+	else if (SCT_TYPE(test_token) != VALUE) /* Set by the command as a check. */
 		fputs("Test command executed wrong.\n", logfile);
 	else
 		status = 1;
@@ -279,7 +284,7 @@ int test_sc_command(FILE *logfile)
 	print_sc_token(logfile, test_token);
 
 	free(test_token);
-	/* Command tree freed in subsequent test. */
+	/* Command tree is freed in a subsequent test. */
 
 	return status;
 }

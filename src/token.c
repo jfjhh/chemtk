@@ -69,7 +69,11 @@ void print_sc_token(FILE *file, sc_token *token)
 
 int test_sc_token(FILE *logfile)
 {
-	/* Command tree initialized in previous test. */
+	/**
+	 * @test Tests tokenization of an input line (executes test command).
+	 */
+
+	/* The command tree was initialized in a previous test. */
 	int status;
 	status = 0;
 	sc_token *out;

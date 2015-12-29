@@ -44,8 +44,6 @@
  *
  * @retval 0 if operation failed. @p stack may be unusable on error.
  * @retval 1 if operation succeeded.
- *
- * @todo Write operate() to change stack in-place.
  */
 int operate(sc_stack **stack);
 
@@ -56,8 +54,6 @@ int operate(sc_stack **stack);
  *
  * @retval 1 if test succeeded.
  * @retval 0 if test failed.
- *
- * @todo Write test_scicalc().
  */
 int test_scicalc(FILE *logfile);
 

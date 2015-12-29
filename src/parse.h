@@ -11,7 +11,7 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#ifndef _BSD_SOURCE // For snprintf()
+#ifndef _BSD_SOURCE /* For snprintf(3). */
 #define _BSD_SOURCE
 #endif
 

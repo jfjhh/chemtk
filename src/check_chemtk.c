@@ -7,6 +7,9 @@
 
 #include "check_chemtk.h"
 
+/**
+ * Holds an ordered list of tests and their names.
+ */
 struct test_array all_tests = {
 	{
 		test_directory,
@@ -15,22 +18,22 @@ struct test_array all_tests = {
 		test_sc_stack,
 		test_pager,
 		test_constant,
-		test_sc_parse,   /* Must be before test_sc_command. */
-		test_sc_command, /* Must be before test_sc_token.   */
+		test_sc_parse,   /**< Must be before test_sc_command. */
+		test_sc_command, /**< Must be before test_sc_token.   */
 		test_sc_token,
 		test_scicalc,
 	},
 	{
-		"directory",
-		"element",
-		"operator",
-		"sc_stack",
-		"pager",
-		"constant",
-		"sc_parse",
-		"sc_command",    /* Must be before test_sc_command. */
-		"sc_token",      /* Must be before test_sc_token.   */
-		"scicalc",
+		"Directory",
+		"Element",
+		"Operator",
+		"Stack",
+		"Pager",
+		"Constant",
+		"Parsing",
+		"Command",
+		"Token",
+		"Scicalc",
 	}
 };
 
@@ -105,6 +108,9 @@ int run_tests(FILE *logfile, struct test_array tests)
 }
 
 
+/**
+ * @test Runs all tests for ChemTK.
+ */
 int main(void)
 {
 	return run_all_tests(stderr) ? 0 : 1;

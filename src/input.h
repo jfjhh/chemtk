@@ -5,6 +5,9 @@
  * @brief Specifies the command *input* datastructures. By *input*, it is meant
  * the type of input that a command takes. This is specified by a name
  * ("symbol", "none", "number", etc.) and a maximum string length.
+ *
+ * @note Input testing is integrated into the success or failure of
+ * @c test_sc_parse.
  */
 
 #ifndef INPUT_H
