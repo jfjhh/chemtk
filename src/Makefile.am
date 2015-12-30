@@ -16,7 +16,7 @@ chemtk_SOURCES = chemtk.c chemtk.h command.c command.h config.h constant.c \
 		 ldmath.c ldmath.h Makefile.am operator.c operator.h pager.c \
 		 pager.h scicalc.c scicalc.h stack.c stack.h token.c token.h \
 		 commands/token_interface.h commands/command_interface.h \
-		 input.c input.h parse.c parse.h yaml_macros.h
+		 input.c input.h parse.c parse.h yaml_macros.h arguments.h
 chemtk_LDADD   = commands/libsccommands.la
 
 # testing programs
@@ -31,7 +31,7 @@ check_chemtk_SOURCES = check_chemtk.c check_chemtk.h chemtk.h command.c \
 		       pager.h scicalc.c scicalc.h stack.c stack.h token.c \
 		       token.h commands/token_interface.h \
 		       commands/command_interface.h input.c input.h parse.c \
-		       parse.h yaml_macros.h
+		       parse.h yaml_macros.h arguments.h
 check_chemtk_LDADD   = commands/libsccommands.la
 
 CHECK_CFLAGS = -DCHECK_CHEMTK_FLAG=1
