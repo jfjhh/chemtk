@@ -1,5 +1,8 @@
 docdir        = $(datadir)/doc/@PACKAGE@
-doc_DATA      = README DONTS
-dist_doc_DATA = README DONTS
-SUBDIRS       = commands/ # doxygen/
+DOCFILES      = README DONTS
+doc_DATA      = $(DOCFILES)
+SUBDIRS       = commands/ doxygen/
+
+uninstall-hook:
+	-if test -d $(docdir); then rm -rf $(docdir); fi
 

@@ -50,11 +50,7 @@ AC_TYPE_SIZE_T
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([pow strndup snprintf])
 
-# Broken: Doxygen documentation.
-# AC_OUTPUT([Makefile src/commands/Makefile src/Makefile doc/Makefile \
-# 	   doc/commands/Makefile doc/doxygen/Makefile \
-# 	   doc/doxygen/html/Makefile doc/doxygen/html/search/Makefile \
-# 	   man/Makefile data/Makefile])
-
+# Output Makefiles.
 AC_OUTPUT([Makefile src/commands/Makefile src/Makefile doc/Makefile \
-	   doc/commands/Makefile man/Makefile data/Makefile])
+	   doc/commands/Makefile doc/doxygen/Makefile \
+	   man/Makefile data/Makefile])

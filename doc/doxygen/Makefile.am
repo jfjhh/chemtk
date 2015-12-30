@@ -1,18 +1,13 @@
-SUBDIRS = html/
-
-include doxygen_files.make
-
-docdir     = $(datadir)/doc/@PACKAGE@
-CLEANFILES = $(doxygen_files)
-
 if HAVE_DOXYGEN
 
-$(doxygen_files):
+docdir         = $(datadir)/doc/@PACKAGE@
+HTMLDOC        = html/* doxygen_sqlite3.db
+CLEANFILES     = $(HTMLDOC)
+DISTCLEANFILES = $(HTMLDOC) $(docdir)
+doc_DATA       = $(HTMLDOC)
+
+$(HTMLDOC):
 	$(DOXYGEN)
 
-clean-generic:
-	rm -rf $(CLEANFILES)
-
 endif
-
 
