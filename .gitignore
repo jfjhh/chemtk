@@ -43,6 +43,9 @@ doc/doxygen/doxygen_sqlite3.db
 doc/doxygen/latex
 doc/doxygen/man
 
+# Command Documentation
+doc/commands/command_specification.pdf
+
 # Jekyll and GitHub pages
 Gemfile.lock
 _site
