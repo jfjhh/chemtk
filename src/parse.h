@@ -4,8 +4,6 @@
  *
  * @brief Parses the command (and input) specification YAML file, and generates
  * the global datastructures used to access the commands and their inputs.
- *
- * @todo Write the doc file for how the YAML file is structured.
  */
 
 #ifndef PARSE_H

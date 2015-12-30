@@ -17,6 +17,20 @@ AC_CHECK_PROG([UNXZ],  [unxz], [/usr/bin/unxz],  [unxz])
 AC_ARG_VAR([TAR],      [Program used to unarchive program data.])
 AC_CHECK_PROG([TAR],   [tar],  [/bin/tar],       [tar])
 
+# Check for presence of pdfLaTeX.
+AC_CHECK_PROG(PDFLATEX, pdflatex, pdflatex)
+AM_CONDITIONAL([HAVE_PDFLATEX], test -n "$PDFLATEX")
+if test -z "$PDFLATEX"; then
+	AC_MSG_WARN([Unable to create PDF version of documentation.])
+fi
+
+# Check for Doxygen.
+AC_CHECK_PROG(DOXYGEN, doxygen, doxygen)
+AM_CONDITIONAL([HAVE_DOXYGEN], test -n "$DOXYGEN")
+if test -z "$DOXYGEN"; then
+	AC_MSG_WARN([Unable to create Doxygen documentation.])
+fi
+
 # Checks for libraries.
 AC_CHECK_LIB([dl],        [dlopen])
 AC_CHECK_LIB([m],         [cos])
@@ -36,5 +50,11 @@ AC_TYPE_SIZE_T
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([pow strndup snprintf])
 
+# Broken: Doxygen documentation.
+# AC_OUTPUT([Makefile src/commands/Makefile src/Makefile doc/Makefile \
+# 	   doc/commands/Makefile doc/doxygen/Makefile \
+# 	   doc/doxygen/html/Makefile doc/doxygen/html/search/Makefile \
+# 	   man/Makefile data/Makefile])
+
 AC_OUTPUT([Makefile src/commands/Makefile src/Makefile doc/Makefile \
-	   man/Makefile data/Makefile])
+	   doc/commands/Makefile man/Makefile data/Makefile])

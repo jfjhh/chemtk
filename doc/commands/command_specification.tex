@@ -1,20 +1,21 @@
-\documentclass[final,letterpaper,12pt]{report}
+\documentclass[final,letterpaper,12pt]{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
-\usepackage[landscape]{geometry}
-\usepackage{pict2e}
-\usepackage{qtree}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+
+\renewcommand*\ttdefault{pcr}
 
 \author{Alex Striff}
-\title{ChemTK Command Grammar}
+\title{ChemTK Command Specification \\ \large
+Command Tree Structure, BNF, and YAML Data File Specification}
 \date \today
 
 \begin{document}
 
 \maketitle
-\clearpage
-
-\tableofcontents
 \clearpage
 
 \section{Example Tree}
@@ -33,25 +34,10 @@ In English, this command says,
 	].\texttt{ei n}
 ].Command
 
-\section{BNF}
+\section{BNF Specification}
 
-\texttt{(* ChemTK Command BNF *)}
-
-\texttt{<command>        ::= <token> <opt-whitespace> <value> <end>}
-
-\texttt{<value>          ::= <data> <value> | ""}
-
-\texttt{<token>          ::= <const> <token> | ""}
-
-\texttt{<const>          ::= <alpha> | <num>}
-
-\texttt{<data>           ::= <const> | <punct>}
-
-\texttt{<opt-whitespace> ::= <space> <opt-whitespace> | ""}
-
-\texttt{<space>          ::= <SPACE> | <TAB>}
-
-\texttt{<end>            ::= <NEWLINE> <NUL>}
+\lstset{numbers=left, numberstyle=\small}
+\texttt{\lstinputlisting{commands.bnf.txt}}
 
 \section{The Global Command Tree}
 
@@ -77,19 +63,10 @@ was ommitted for space.
 	[ \texttt{NULL} ].F
 ].N
 
-\section{Command Tree Structure}
+\section{Current Commands YAML File}
 
-\texttt{struct table \{}
-
-\texttt{	char token;}
-
-\texttt{	char *name;}
-
-\texttt{	struct table *next;}
-
-\texttt{	void (*func)(char *);}
-
-\texttt{\};}
+\lstset{numbers=left, numberstyle=\small}
+\texttt{\lstinputlisting{../../data/commands.yml}}
 
 \end{document}
 

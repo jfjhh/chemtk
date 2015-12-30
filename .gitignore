@@ -4,6 +4,10 @@ src/chemtk
 bin/
 build/
 ascii.periodni.com*
+
+# LaTeX
+*.out
+*.aux
 *.log
 
 # autoconf, automake, and libtool
@@ -34,7 +38,10 @@ stamp-h1
 test-driver
 
 # Doxygen
-doc/doxygen
+doc/doxygen/html
+doc/doxygen/doxygen_sqlite3.db
+doc/doxygen/latex
+doc/doxygen/man
 
 # Jekyll and GitHub pages
 Gemfile.lock
