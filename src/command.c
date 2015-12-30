@@ -179,13 +179,13 @@ void free_command_tree(struct sc_command_tree *root)
 	struct sc_command_tree *cur = root;
 	int i = 0;
 
-	if (root->entry)
-		free(root->entry);
-
-	while ((cur = root->children[i++]))
-		free_command_tree(cur);
-
-	free(root);
+	if (root) {
+		if (root->entry)
+			free(root->entry);
+		while ((cur = root->children[i++]))
+			free_command_tree(cur);
+		free(root);
+	}
 }
 
 struct sc_command_entry *create_command_entry(char delimiter,

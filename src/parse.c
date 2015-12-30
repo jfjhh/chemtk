@@ -458,7 +458,8 @@ void free_command_info(void)
 {
 	free(sc_inputs);
 	free_command_tree(sc_commands);
-	dlclose(sc_handle);
+	if (sc_handle)
+		dlclose(sc_handle);
 }
 
 int test_sc_parse(FILE *logfile)
