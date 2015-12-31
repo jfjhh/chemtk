@@ -1,6 +1,5 @@
 if HAVE_PDFLATEX
 
-# docdir         = $(datadir)/doc/@PACKAGE@
 CMDSPECBNF     = commands.bnf.txt
 CMDSPECNAME    = command_specification
 CMDSPECTEXSRC  = $(CMDSPECNAME).tex

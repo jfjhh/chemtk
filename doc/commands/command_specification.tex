@@ -3,8 +3,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{listings}
-\usepackage{tikz}
-\usepackage{tikz-qtree}
 
 \renewcommand*\ttdefault{pcr}
 
@@ -18,50 +16,18 @@ Command Tree Structure, BNF, and YAML Data File Specification}
 \maketitle
 \clearpage
 
-\section{Example Tree}
 
-The tree of the command, \texttt{'ei n'}, is shown below.
-In English, this command says,
-\textit{print the element information about nitrogen}.
+\section{Example Command}
 
-\Tree [
-	[
-		[ [ Element ].\texttt{e} [
-			[ Information ].\texttt{i}
-		].Token ].Token
-		[ {Optional Space} ].\texttt{' '}
-		[ [ Nitrogen ].\texttt{n} ].Value
-	].\texttt{ei n}
-].Command
+\texttt{'ei n'} $\Rightarrow$ \textit{print the element information about
+nitrogen}.
+
 
 \section{BNF Specification}
 
 \lstset{numbers=left, numberstyle=\small}
 \texttt{\lstinputlisting{commands.bnf.txt}}
 
-\section{The Global Command Tree}
-
-The command tree will look something like this. The struct member \texttt{name}
-was ommitted for space.
-
-\Tree [
-	[ \texttt{NUL} ].T
-	[
-		[ \texttt{'e'} ].T
-		[
-			[ \texttt{'i'} ].T
-			[ NULL ].N
-			[ \texttt{foo()} ].F
-		].N
-		[ \texttt{NULL} ].F
-	].N
-	[
-		[ \texttt{'c'} ].T
-		[ NULL ].N
-		[ \texttt{bar()} ].F
-	].N
-	[ \texttt{NULL} ].F
-].N
 
 \section{Current Commands YAML File}
 

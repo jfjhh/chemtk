@@ -1,6 +1,6 @@
+GIANTARCHIVE      = data.tar.xz
 EXTRA_DIST        = commands.yml constants.txt data.h elements get_files \
 		    pager.txt scicalc.txt
-GIANTARCHIVE      = data.tar.xz
 dist_data_DATA    = $(GIANTARCHIVE)
 dist_pkgdata_DATA = $(GIANTARCHIVE)
 

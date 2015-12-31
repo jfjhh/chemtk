@@ -5,8 +5,14 @@ sudo: false
 addons:
   apt:
     packages:
+      - autoconf
+      - automake
+      - libtool
       - libyaml-dev
       - libreadline-dev
+      - doxygen
+      - texlive
+      - pgf
 
 cache:
   directories:
@@ -15,10 +21,6 @@ cache:
     - $HOME/build/jfjhh/chemtk/m4
 
 script:
-  - mkdir -p m4
-  - autoreconf -ivfs
-  - ./configure --prefix=`pwd`/_dist
-  - make
-  - make install
-  - make uninstall
+    - ./bootstrap
+    - make distcheck
 

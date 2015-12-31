@@ -1,6 +1,5 @@
 if HAVE_DOXYGEN
 
-docdir          = $(datadir)/doc/@PACKAGE@
 doxygendir      = $(top_srcdir)/doc/doxygen
 DOXYGENDB       = doxygen_sqlite3.db
 DOXYFILE        = Doxyfile
