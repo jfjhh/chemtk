@@ -1,6 +1,7 @@
 if HAVE_PDFLATEX
 
-docdir         = $(datadir)/doc/@PACKAGE@
+# docdir         = $(datadir)/doc/@PACKAGE@
+CMDSPECBNF     = commands.bnf.txt
 CMDSPECNAME    = command_specification
 CMDSPECTEXSRC  = $(CMDSPECNAME).tex
 CMDSPECAUX     = $(CMDSPECNAME).aux
@@ -8,8 +9,8 @@ CMDSPECLOG     = $(CMDSPECNAME).log
 CMDSPECPDF     = $(CMDSPECNAME).pdf
 docfiles       = $(CMDSPECPDF)
 CLEANFILES     = $(CMDSPECPDF) $(CMDSPECAUX) $(CMDSPECLOG)
-DISTCLEANFILES = $(CLEANFILES) $(docdir)
-doc_DATA       = $(docfiles)
+DISTCLEANFILES = $(CLEANFILES)
+dist_doc_DATA  = $(docfiles) $(CMDSPECBNF)
 
 $(CMDSPECPDF): $(srcdir)/$(CMDSPECTEXSRC)
 	$(PDFLATEX) $<

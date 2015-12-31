@@ -13,6 +13,7 @@
 #include "constant.h"
 #include "command.h"
 #include "directory.h"
+#include "dirs.h"
 #include "element.h"
 #include "input.h"
 #include "operator.h"

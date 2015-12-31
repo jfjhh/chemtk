@@ -1,13 +1,16 @@
 if HAVE_DOXYGEN
 
-docdir         = $(datadir)/doc/@PACKAGE@
-HTMLDOC        = html/* doxygen_sqlite3.db
-CLEANFILES     = $(HTMLDOC)
-DISTCLEANFILES = $(HTMLDOC) $(docdir)
-doc_DATA       = $(HTMLDOC)
+docdir          = $(datadir)/doc/@PACKAGE@
+doxygendir      = $(top_srcdir)/doc/doxygen
+DOXYGENDB       = doxygen_sqlite3.db
+DOXYFILE        = Doxyfile
+HTMLDOC         = html/*
+CLEANFILES      = $(HTMLDOC) $(DOXYGNEDB)
+DISTCLEANFILES  = $(HTMLDOC) $(DOXYGENDB)
+dist_doc_DATA   = $(HTMLDOC) $(DOXYFILE)
 
 $(HTMLDOC):
-	$(DOXYGEN)
+	$(DOXYGEN) $(doxygendir)/$(DOXYFILE)
 
 endif
 

@@ -36,6 +36,10 @@ src/Makefile
 src/Makefile.in
 stamp-h1
 test-driver
+INSTALL
+
+# distributions
+chemtk-*
 
 # Doxygen
 doc/doxygen/html
@@ -49,6 +53,4 @@ doc/commands/command_specification.pdf
 # Jekyll and GitHub pages
 Gemfile.lock
 _site
-
-.ignore
 

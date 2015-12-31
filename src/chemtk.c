@@ -29,7 +29,8 @@ int main(int argc, char *const argv[])
 	char     *lfpath   = NULL;
 
 	puts("\033[0;1m"); /* Start bold. */
-	puts("ChemTK SciCalc Version " VERSION ".\n\n");
+	puts("\tChemTK SciCalc Version " VERSION ".\n");
+	puts("\tDATA_DIR: '" DATA_DIR "'.\n\n");
 
 	/* Parse command-line arguments. */
 	while ((opt = getopt_long(argc, argv,
@@ -59,10 +60,6 @@ int main(int argc, char *const argv[])
 				break;
 		}
 	}
-
-	fflush(lf);
-	getchar(); /* DEBUG pause. */
-	goto exit;
 
 	/* Parse command file. */
 	puts("[ Parsing Command File... ]\n");

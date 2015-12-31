@@ -1,2 +1,2 @@
-man_MANS = chemtk.1 chemtkrc.5
+dist_man_MANS = chemtk.1 chemtkrc.5
 

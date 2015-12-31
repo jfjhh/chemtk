@@ -1,0 +1,6 @@
+#!/bin/sh
+
+autoreconf -fsiv
+./configure
+echo -e "\n\t*** You may now run make. ***\n"
+

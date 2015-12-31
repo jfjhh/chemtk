@@ -1,15 +1,11 @@
 AUTOMAKE_OPTIONS = -Wportability gnu dist-xz subdir-objects
+SUBDIRS = commands
 
 # what flags you want to pass to the C compiler & linker
 AM_CFLAGS  = -std=c99 -Wall -Wextra -pedantic -rdynamic \
-	     -O2 -g -DDATA_DIR=\"$(pkgdatadir)\" \
-	     -DCOMMAND_LIB=\"$(pkglibdir)/libsccommands.so\"
+	     -O2 -g -DCOMMAND_LIB=\"$(pkglibdir)/libsccommands.so\"
 AM_LDFLAGS =
 
-SUBDIRS = commands
-
-# this lists the binaries to produce, the (non-PHONY, binary) targets in
-# the previous manual Makefile
 bin_PROGRAMS   = chemtk
 chemtk_SOURCES = chemtk.c chemtk.h command.c command.h config.h constant.c \
 		 constant.h directory.c directory.h dirs.h element.c element.h \
@@ -18,6 +14,7 @@ chemtk_SOURCES = chemtk.c chemtk.h command.c command.h config.h constant.c \
 		 commands/token_interface.h commands/command_interface.h \
 		 input.c input.h parse.c parse.h yaml_macros.h arguments.h
 chemtk_LDADD   = commands/libsccommands.la
+chemtk_CFLAGS  = $(CFLAGS) $(AM_CFLAGS) -DDATA_DIR=\"$(pkgdatadir)\"
 
 # testing programs
 noinst_PROGRAMS = check_chemtk
@@ -33,7 +30,5 @@ check_chemtk_SOURCES = check_chemtk.c check_chemtk.h chemtk.h command.c \
 		       commands/command_interface.h input.c input.h parse.c \
 		       parse.h yaml_macros.h arguments.h
 check_chemtk_LDADD   = commands/libsccommands.la
-
-CHECK_CFLAGS = -DCHECK_CHEMTK_FLAG=1
-check_chemtk_CFLAGS  = $(CFLAGS) $(AM_CFLAGS) $(CHECK_CFLAGS)
+check_chemtk_CFLAGS  = $(CFLAGS) $(AM_CFLAGS) -DDATA_DIR=\"$(top_srcdir)/data\"
 
