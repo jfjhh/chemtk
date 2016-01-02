@@ -11,6 +11,7 @@ addons:
       - libyaml-dev
       - libreadline-dev
       - doxygen
+      - graphviz
       - texlive
       - pgf
 
