@@ -24,5 +24,6 @@ cache:
 script:
     - ./bootstrap
     - ./configure
-    - make distcheck
+    - make
+    - make check
 

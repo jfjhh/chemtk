@@ -13,8 +13,10 @@ if test "$(readlink -f $srcdir)" != "$(pwd)"; then
 			   [cp -nat ./data/ \
 			    $srcdir/data/commands.yml \
 			    $srcdir/data/constants.txt \
-			    $srcdir/data/data.h $srcdir/data/elements \
-			    $srcdir/data/get_files $srcdir/data/pager.txt \
+			    $srcdir/data/data.h \
+			    $srcdir/data/elements \
+			    $srcdir/data/get_files \
+			    $srcdir/data/pager.txt \
 			    $srcdir/data/scicalc.txt; \
 			    cp -nat ./doc/commands/ \
 			    $srcdir/doc/commands/commands.bnf.txt],
