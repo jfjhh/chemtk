@@ -13,7 +13,7 @@
 #define DIRS_H
 
 #ifndef DATA_DIR
-#warn "DATA_DIR UNDEFINED! TRYING A DEFAULT."
+#error "DATA_DIR UNDEFINED! TRYING A DEFAULT."
 /**
  * The directory for all associated project test files and data to be
  * decompressed to upon installation.
