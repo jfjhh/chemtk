@@ -23,5 +23,6 @@ cache:
 
 script:
     - ./bootstrap
+    - ./configure
     - make distcheck
 

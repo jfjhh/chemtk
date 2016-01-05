@@ -9,7 +9,7 @@ CMDSPECPDF     = $(CMDSPECNAME).pdf
 docfiles       = $(CMDSPECPDF)
 CLEANFILES     = $(CMDSPECPDF) $(CMDSPECAUX) $(CMDSPECLOG)
 DISTCLEANFILES = $(CLEANFILES)
-dist_doc_DATA  = $(docfiles) $(CMDSPECBNF)
+dist_doc_DATA  = $(CMDSPECTEXSRC) $(docfiles) $(CMDSPECBNF)
 
 $(CMDSPECPDF): $(srcdir)/$(CMDSPECTEXSRC)
 	$(PDFLATEX) $<

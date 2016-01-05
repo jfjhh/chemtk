@@ -1,6 +1,5 @@
 #!/bin/sh
 
-autoreconf -fsiv
-./configure
-echo -e "\n\t*** You may now run make. ***\n"
+autoreconf -siv
+echo -e "\n\t*** You may now run \`./configure\`, \`make\`, etc. ***\n"
 

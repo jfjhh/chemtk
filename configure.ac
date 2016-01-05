@@ -6,6 +6,21 @@ AC_INIT([chemtk], [0.0.1], [https://github.com/jfjhh/chemtk/issues])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+
+# If $srcdir != $builddir, create links to data files.
+if test "$(readlink -f $srcdir)" != "$(pwd)"; then
+	AC_CONFIG_COMMANDS([Copy some data to builddir],
+			   [cp -nat ./data/ \
+			    $srcdir/data/commands.yml \
+			    $srcdir/data/constants.txt \
+			    $srcdir/data/data.h $srcdir/data/elements \
+			    $srcdir/data/get_files $srcdir/data/pager.txt \
+			    $srcdir/data/scicalc.txt; \
+			    cp -nat ./doc/commands/ \
+			    $srcdir/doc/commands/commands.bnf.txt],
+			   [srcdir=$srcdir])
+fi
+
 LT_INIT
 AM_INIT_AUTOMAKE
 
@@ -54,3 +69,5 @@ AC_CHECK_FUNCS([pow strndup snprintf])
 AC_OUTPUT([Makefile src/commands/Makefile src/Makefile doc/Makefile \
 	   doc/commands/Makefile doc/doxygen/Makefile \
 	   man/Makefile data/Makefile])
+AS_BOX([You may now run \`make\`.])
+
