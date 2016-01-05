@@ -69,9 +69,9 @@ AC_TYPE_SIZE_T
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([pow strndup snprintf])
 
-# Output Makefiles.
+# Output files.
 AC_OUTPUT([Makefile src/commands/Makefile src/Makefile doc/Makefile \
-	   doc/commands/Makefile doc/doxygen/Makefile \
+	   doc/commands/Makefile doc/doxygen/Makefile doc/doxygen/Doxyfile \
 	   man/Makefile data/Makefile])
 AS_BOX([You may now run \`make\`.])
 

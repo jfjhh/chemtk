@@ -1,6 +1,6 @@
 if HAVE_DOXYGEN
 
-doxygendir      = $(top_srcdir)/doc/doxygen
+doxygendir      = $(top_builddir)/doc/doxygen
 DOXYGENDB       = doxygen_sqlite3.db
 DOXYFILE        = Doxyfile
 HTMLDOC         = html/*
@@ -9,7 +9,7 @@ DISTCLEANFILES  = $(HTMLDOC) $(DOXYGENDB)
 dist_doc_DATA   = $(HTMLDOC) $(DOXYFILE)
 
 $(HTMLDOC):
-	$(DOXYGEN) $(doxygendir)/$(DOXYFILE)
+	$(DOXYGEN) $(DOXYFILE)
 
 endif
 
