@@ -18,7 +18,7 @@ if test "$(readlink -f $srcdir)" != "$(pwd)"; then
 			    $srcdir/data/scicalc.txt; \
 			    cp -nat ./doc/commands/ \
 			    $srcdir/doc/commands/commands.bnf.txt],
-			   [srcdir=$srcdir])
+			   [srcdir="`readlink -f $srcdir`"])
 fi
 
 LT_INIT
@@ -27,10 +27,12 @@ AM_INIT_AUTOMAKE
 # Checks for programs.
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
-AC_ARG_VAR([UNXZ],     [Program used to decompress archive of program data.])
-AC_CHECK_PROG([UNXZ],  [unxz], [/usr/bin/unxz],  [unxz])
-AC_ARG_VAR([TAR],      [Program used to unarchive program data.])
-AC_CHECK_PROG([TAR],   [tar],  [/bin/tar],       [tar])
+AC_ARG_VAR([READLINK],    [Program used to create canonicalized file paths.])
+AC_CHECK_PROG([READLINK], [readlink], [/bin/readlink],  [readlink])
+AC_ARG_VAR([UNXZ],        [Program used to decompress archive of program data.])
+AC_CHECK_PROG([UNXZ],     [unxz],     [/usr/bin/unxz],  [unxz])
+AC_ARG_VAR([TAR],         [Program used to unarchive program data.])
+AC_CHECK_PROG([TAR],      [tar],      [/bin/tar],       [tar])
 
 # Check for presence of pdfLaTeX.
 AC_CHECK_PROG(PDFLATEX, pdflatex, pdflatex)

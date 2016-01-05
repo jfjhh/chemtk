@@ -1,8 +1,8 @@
 GIANTARCHIVE      = data.tar.xz
 EXTRA_DIST        = commands.yml constants.txt data.h elements get_files \
 		    pager.txt scicalc.txt
-dist_data_DATA    = $(GIANTARCHIVE)
-dist_pkgdata_DATA = $(GIANTARCHIVE)
+dist_data_DATA    = $(GIANTARCHIVE) commands.yml data.h pager.txt scicalc.txt
+dist_pkgdata_DATA = $(GIANTARCHIVE) commands.yml data.h pager.txt scicalc.txt
 
 install-data-hook:
 	cd $(DESTDIR)$(pkgdatadir); \

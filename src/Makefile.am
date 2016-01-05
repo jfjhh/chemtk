@@ -30,5 +30,6 @@ check_chemtk_SOURCES = check_chemtk.c check_chemtk.h chemtk.h command.c \
 		       commands/command_interface.h input.c input.h parse.c \
 		       parse.h yaml_macros.h arguments.h
 check_chemtk_LDADD   = commands/libsccommands.la
-check_chemtk_CFLAGS  = $(CFLAGS) $(AM_CFLAGS) -DDATA_DIR=\"$(top_builddir)/data\"
+check_chemtk_CFLAGS  = $(CFLAGS) $(AM_CFLAGS) \
+		       -DDATA_DIR=\"`readlink -f $(top_builddir)`/data\"
 
