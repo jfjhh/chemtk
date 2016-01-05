@@ -18,8 +18,7 @@ static struct element *get_element(const char *element)
 	FILE *file;
 	struct element *read_element;
 	int total;
-	char *epath;
-	size_t i;
+	char *epath, *tmp;
 	total = 0;
 
 	if ((epath = malloc(sizeof(char) * ELEMENT_PATH_LEN)) == NULL) {
@@ -29,13 +28,20 @@ static struct element *get_element(const char *element)
 
 	snprintf(epath, ELEMENT_PATH_LEN, ELEMENT_PTABLE_DIR "/%s", element);
 
-	/* Convert to lowercase, element may be something like "Be". */
-	for (i = 0; i < strlen(epath); i++)
-		epath[i] = tolower(epath[i]);
+	/* Get 'basename'. */
+	if (!(tmp = rindex(epath, '/')))
+		tmp = epath; /* Path has no slashes. */
+	else
+		tmp++; /* First char of file basename. */
+
+	/* Convert basename to lowercase, element may be something like "Be". */
+	while ((*tmp = tolower(*tmp)) != '\0')
+		tmp++;
 
 	if ((file = fopen(epath, "r")) == NULL) {
-		free(epath);
 		perror("get_element: could not open element file for reading");
+		fprintf(stderr, "element: '%s', epath: '%s'.\n", element, epath);
+		free(epath);
 		return NULL;
 	}
 
