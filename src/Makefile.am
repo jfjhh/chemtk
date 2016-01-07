@@ -12,7 +12,8 @@ chemtk_SOURCES = chemtk.c chemtk.h command.c command.h config.h constant.c \
 		 ldmath.c ldmath.h Makefile.am operator.c operator.h pager.c \
 		 pager.h scicalc.c scicalc.h stack.c stack.h token.c token.h \
 		 commands/token_interface.h commands/command_interface.h \
-		 input.c input.h parse.c parse.h yaml_macros.h arguments.h
+		 input.c input.h parse.c parse.h yaml_macros.h arguments.h \
+		 cli.h cli.c
 chemtk_LDADD   = commands/libsccommands.la
 chemtk_CFLAGS  = $(CFLAGS) $(AM_CFLAGS) -DDATA_DIR=\"$(pkgdatadir)\"
 

@@ -16,17 +16,14 @@
 
 #include "chemtk.h"
 #include "arguments.h"
+#include "cli.h"
 
 int main(int argc, char *const argv[])
 {
-	/**
-	 * @todo Parse command line args (@c getopt(3)).
-	 * - The log file, which is stderr by default.
-	 */
 	int       opt      = 0, long_index = 0, status = 0;
-	sc_stack *stack    = NULL;
 	FILE     *lf       = stderr; /**< Default logfile. */
 	char     *lfpath   = NULL;
+	cli_code  cli_stat = CLI_PRE_INIT;
 
 	puts("\033[0;1m"); /* Start bold. */
 	puts("\tChemTK SciCalc Version " VERSION ".\n");
@@ -61,27 +58,9 @@ int main(int argc, char *const argv[])
 		}
 	}
 
-	/* Parse command file. */
-	puts("[ Parsing Command File... ]\n");
-	puts("\033[0m"); /* End bold. */
-	if (parse_command_file(COMMAND_FILE, lf) != 0) { /* Init. commands. */
-		fputs("Failed to parse command file (init sc_commands)!\n", lf);
-		goto exit;
-	} else if (!(stack = new_sc_stack())) { /* Init. stack. */
-		fputs("Failed to init sc_stack!\n", lf);
-		free_command_info();
-		goto exit;
-	}
-
-	puts("\033[0;1m"); /* Start bold. */
-	print_sc_commands(stdout);
-	puts("\033[0m"); /* End bold. */
-	puts("\n[ Loaded commands! ]\n");
-
-	page_file(SCICALC_DOCFILE); /* Init. and Help file. */
-
-	/* @todo: Start calculating (i.e. "scicalc"). */
-	printf("TODO: Start calculating!\n");
+	fputs("Running CLI.\n", lf);
+	cli_stat = run_cli(lf);
+	fprintf(lf, "CLI exited: %s\n", cli_statuses[cli_stat]);
 
 exit:
 	if (lf != stderr && lf != NULL) {
@@ -94,7 +73,7 @@ exit:
 		}
 	}
 	free(lfpath);
-	delete_sc_stack(stack, free);
+	delete_sc_stack(g_stack, free);
 	free_command_info();
 
 	return status;
