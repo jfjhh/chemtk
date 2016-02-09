@@ -50,11 +50,22 @@ if test -z "$DOXYGEN"; then
 	AC_MSG_WARN([Unable to create Doxygen documentation.])
 fi
 
+# Check if this is a local (often a dev.) build.
+AC_ARG_ENABLE([local], [--enable-local \
+	       Have ChemTK look at the build dir for the data files.],
+[case "${enableval}" in
+  yes) local_data=true  ;;
+  no)  local_data=false ;;
+  *)   AC_MSG_ERROR([Bad value ${enableval} for \`--enable-local\`.]) ;;
+esac], [local_data=true], [local_data=false])
+AM_CONDITIONAL([LOCAL_DATA], [test x$local_data = xtrue])
+
 # Checks for libraries.
 AC_CHECK_LIB([dl],        [dlopen])
 AC_CHECK_LIB([m],         [cos])
 AC_CHECK_LIB([readline],  [readline])
 AC_CHECK_LIB([history],   [using_history])
+AC_CHECK_LIB([ncurses],   [curses_version])
 AC_CHECK_LIB([yaml],      [yaml_parser_parse])
 
 # Checks for header files.
