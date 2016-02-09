@@ -50,15 +50,21 @@ if test -z "$DOXYGEN"; then
 	AC_MSG_WARN([Unable to create Doxygen documentation.])
 fi
 
-# Check if this is a local (often a dev.) build.
+# Check if this is a local (often a dev.) build, to change the DATA_DIR.
 AC_ARG_ENABLE([local], [--enable-local \
-	       Have ChemTK look at the build dir for the data files.],
+	       Have ChemTK look at the builddir for the data files.],
 [case "${enableval}" in
   yes) local_data=true  ;;
   no)  local_data=false ;;
-  *)   AC_MSG_ERROR([Bad value ${enableval} for \`--enable-local\`.]) ;;
-esac], [local_data=true], [local_data=false])
-AM_CONDITIONAL([LOCAL_DATA], [test x$local_data = xtrue])
+  *)   AC_MSG_ERROR([Bad value ${enableval} for --enable-local.]) ;;
+esac], [local_data=false])
+if $local_data; then
+	AC_MSG_NOTICE([DATA_DIR is LOCAL_DATA_DIR (build-dependent).])
+	AM_CONDITIONAL([LOCAL_DATA], [true])
+else
+	AC_MSG_NOTICE([DATA_DIR is PKG_DATA_DIR (build-independent).])
+	AM_CONDITIONAL([LOCAL_DATA], [false])
+fi
 
 # Checks for libraries.
 AC_CHECK_LIB([dl],        [dlopen])

@@ -2,7 +2,12 @@ AUTOMAKE_OPTIONS = -Wportability gnu dist-xz subdir-objects
 SUBDIRS = commands
 
 # Data dir for all tests and sometimes local (i.e. dev.) builds.
-LOCAL_DATA_DIR = "`readlink -f $(top_builddir)`/data"
+LOCAL_DATA_DIR = `readlink -f $(top_builddir)`/data
+if LOCAL_DATA
+CT_DATA_DIR = $(LOCAL_DATA_DIR)
+else
+CT_DATA_DIR = $(pkgdatadir)
+endif
 
 # what flags you want to pass to the C compiler & linker
 AM_CFLAGS  = -std=c99 -Wall -Wextra -pedantic -rdynamic \
@@ -18,14 +23,6 @@ chemtk_SOURCES = chemtk.c chemtk.h command.c command.h config.h constant.c \
 		 input.c input.h parse.c parse.h yaml_macros.h arguments.h \
 		 cli.h cli.c
 chemtk_LDADD   = commands/libsccommands.la
-
-
-if LOCAL_DATA
-CT_DATA_DIR = $(LOCAL_DATA_DIR)
-else
-CT_DATA_DIR = $(pkgdatadir)
-endif
-
 chemtk_CFLAGS  = $(CFLAGS) $(AM_CFLAGS) -DDATA_DIR=\"$(CT_DATA_DIR)\"
 
 # testing programs
