@@ -10,6 +10,8 @@ CT_DATA_DIR = $(pkgdatadir)
 endif
 
 # what flags you want to pass to the C compiler & linker
+# AM_CFLAGS  = -std=c99 -Wall -Wextra -pedantic -rdynamic \
+# 	     -O2 -g -DCOMMAND_LIB=\"$(pkglibdir)/libsccommands.so\"
 AM_CFLAGS  = -std=c99 -Wall -Wextra -pedantic -rdynamic \
 	     -O2 -g -DCOMMAND_LIB=\"$(pkglibdir)/libsccommands.so\"
 AM_LDFLAGS =

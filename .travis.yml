@@ -23,6 +23,7 @@ cache:
 
 script:
     - ./bootstrap
-    - ./configure
+    - ./configure --enable-local
     - make
+    - make check
 
