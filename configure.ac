@@ -60,11 +60,15 @@ AC_ARG_ENABLE([local], [--enable-local \
 esac], [local_data=false])
 if $local_data; then
 	AC_MSG_NOTICE([DATA_DIR is LOCAL_DATA_DIR (build-dependent).])
-	AM_CONDITIONAL([LOCAL_DATA], [true])
+	AM_CONDITIONAL([LOCAL_DATA],  [true])
 else
 	AC_MSG_NOTICE([DATA_DIR is PKG_DATA_DIR (build-independent).])
 	AM_CONDITIONAL([LOCAL_DATA], [false])
 fi
+
+# The local directories for data and the commands library.
+AC_SUBST(LOCAL_DATA_RELATIVE, [data])
+AC_SUBST(LOCAL_LIB_RELATIVE,  [src/commands/.libs/libsccommands.so])
 
 # Checks for libraries.
 AC_CHECK_LIB([dl],        [dlopen])

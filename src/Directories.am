@@ -1,0 +1,16 @@
+# Data dir for all tests and sometimes local (i.e. dev.) builds.
+
+# Local directories.
+ABSOLUTE_BUILDDIR = `readlink -f $(top_builddir)`
+LOCAL_DATA_DIR    = $(ABSOLUTE_BUILDDIR)/@LOCAL_DATA_RELATIVE@
+LOCAL_LIB_DIR     = $(ABSOLUTE_BUILDDIR)/@LOCAL_LIB_RELATIVE@
+
+# Conditional for local or install directories.
+if LOCAL_DATA
+CT_DATA_DIR = $(LOCAL_DATA_DIR)
+SC_LIB_DIR  = $(LOCAL_LIB_DIR)
+else
+CT_DATA_DIR = $(pkgdatadir)
+SC_LIB_DIR  = $(pkglibdir)
+endif
+

@@ -27,7 +27,8 @@ int main(int argc, char *const argv[])
 
 	puts("\033[0;1m"); /* Start bold. */
 	puts("\tChemTK SciCalc Version " VERSION ".\n");
-	puts("\tDATA_DIR: '" DATA_DIR "'.\n\n");
+	puts("\tDATA_DIR:\t'" DATA_DIR "'.");
+	puts("\tCOMMAND_LIB:\t'" COMMAND_LIB "'.\n\n");
 
 	/* Parse command-line arguments. */
 	while ((opt = getopt_long(argc, argv,

@@ -115,20 +115,17 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 	memset(input, '\0', CMD_NAME_LEN);
 
 	fputs("\n\tParsing commands!\n", logfile);
+	sc_handle = NULL;
 
 	/* Open commands library for access to function symbols. */
 	if (!(sc_handle = dlopen(COMMAND_LIB,
 					RTLD_NOW || RTLD_GLOBAL || RTLD_NODELETE))) {
-		/* Open local for testing. */
-		if (!(sc_handle = dlopen("./commands/.libs/libsccommands.so",
-						RTLD_NOW || RTLD_GLOBAL || RTLD_NODELETE))) {
-			/* Open self for access to function symbols. */
-			if (!(sc_handle = dlopen(NULL, RTLD_LAZY))) {
-				fprintf(stderr,
-						"init_sc_commands: could not open opaque dl handle.\n");
-				status = 1;
-				goto exit;
-			}
+		/* Open self for access to function symbols. */
+		if (!(sc_handle = dlopen(NULL, RTLD_LAZY))) {
+			fprintf(stderr,
+					"init_sc_commands: could not open opaque dl handle.\n");
+			status = 1;
+			goto exit;
 		}
 	}
 
@@ -294,7 +291,7 @@ static int parse_commands(yaml_parser_t *parser, yaml_event_t *event,
 
 			case YAML_ALIAS_EVENT:
 				if (attrib != 1) { /* Not value of a parent "attribute" scalar.
-									  */
+				*/
 					fputs("Found YAML_ALIAS_EVENT (ref to command) but not in "
 							"a parent attribute!\n", stderr);
 				}

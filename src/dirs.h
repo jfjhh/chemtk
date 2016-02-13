@@ -13,7 +13,7 @@
 #define DIRS_H
 
 #ifndef DATA_DIR
-#error "DATA_DIR UNDEFINED! TRYING A DEFAULT."
+#error "DATA_DIR UNDEFINED!"
 /**
  * The directory for all associated project test files and data to be
  * decompressed to upon installation.
@@ -30,7 +30,7 @@
  * @see
  * https://www.gnu.org/software/automake/manual/html_node/Uniform.html#Uniform
  */
-#define DATA_DIR "./data"
+#define DATA_DIR
 #endif /* DATA_DIR */
 
 /*******************************************************************************

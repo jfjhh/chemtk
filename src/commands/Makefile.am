@@ -1,12 +1,6 @@
 AUTOMAKE_OPTIONS = -Wportability gnu dist-xz subdir-objects
 
-# Data dir for all tests and sometimes local (i.e. dev.) builds.
-LOCAL_DATA_DIR = `readlink -f $(top_builddir)`/data
-if LOCAL_DATA
-CT_DATA_DIR = $(LOCAL_DATA_DIR)
-else
-CT_DATA_DIR = $(pkgdatadir)
-endif
+include $(top_srcdir)/src/Directories.am
 
 # what flags you want to pass to the C compiler & linker
 AM_CFLAGS  = -std=c99 -Wall -Wextra -pedantic -rdynamic \
