@@ -5,13 +5,34 @@
  * @brief Main file for ChemTK NCurses CLI.
  */
 
+/* Feature test macro for usleep(3). */
+#ifndef _BSD_SOURCE
+#define _BSD_SOURCE
+#endif /* _BSD_SOURCE */
+
 #ifndef CLI_H
 #define CLI_H
 
 #include <stdio.h>
-#include <ncurses.h>
+#include <string.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include <locale.h>
+#include <time.h>
+#include <wchar.h>
+#include <ncursesw/curses.h>
 
 #include "chemtk.h"
+
+/**
+ * The width of the debug and info windows.
+ */
+#define DBGWIDTH	80
+
+/**
+ * The width of the debug window.
+ */
+#define DBGHEIGHT	24
 
 /**
  * Return codes for the CLI.
@@ -21,6 +42,7 @@ typedef enum {
 	CLI_OK,
 	CLI_FAIL_PARSE_CMD_FILE,
 	CLI_FAIL_INIT_SC_STACK,
+	CLI_FAIL_INIT_CURSES,
 } cli_code;
 
 static const char *const cli_statuses[] = {
@@ -30,6 +52,8 @@ static const char *const cli_statuses[] = {
 		"Could not parse command file (init_sc_commnds)",
 	[CLI_FAIL_INIT_SC_STACK] =
 		"Could not create the stack (new_sc_stack)",
+	[CLI_FAIL_INIT_CURSES] =
+		"Could not setup NCurses (bad window sizes).",
 };
 
 /**

@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <ncursesw/curses.h>
 
 #include "commands/token_interface.h"
 
@@ -68,6 +69,15 @@ sc_token *sc_tokenize(char *line);
  * @param token	The sc_token to print.
  */
 void print_sc_token(FILE *file, sc_token *token);
+
+/**
+ * A @link sc_stack_pfun @endlink
+ * that prints a stack element that is a token.
+ *
+ * @param win The window to output to.
+ * @param data The token to print.
+ */
+void sc_wprint_token(WINDOW *win, void *data);
 
 /**
  * Tests token routines, logging results to @p logfile.

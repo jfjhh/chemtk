@@ -119,31 +119,34 @@ void print_sc_commands(FILE *file)
 }
 
 static struct sc_command_entry *get_next_entry(struct sc_command_tree *tree,
-		char *line)
+		char *line, size_t depth)
 {
 	int i;
-	char *next;
 	struct sc_command_entry *result = NULL;
 
-	if (line[0] == '\0')
+	if (line[depth] == '\0' || !(tree && tree->entry))
 		return NULL;
 
-	if (tree && tree->entry) {
-		fprintf(stderr, "get_next_entry: On line char '%c'.\n", line[0]);
-		print_sc_command_entry(stderr, tree->entry);
+	fprintf(stderr, "get_next_entry: On line char '%c'.\n", line[depth]);
+	print_sc_command_entry(stderr, tree->entry);
 
+	/* Check current node. */
+	if (tree->entry->delimiter == line[depth]) {
+		return tree->entry;
+		if (tree->num_children > 0 && tree->children && line[1] != '\0') {
+			/* Check children. */
 
-		/* Check current node. */
-		if (isalnum(line[0]) && tree->entry->delimiter == line[0]) {
-			return tree->entry;
-		} else if (tree->num_children > 0) { /* Check children. */
-			/* Check if this is the root tree (so we don't compare to '\0'). */
-			next = (tree->entry->delimiter == '\0') ? line : line + 1;
+			for (i = 0; i < tree->num_children; i++) {
+				/* DEBUG. */
+				fprintf(stderr, "Searching child for '%s' [%c]:\n",
+						line, line[depth]);
+				print_sc_command_entry(stderr, tree->children[i]->entry);
 
-			for (i = 0; i < tree->num_children; i++)
-				if ((result = get_next_entry(tree->children[i], next)))
+				if ((result = get_next_entry(tree->children[i], line, depth)))
 					return result;
+			}
 		}
+		return tree->entry;
 	}
 
 	return NULL;
@@ -151,7 +154,31 @@ static struct sc_command_entry *get_next_entry(struct sc_command_tree *tree,
 
 static inline struct sc_command_entry *get_sc_command(char *line)
 {
-	return get_next_entry(sc_commands, line);
+	int i;
+	struct sc_command_entry *entry = NULL;
+	char *tmp, *cmd;
+
+	if (!(tmp = strndup(line, strlen(line) - 1)))
+		goto exit;
+
+	cmd = strtok(tmp, " ");
+	if (!cmd)
+		cmd = tmp;
+
+	for (i = 0; i < sc_commands->num_children; i++) {
+		fprintf(stderr, "Searching root child for '%s' [%c]:\n",
+				line, line[0]);
+		print_sc_command_entry(stderr, sc_commands->children[i]->entry);
+		if ((entry = get_next_entry(sc_commands->children[i], cmd, 0)))
+			break;
+	}
+
+exit: /* Fallthrough */
+	free(tmp);
+	if (entry)
+		print_sc_command_entry(stderr, sc_commands->children[i]->entry);
+	fflush(stderr);
+	return entry;
 }
 
 struct sc_command_tree *alloc_command_tree(void) {

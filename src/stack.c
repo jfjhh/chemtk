@@ -124,6 +124,19 @@ void print_sc_stack(FILE *file, sc_stack *stack, sc_stack_pfun pfun)
 	fprintf(file, "[ bottom ]\n");
 }
 
+void wprint_sc_stack(WINDOW *win, sc_stack *stack, sc_stack_wpfun wpfun)
+{
+	sc_stack *iterator = stack;
+
+	whline(win, ACS_HLINE, getmaxx(win));
+	wmove(win, getcury(win) + 1, getcurx(win));
+	while (iterator) {
+		wpfun(win, iterator->data);
+		mvwhline(win, getcury(win) + 1, getcurx(win), ACS_HLINE, getmaxx(win));
+		iterator = iterator->next;
+	}
+}
+
 int sc_stack_depth(sc_stack *stack)
 {
 	int depth;

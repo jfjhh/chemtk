@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ncursesw/curses.h>
 
 /**
  * Linked list structure of a stack member.
@@ -27,6 +28,14 @@ typedef struct sc_stack {
  * @param data The data to be printed.
  */
 typedef void (*sc_stack_pfun)(FILE *file, void *data);
+
+/**
+ * A function pointer that will print a member of a stack to an NCurses window.
+ * @anchor sc_stack_wpfun *
+ * @param file The writable stream to print to.
+ * @param data The data to be printed.
+ */
+typedef void (*sc_stack_wpfun)(WINDOW *win, void *data);
 
 /**
  * Allocates memory for a new stack.
@@ -132,6 +141,17 @@ void sc_stack_rotup(sc_stack **stack);
  */
 void print_sc_stack(FILE *file, sc_stack *stack,
 		sc_stack_pfun pfun);
+
+/**
+ * Prints a stack to a NCurses window.
+ *
+ * @param win The window to output to.
+ * @param stack The stack to print.
+ * @param wpfun The function pointer that prints each member of the
+ * stack.
+ */
+void wprint_sc_stack(WINDOW *win, sc_stack *stack,
+		sc_stack_wpfun wpfun);
 
 /**
  * A @link sc_stack_pfun @endlink

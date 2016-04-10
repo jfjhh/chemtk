@@ -14,6 +14,11 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+/* Feature test macro for strndup(3). */
+#if ! (_XOPEN_SOURCE >= 700)
+#define _XOPEN_SOURCE 700
+#endif /* _XOPEN_SOURCE */
+
 /**
  * The maximum length of a command string, including the terminating @c NULL
  * byte.

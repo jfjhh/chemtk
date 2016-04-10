@@ -22,20 +22,29 @@
 /**
  * Global short options.
  */
-static const char *const g_short_opts = "l::";
+static const char *const g_short_opts = "l::h";
 
 /**
  * Global long options.
  */
 static struct option g_long_opts[] = {
 	/**
-	 * Logfile option.
+	 * Logfile.
 	 */
 	{
 		.name    = "logfile",
 		.has_arg = required_argument,
 		.flag    = NULL, /**< @c val is unchanged. */
 		.val     = 'l',
+	},
+	/**
+	 * Help.
+	 */
+	{
+		.name    = "help",
+		.has_arg = no_argument,
+		.flag    = NULL, /**< @c val is unchanged. */
+		.val     = 'h',
 	},
 	{ 0, 0, 0, 0, }, /**< Required zeroed last element. */
 };

@@ -71,7 +71,7 @@ AC_CHECK_LIB([dl],        [dlopen])
 AC_CHECK_LIB([m],         [cos])
 AC_CHECK_LIB([readline],  [readline])
 AC_CHECK_LIB([history],   [using_history])
-AC_CHECK_LIB([ncurses],   [curses_version])
+AC_CHECK_LIB([ncursesw],  [curses_version])
 AC_CHECK_LIB([yaml],      [yaml_parser_parse])
 
 # Checks for header files.

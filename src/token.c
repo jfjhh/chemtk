@@ -45,6 +45,9 @@ sc_token *sc_tokenize(char *line)
 
 void print_sc_token(FILE *file, sc_token *token)
 {
+	if (!token)
+		fputs("< NULL Token > :: NONE\n", file);
+
 	switch (SCT_TYPE(token)) {
 		case VALUE:
 			fprintf(file, "< %.*f (%s) > :: VALUE\n",
@@ -63,6 +66,36 @@ void print_sc_token(FILE *file, sc_token *token)
 		case NONE:
 		default:
 			fputs("< Empty Token > :: NONE\n", file);
+			break;
+	}
+}
+
+void sc_wprint_token(WINDOW *win, void *data)
+{
+	if (!data) {
+		wprintw(win, "< NULL Token > :: NONE\n");
+		return;
+	}
+	sc_token *token = (sc_token *) data;
+
+	switch (SCT_TYPE(token)) {
+		case VALUE:
+			wprintw(win, "< %.*f (%s) > :: VALUE\n",
+					SCT_FIG(token, AFTER),
+					SCT_FLT(token),
+					SCT_BOOL(token) ? "true" : "false");
+			break;
+		case CMD:
+			wprintw(win, "< `%s` > :: CMD\n",
+					SCT_CMD(token));
+			break;
+		case OPERATOR:
+			wprintw(win, "< '%c' > :: OPERATOR\n",
+					SCT_OP(token));
+			break;
+		case NONE:
+		default:
+			wprintw(win, "< Empty Token > :: NONE\n");
 			break;
 	}
 }
